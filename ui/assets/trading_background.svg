@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <defs>
+    <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(52,152,219,0.2);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(52,152,219,0);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="#1a1f2e"/>
+  
+  <!-- Grid -->
+  <rect width="800" height="600" fill="url(#grid)"/>
+  
+  <!-- Candlestick chart elements -->
+  <g opacity="0.1">
+    <!-- Candles -->
+    <rect x="100" y="200" width="20" height="150" fill="#e74c3c" rx="2"/>
+    <rect x="105" y="150" width="10" height="250" fill="#e74c3c"/>
+    
+    <rect x="150" y="180" width="20" height="100" fill="#27ae60" rx="2"/>
+    <rect x="155" y="160" width="10" height="140" fill="#27ae60"/>
+    
+    <rect x="200" y="220" width="20" height="80" fill="#27ae60" rx="2"/>
+    <rect x="205" y="200" width="10" height="120" fill="#27ae60"/>
+    
+    <rect x="250" y="250" width="20" height="120" fill="#e74c3c" rx="2"/>
+    <rect x="255" y="230" width="10" height="160" fill="#e74c3c"/>
+    
+    <rect x="300" y="230" width="20" height="90" fill="#27ae60" rx="2"/>
+    <rect x="305" y="210" width="10" height="130" fill="#27ae60"/>
+    
+    <rect x="350" y="240" width="20" height="110" fill="#27ae60" rx="2"/>
+    <rect x="355" y="220" width="10" height="150" fill="#27ae60"/>
+    
+    <rect x="400" y="280" width="20" height="70" fill="#e74c3c" rx="2"/>
+    <rect x="405" y="260" width="10" height="110" fill="#e74c3c"/>
+    
+    <rect x="450" y="260" width="20" height="90" fill="#27ae60" rx="2"/>
+    <rect x="455" y="240" width="10" height="130" fill="#27ae60"/>
+    
+    <rect x="500" y="270" width="20" height="80" fill="#27ae60" rx="2"/>
+    <rect x="505" y="250" width="10" height="120" fill="#27ae60"/>
+    
+    <rect x="550" y="290" width="20" height="100" fill="#e74c3c" rx="2"/>
+    <rect x="555" y="270" width="10" height="140" fill="#e74c3c"/>
+    
+    <rect x="600" y="280" width="20" height="70" fill="#27ae60" rx="2"/>
+    <rect x="605" y="260" width="10" height="110" fill="#27ae60"/>
+    
+    <rect x="650" y="300" width="20" height="50" fill="#27ae60" rx="2"/>
+    <rect x="655" y="280" width="10" height="90" fill="#27ae60"/>
+  </g>
+  
+  <!-- Moving averages -->
+  <g opacity="0.15">
+    <path d="M 100 280 Q 150 260, 200 270 T 300 250 Q 400 240, 500 260 T 650 280" 
+          fill="none" stroke="#3498db" stroke-width="2"/>
+    <path d="M 100 320 Q 150 300, 200 310 T 300 290 Q 400 280, 500 300 T 650 320" 
+          fill="none" stroke="#9b59b6" stroke-width="2"/>
+  </g>
+  
+  <!-- Volume bars at bottom -->
+  <g opacity="0.08">
+    <rect x="100" y="450" width="20" height="50" fill="#3498db"/>
+    <rect x="150" y="440" width="20" height="60" fill="#3498db"/>
+    <rect x="200" y="460" width="20" height="40" fill="#3498db"/>
+    <rect x="250" y="430" width="20" height="70" fill="#3498db"/>
+    <rect x="300" y="455" width="20" height="45" fill="#3498db"/>
+    <rect x="350" y="445" width="20" height="55" fill="#3498db"/>
+    <rect x="400" y="465" width="20" height="35" fill="#3498db"/>
+    <rect x="450" y="450" width="20" height="50" fill="#3498db"/>
+    <rect x="500" y="440" width="20" height="60" fill="#3498db"/>
+    <rect x="550" y="435" width="20" height="65" fill="#3498db"/>
+    <rect x="600" y="455" width="20" height="45" fill="#3498db"/>
+    <rect x="650" y="460" width="20" height="40" fill="#3498db"/>
+  </g>
+  
+  <!-- Trend lines -->
+  <g opacity="0.1">
+    <line x1="100" y1="350" x2="650" y2="250" stroke="#f39c12" stroke-width="1" stroke-dasharray="5,5"/>
+    <line x1="100" y1="250" x2="650" y2="350" stroke="#e74c3c" stroke-width="1" stroke-dasharray="5,5"/>
+  </g>
+</svg>

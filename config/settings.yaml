@@ -1,0 +1,17 @@
+broker:
+  # username: "vnarwal987@gmail.com"
+  # password: "TastyTrade@12"
+  username: "sawblade23"
+  password: "4Test#environ21"
+  account_id: "5WY52585"
+
+trading:
+  tickers: ["SPY", "QQQ", "AAPL", "TSLA"]
+  contracts_per_trade: 2
+  stop_loss_method: "ATR"
+  trailing_stop_method: "EMA"
+
+time_settings:
+  no_trade_first_minutes: 3
+  auto_close_minutes_before_close: 15
+  cutoff_new_entries_minutes: 45
