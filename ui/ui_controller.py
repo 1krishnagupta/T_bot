@@ -78,6 +78,50 @@ def save_config(config, path):
         return False
 
 
+# In ui_controller.py, in the __init__ or start_trading method:
+
+def initialize_trading_with_recovery(self):
+    """Initialize trading with position recovery"""
+    try:
+        # Initialize components
+        self.market_data_client = MarketDataClient(
+            api_quote_token=self.api.get_quote_token(),
+            save_to_db=True,
+            api=self.api
+        )
+        
+        self.order_manager = OrderManager(self.api)
+        
+        self.strategy = JigsawStrategy(
+            instrument_fetcher=self.instrument_fetcher,
+            market_data_client=self.market_data_client,
+            order_manager=self.order_manager,
+            config=self.config
+        )
+        
+        # CRITICAL: Recover positions
+        self.log_message("[*] Recovering positions from database...")
+        self.strategy.recover_positions_on_startup()
+        
+        # Display recovered positions in UI
+        active_positions = self.strategy.position_manager.get_all_positions()
+        if active_positions:
+            self.log_message(f"[✓] Recovered {len(active_positions)} active positions")
+            # Update UI position table here
+            self.update_positions_table()
+        
+        # Sync with broker
+        self.strategy.sync_positions_with_broker()
+        
+        # Initialize strategy
+        self.strategy.initialize()
+        
+        # Start periodic sync timer
+        self.start_position_sync_timer()
+        
+    except Exception as e:
+        self.log_message(f"[✗] Error initializing trading: {e}")
+
 class LoginThread(QThread):
     """Thread for handling the login process without blocking the UI"""
     login_successful = pyqtSignal(dict, object)  # Config, API object

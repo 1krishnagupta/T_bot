@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any, Union, Tuple
+from Code.bot_core.mag7_strategy import Mag7Strategy
+from Code.bot_core.position_manager import PositionManager
 
 class JigsawStrategy:
     """
@@ -33,12 +35,18 @@ class JigsawStrategy:
         self.config = config or {}
         self.trading_config = self.config.get("trading_config", {})
         
-        # Strategy state variables
-        self.active_trades = {}  # Active trades by symbol
+        #Strategy state variables
+        self.active_trades = {}  # Active trades by symbol (legacy, kept for compatibility)
+        # Initialize position manager for persistent tracking
+        self.position_manager = PositionManager()
+        # Load active positions from position manager
+        self._sync_positions_from_manager()
         self.sector_status = {}  # Sector statuses (bullish, bearish, neutral)
         self.compression_detected = False
         self.compression_direction = "neutral"
         self.market_condition = "neutral"  # Overall market condition
+
+        
         
         # Data containers
         self.sector_weights = self.trading_config.get("sector_weights", {
@@ -70,7 +78,12 @@ class JigsawStrategy:
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-            
+        
+            # Initialize Mag7 strategy if configured
+            self.mag7_strategy = None
+            if self.trading_config.get("use_mag7_confirmation", False):
+                self.mag7_strategy = Mag7Strategy(market_data_client, config)
+                    
         # Strategy initialized flag
         self.initialized = False
         
@@ -96,6 +109,10 @@ class JigsawStrategy:
                 
             # Subscribe to real sector ETF data
             self.market_data.subscribe_to_sector_etfs()
+            
+            # Initialize Mag7 strategy if enabled
+            if self.mag7_strategy:
+                self.mag7_strategy.initialize()
             
             # Subscribe to real market data for watchlist tickers from config
             for ticker in self.tickers:
@@ -130,6 +147,20 @@ class JigsawStrategy:
         # Check for potential trade setups after sector update
         self.check_for_trade_setups()
     
+    def update_mag7_status(self, symbol, price):
+        """
+        Update Mag7 stock status if Mag7 strategy is enabled
+        
+        Args:
+            symbol (str): Stock symbol
+            price (float): Current price
+        """
+        if self.mag7_strategy and symbol in self.mag7_strategy.mag7_stocks:
+            self.mag7_strategy.update_mag7_status(symbol, price)
+            
+            # Check for trade setups after Mag7 update
+            self.check_for_trade_setups()
+
     def check_for_trade_setups(self):
         """Check for potential trade setups based on real market conditions"""
         # Check if sector alignment exists
@@ -774,6 +805,9 @@ class JigsawStrategy:
                 "option_type": "Call" if direction == "bullish" else "Put"
             }
             
+            # Save to position manager for persistence
+            self.position_manager.add_position(symbol, self.active_trades[symbol])
+            
             self.logger.info(f"Entered {direction.upper()} trade for {symbol} with {contracts_per_trade} contracts of {contract}")
             
             # Set up trailing stop
@@ -1133,6 +1167,31 @@ class JigsawStrategy:
                 self.exit_trade(symbol, reason=f"Failsafe exit after {failsafe_minutes} minutes")
                 continue
                 
+            # Update current price and P&L
+            current_price = self._get_current_price(symbol)
+            if current_price:
+                trade["current_price"] = f"${current_price:.2f}"
+                
+                # Calculate P&L if entry price is known
+                if trade["entry_price"] != "Pending":
+                    entry_price = float(trade["entry_price"].replace("$", ""))
+                    if trade["type"] in ["Long", "Long Call"]:
+                        pnl = (current_price - entry_price) * float(trade.get("quantity", 1)) * 100
+                        pnl_pct = ((current_price - entry_price) / entry_price) * 100
+                    else:
+                        pnl = (entry_price - current_price) * float(trade.get("quantity", 1)) * 100
+                        pnl_pct = ((entry_price - current_price) / entry_price) * 100
+                    
+                    trade["pl"] = f"${pnl:.2f} ({pnl_pct:.1f}%)"
+                    trade["unrealized_pnl"] = pnl
+                    
+                    # Update position manager with current price and P&L
+                    self.position_manager.update_position(symbol, {
+                        "current_price": current_price,
+                        "pl": trade["pl"],
+                        "unrealized_pnl": pnl
+                    })
+                
             # Check exit conditions based on trailing method
             trailing_method = trade.get("trailing_method", "")
             
@@ -1183,7 +1242,8 @@ class JigsawStrategy:
             # Check and update trailing stops if necessary
             if trade.get("check_trailing_stop", False):
                 self._update_trailing_stop(symbol)
-    
+
+
 
     def _update_trailing_stop(self, symbol):
         """
@@ -1313,6 +1373,13 @@ class JigsawStrategy:
             trade["stop"] = new_stop
             self.logger.info(f"Updated trailing stop for {symbol} to {new_stop} using {trailing_method}")
             
+            # Update in position manager for persistence
+            self.position_manager.update_position(symbol, {
+                "stop": new_stop,
+                "trailing_method": trailing_method,
+                "last_stop_update": datetime.now().isoformat()
+            })
+            
             # For real broker, update the actual stop order
             try:
                 # Check if stop order ID exists
@@ -1332,6 +1399,11 @@ class JigsawStrategy:
                         if stop_order_id:
                             trade["stop_order_id"] = stop_order_id
                             self.logger.info(f"Created new stop order {stop_order_id} at {new_stop} for {symbol}")
+                            
+                            # Update stop order ID in position manager
+                            self.position_manager.update_position(symbol, {
+                                "stop_order_id": stop_order_id
+                            })
                         else:
                             self.logger.error(f"Failed to get stop order ID for {symbol}")
                     else:
@@ -1349,6 +1421,11 @@ class JigsawStrategy:
                         if stop_order_id:
                             trade["stop_order_id"] = stop_order_id
                             self.logger.info(f"Created initial stop order {stop_order_id} at {new_stop} for {symbol}")
+                            
+                            # Update stop order ID in position manager
+                            self.position_manager.update_position(symbol, {
+                                "stop_order_id": stop_order_id
+                            })
                         else:
                             self.logger.error(f"Failed to get stop order ID for {symbol}")
                     else:
@@ -1356,6 +1433,7 @@ class JigsawStrategy:
                         self.logger.error(f"Failed to create initial stop order for {symbol}: {error_msg}")
             except Exception as e:
                 self.logger.error(f"Error updating stop order for {symbol}: {e}")
+    
 
     
     def _create_stop_order(self, symbol, stop_price, direction):
@@ -1446,6 +1524,14 @@ class JigsawStrategy:
             # Remove from active trades
             exit_trade = self.active_trades.pop(symbol)
             
+            # Close position in position manager
+            self.position_manager.close_position(symbol, {
+                "exit_time": datetime.now().isoformat(),
+                "exit_reason": reason,
+                "exit_price": exit_trade.get("current_price", "Unknown"),
+                "final_pl": exit_trade.get("pl", "$0.00 (0.0%)")
+            })
+            
             # Log the exit
             self.logger.info(f"Exited trade for {symbol}: {reason}")
             
@@ -1457,12 +1543,20 @@ class JigsawStrategy:
 
     def detect_sector_alignment(self):
         """
-        Detect sector alignment using real market data
+        Detect sector alignment using real market data OR Mag7 alignment
         
         Returns:
             tuple: (alignment_detected, direction, combined_weight)
         """
         try:
+            # Check if we should use Mag7 instead of sectors
+            if self.mag7_strategy and self.trading_config.get("use_mag7_confirmation", False):
+                # Use Mag7 alignment
+                aligned, direction, percentage = self.mag7_strategy.check_mag7_alignment()
+                self.logger.info(f"Using Mag7 alignment: aligned={aligned}, direction={direction}, percentage={percentage}%")
+                return aligned, direction, percentage
+            
+            # Original sector alignment logic
             # Log current sector status for debugging
             self.logger.info(f"Checking sector alignment. Current statuses: {self.sector_status}")
             
@@ -1829,3 +1923,91 @@ class JigsawStrategy:
         except Exception as e:
             self.logger.error(f"Error checking data synchronization: {e}")
             return False
+
+
+
+
+    def _sync_positions_from_manager(self):
+        """Sync positions from position manager to active_trades"""
+        try:
+            all_positions = self.position_manager.get_all_positions()
+            
+            # Clear and reload active trades
+            self.active_trades = {}
+            
+            for symbol, position in all_positions.items():
+                # Convert position manager format to active_trades format
+                self.active_trades[symbol] = position
+                
+            self.logger.info(f"Synced {len(self.active_trades)} active positions from position manager")
+            
+            # Log position details
+            for symbol, trade in self.active_trades.items():
+                self.logger.info(f"Active position: {symbol} - {trade.get('type')} - Entry: {trade.get('entry_time')}")
+                
+        except Exception as e:
+            self.logger.error(f"Error syncing positions from manager: {e}")
+
+
+    def recover_positions_on_startup(self):
+        """
+        Recover positions from database on startup and sync with broker
+        """
+        try:
+            self.logger.info("Recovering positions on startup...")
+            
+            # Get positions from broker
+            if self.order_manager and self.order_manager.api:
+                # Get account positions from broker
+                broker_positions = self._get_broker_positions()
+                
+                # Sync with position manager
+                if broker_positions:
+                    self.position_manager.sync_with_broker(broker_positions)
+                
+            # Clean up any stale positions (older than 24 hours)
+            self.position_manager.cleanup_stale_positions(24)
+            
+            # Sync to active_trades
+            self._sync_positions_from_manager()
+            
+            self.logger.info(f"Position recovery complete. Active positions: {len(self.active_trades)}")
+            
+        except Exception as e:
+            self.logger.error(f"Error recovering positions: {e}")
+    
+    def _get_broker_positions(self):
+        """Get current positions from broker"""
+        try:
+            # This would call the broker API to get positions
+            # For now, return empty list - implement based on your broker API
+            return []
+        except Exception as e:
+            self.logger.error(f"Error getting broker positions: {e}")
+            return []
+        
+
+    def sync_positions_with_broker(self):
+        """Periodically sync positions with broker (call this every few minutes)"""
+        try:
+            # Get broker positions
+            broker_positions = self._get_broker_positions()
+            
+            # Sync with position manager
+            self.position_manager.sync_with_broker(broker_positions)
+            
+            # Update active_trades
+            self._sync_positions_from_manager()
+            
+            # Export backup
+            backup_path = os.path.join(
+                os.path.dirname(__file__), 
+                '..', '..', 
+                'backups', 
+                f'positions_backup_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
+            )
+            os.makedirs(os.path.dirname(backup_path), exist_ok=True)
+            self.position_manager.export_positions(backup_path)
+            
+        except Exception as e:
+            self.logger.error(f"Error syncing positions: {e}")

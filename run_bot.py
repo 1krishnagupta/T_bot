@@ -10,6 +10,8 @@ import os
 import argparse
 import logging
 import signal
+import cProfile
+import pstats
 from datetime import datetime
 from PyQt5.QtWidgets import QApplication
 
@@ -22,9 +24,16 @@ from Code.bot_core.config_loader import ConfigLoader
 from Code.bot_core.instrument_fetcher import InstrumentFetcher
 from Code.bot_core.mongodb_handler import get_mongodb_handler
 
+from Code.bot_core.market_data_client import MarketDataClient
+from Code.bot_core.order_manager import OrderManager
+from Code.bot_core.jigsaw_strategy import JigsawStrategy
+from Code.bot_core.position_manager import PositionManager
+import time
+
 # Import UI components
 from Code.ui.jigsaw_flow_ui import JigsawFlowApp
 from Code.ui.ui_controller import UIController
+
 
 # Setup logging
 today = datetime.now().strftime("%Y-%m-%d")
@@ -211,12 +220,74 @@ def run_headless(args):
         # Initialize instrument fetcher
         fetcher = InstrumentFetcher(api, test_mode=test_mode)
         
-        # Here you would add your trading logic
-        print("[*] Starting trading operations...")
+        # ===== ADD RECOVERY CODE HERE =====
+        print("[*] Starting trading operations with position recovery...")
+                
+        # Initialize market data client
+        quote_token = api.get_quote_token() if not test_mode else {"token": "test", "dxlink-url": "test"}
+        market_data_client = MarketDataClient(
+            api_quote_token=quote_token,
+            save_to_db=True,
+            api=api
+        )
         
-        # TODO: Add trading logic
+        # Initialize order manager
+        order_manager = OrderManager(api, account_id)
         
-        # For now, we'll just exit
+        # Initialize strategy with recovery
+        strategy = JigsawStrategy(
+            instrument_fetcher=fetcher,
+            market_data_client=market_data_client,
+            order_manager=order_manager,
+            config=config
+        )
+        
+        # CRITICAL: Recover positions from database
+        print("[*] Recovering positions from database...")
+        strategy.recover_positions_on_startup()
+        
+        # Verify recovery
+        active_positions = strategy.position_manager.get_all_positions()
+        if active_positions:
+            print(f"[✓] Recovered {len(active_positions)} active positions:")
+            for symbol, position in active_positions.items():
+                print(f"    - {symbol}: {position['type']} @ ${position.get('entry_price', 'N/A')}")
+        else:
+            print("[*] No active positions to recover")
+        
+        # Sync with broker
+        print("[*] Syncing with broker...")
+        strategy.sync_positions_with_broker()
+        
+        # Initialize strategy
+        strategy.initialize()
+        
+        # Start trading loop with periodic sync
+        last_sync_time = time.time()
+        sync_interval = 300  # Sync every 5 minutes
+        
+        print("[*] Starting main trading loop...")
+        try:
+            while True:
+                # Regular trading logic
+                strategy.scan_for_trades()
+                strategy.manage_active_trades()
+                
+                # Periodic sync with broker
+                current_time = time.time()
+                if current_time - last_sync_time > sync_interval:
+                    print("[*] Performing periodic position sync...")
+                    strategy.sync_positions_with_broker()
+                    last_sync_time = current_time
+                
+                time.sleep(1)  # Main loop delay
+                
+        except KeyboardInterrupt:
+            print("\n[*] Shutting down gracefully...")
+            # Save final position state
+            strategy.position_manager.export_positions("final_positions_backup.json")
+        # ===== END OF RECOVERY CODE =====
+        
         print("[*] Trading operation completed")
         
         # Logout if not in test mode
@@ -276,8 +347,6 @@ def main():
     try:
         # Enable profiling if requested
         if args.profile:
-            import cProfile
-            import pstats
             profiler = cProfile.Profile()
             profiler.enable()
             

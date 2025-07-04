@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import logging
 import csv
 from pathlib import Path
+from Code.bot_core.mag7_strategy import Mag7Strategy
 
 class BacktestEngine:
     """
@@ -516,7 +517,7 @@ class BacktestEngine:
 
             # Save complete analysis
             if not hasattr(self, 'dir_manager') or not self.dir_manager:
-                from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
+                from Code.bot_core.directory_manager import BacktestDirectoryManager
                 self.dir_manager = BacktestDirectoryManager()
                 
             if not hasattr(self, 'run_id'):
@@ -685,7 +686,7 @@ class BacktestEngine:
     
     def _check_sector_alignment(self, sector_data, idx, sector_weights):
         """
-        Check for sector alignment using historical sector data
+        Check for sector alignment OR Mag7 alignment based on configuration
         
         Args:
             sector_data (dict): Dictionary of sector DataFrames
@@ -695,6 +696,11 @@ class BacktestEngine:
         Returns:
             tuple: (aligned, direction, combined_weight)
         """
+        # Check if we should use Mag7 instead
+        if self.trading_config.get("use_mag7_confirmation", False):
+            return self._check_mag7_alignment(sector_data, idx)
+        
+        # Original sector alignment logic
         if not sector_data:
             self.logger.warning("No sector data available for alignment check")
             return False, "neutral", 0
@@ -738,8 +744,74 @@ class BacktestEngine:
             return True, xlk_status, aligned_weight
         
         return False, "neutral", aligned_weight
+    
 
+    def _check_mag7_alignment(self, market_data, idx):
+        """
+        Check for Magnificent 7 alignment using historical data
         
+        Args:
+            market_data (dict): Dictionary of DataFrames (includes Mag7 stocks)
+            idx (int): Current index
+            
+        Returns:
+            tuple: (aligned, direction, percentage)
+        """
+        # Get Mag7 stocks
+        mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+        
+        # Get threshold from config
+        threshold = float(self.trading_config.get("mag7_threshold", 60))
+        
+        # Extract Mag7 data
+        mag7_data = {}
+        for symbol in mag7_stocks:
+            if symbol in market_data:
+                mag7_data[symbol] = market_data[symbol]
+        
+        if not mag7_data or idx < 5:
+            return False, "neutral", 0
+        
+        # Analyze each stock
+        stock_statuses = {}
+        
+        for symbol, df in mag7_data.items():
+            if len(df) <= idx:
+                continue
+            
+            # Get current and average price
+            current_price = df.iloc[idx]['close']
+            avg_5 = df.iloc[idx-5:idx]['close'].mean()
+            
+            # Determine status
+            if current_price > avg_5 * 1.002:  # 0.2% above average
+                stock_statuses[symbol] = "bullish"
+            elif current_price < avg_5 * 0.998:  # 0.2% below average
+                stock_statuses[symbol] = "bearish"
+            else:
+                stock_statuses[symbol] = "neutral"
+        
+        # Count statuses
+        bullish_count = sum(1 for status in stock_statuses.values() if status == "bullish")
+        bearish_count = sum(1 for status in stock_statuses.values() if status == "bearish")
+        
+        # Calculate percentages
+        total_stocks = len(mag7_stocks)
+        bullish_pct = (bullish_count / total_stocks) * 100
+        bearish_pct = (bearish_count / total_stocks) * 100
+        
+        self.logger.info(f"Mag7 alignment: {bullish_count} bullish ({bullish_pct:.1f}%), "
+                        f"{bearish_count} bearish ({bearish_pct:.1f}%)")
+        
+        # Check alignment
+        if bullish_pct >= threshold:
+            return True, "bullish", bullish_pct
+        elif bearish_pct >= threshold:
+            return True, "bearish", bearish_pct
+        else:
+            return False, "neutral", max(bullish_pct, bearish_pct)
+
+
     def _detect_compression(self, df, idx):
         """
         Detect price compression
@@ -839,6 +911,7 @@ class BacktestEngine:
                     return True, "bullish"
                 else:
                     return True, "bearish"
+                
 
     def _calculate_bollinger_band_width(self, data, window=20, num_std=2):
         """

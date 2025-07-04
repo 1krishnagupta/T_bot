@@ -8,7 +8,7 @@ import time
 import json
 import logging
 from typing import Dict, List, Optional, Callable, Tuple, Any, Union
-from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
+from Code.bot_core.directory_manager import BacktestDirectoryManager
 from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
 
 from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
@@ -292,7 +292,13 @@ class CandleDataClient:
         
         # ALWAYS fetch sector ETFs regardless of what symbols are requested
         sector_etfs = ["XLK", "XLF", "XLV", "XLY"]
-        all_symbols = list(symbols) + sector_etfs
+        
+        # Also fetch Mag7 stocks if Mag7 strategy is enabled
+        mag7_stocks = []
+        if "trading_config" in self.config and self.config["trading_config"].get("use_mag7_confirmation", False):
+            mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+        
+        all_symbols = list(symbols) + sector_etfs + mag7_stocks
         all_symbols = list(set(all_symbols))  # Remove duplicates
         
         print(f"[*] Fetching data for symbols: {', '.join(all_symbols)}")

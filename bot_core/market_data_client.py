@@ -813,6 +813,24 @@ class MarketDataClient:
                         # Start the timer for sector updates
                         self._sector_update_start_time = time.time()
                 
+
+                # Check if this is a Mag7 stock and we have a callback
+                mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+                if symbol in mag7_stocks and hasattr(self, 'on_mag7_update') and self.on_mag7_update:
+                    # Calculate mid price
+                    if bid_price > 0 and ask_price > 0:
+                        price = (bid_price + ask_price) / 2
+                    elif bid_price > 0:
+                        price = bid_price
+                    elif ask_price > 0:
+                        price = ask_price
+                    else:
+                        price = 0.0
+                    
+                    if price > 0:
+                        self.on_mag7_update(symbol, price)
+
+
                 # Call user callback
                 if self.on_quote:
                     self.on_quote(quote)

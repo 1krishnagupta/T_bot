@@ -6,6 +6,7 @@ import time
 from datetime import datetime, timedelta
 import os
 from typing import Dict, List, Optional, Any, Union
+from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
 
 class OrderManager:
     """
@@ -31,6 +32,17 @@ class OrderManager:
         # Order tracking containers
         self.active_orders = {}  # Currently active orders
         self.order_history = {}  # All past orders
+        
+        # Initialize MongoDB for persistent order tracking
+        self.db = get_mongodb_handler()
+        
+        # Create orders collection if it doesn't exist
+        self.db.create_collection(COLLECTIONS['ORDERS'])
+        self.db.create_index(COLLECTIONS['ORDERS'], [("order_id", 1)])
+        self.db.create_index(COLLECTIONS['ORDERS'], [("status", 1), ("created_at", -1)])
+        
+        # Load active orders from database on startup
+        self._load_active_orders_from_db()
         
         # Setup logging
         today = datetime.now().strftime("%Y-%m-%d")
@@ -64,6 +76,28 @@ class OrderManager:
         
         return ""
     
+
+    def _load_active_orders_from_db(self):
+        """Load active orders from database on startup"""
+        try:
+            # Query for active orders
+            active_orders = self.db.find_many(
+                COLLECTIONS['ORDERS'],
+                {"status": {"$in": ["Open", "Pending", "Working", "Partially Filled"]}}
+            )
+            
+            # Load into memory
+            for order in active_orders:
+                order_id = order.get("order_id")
+                if order_id:
+                    self.active_orders[order_id] = order
+                    
+            self.logger.info(f"Loaded {len(self.active_orders)} active orders from database")
+            
+        except Exception as e:
+            self.logger.error(f"Error loading orders from database: {e}")
+
+
     def create_equity_option_order(self, symbol, quantity, direction, price=None, order_type="Limit", time_in_force="Day") -> Dict:
         """
         Create an equity option order
@@ -235,6 +269,16 @@ class OrderManager:
             if order_id:
                 self.active_orders[order_id] = order_data
                 self.order_history[order_id] = order_data
+                
+                # Save to database
+                order_doc = {
+                    "order_id": order_id,
+                    "order_data": order_data,
+                    "status": "Open",
+                    "created_at": datetime.now().isoformat(),
+                    "updated_at": datetime.now().isoformat()
+                }
+                self.db.insert_one(COLLECTIONS['ORDERS'], order_doc)
                 
             self.logger.info(f"LIVE order submitted successfully. Order ID: {order_id}")
             return data

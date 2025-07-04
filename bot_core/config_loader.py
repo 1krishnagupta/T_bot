@@ -141,7 +141,10 @@ class ConfigLoader:
                     "XLV": 11,  # Health Care
                     "XLY": 11   # Consumer Discretionary
                 },
-                
+                # Add these new fields for Mag7 strategy
+                "use_mag7_confirmation": False,          # Toggle between sector and Mag7
+                "mag7_threshold": 60,                    # Default 60% threshold
+                "mag7_stocks": ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"],                
             },
             "ui_config": {
                 "theme": "dark",

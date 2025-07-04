@@ -706,13 +706,17 @@ class MongoDBHandler:
 
 # MongoDB collections we'll use in our trading bot
 COLLECTIONS = {
-    'QUOTES': 'quotes',           # Market data quotes
-    'TRADES': 'trades',           # Market data trades
-    'GREEKS': 'greeks',           # Option greeks
-    'CANDLES': 'candles',         # OHLC candles
-    'POSITIONS': 'positions',     # Trading positions
-    'ORDERS': 'orders',           # Orders placed
-    'ACCOUNT': 'account',         # Account information
+    'QUOTES': 'market_quotes',                    # Real-time market quotes
+    'TRADES': 'market_trades',                    # Market trade executions
+    'GREEKS': 'option_greeks',                   # Option Greeks data
+    'CANDLES': 'price_candles',                  # OHLC candlestick data
+    'POSITIONS': 'active_positions',             # Currently open trading positions
+    'ORDERS': 'trading_orders',                  # All trading orders (active & historical)
+    'ACCOUNT': 'account_info',                   # Broker account information
+    'POSITION_HISTORY': 'position_history',      # Historical positions (closed trades)
+    'STRATEGY_STATE': 'strategy_state',          # Strategy state and settings
+    'TRADE_SIGNALS': 'trade_signals',            # Trading signals generated
+    'PERFORMANCE': 'performance_metrics',        # Performance tracking
 }
 
 # Singleton instance of MongoDBHandler
