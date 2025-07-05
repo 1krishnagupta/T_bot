@@ -92,72 +92,82 @@ class ConfigLoader:
             print(f"[✗] Error loading configuration: {str(e)}")
             return self.get_default_config()
     
-    def get_default_config(self):
-        """
-        Get default configuration
-        
-        Returns:
-            dict: Default configuration dictionary
-        """
-        return {
-            "broker": {
-                "username": "",
-                "password": "",
-                "account_id": "",
-                "auto_trading_enabled": True,  
+    # In bot_core/config_loader.py
+# Find the get_default_config method and update the trading_config section:
+
+def get_default_config(self):
+    """
+    Get default configuration
+    
+    Returns:
+        dict: Default configuration dictionary
+    """
+    return {
+        "broker": {
+            "username": "",
+            "password": "",
+            "account_id": "",
+            "auto_trading_enabled": True,  
+        },
+        "database": {
+            "type": "mongodb",
+            "host": "localhost",
+            "port": 27017,
+            "db_name": "trading_bot"
+        },
+        "trading_config": {
+            "tickers": ["SPY", "QQQ", "AAPL", "MSFT", "TSLA"],
+            "contracts_per_trade": 1,
+            "trailing_stop_method": "Heiken Ashi Candle Trail (1-3 candle lookback)",
+            "no_trade_window_minutes": 3,
+            "auto_close_minutes": 15,
+            "cutoff_time": "15:15",
+            "ema_value": 15,
+            "failsafe_minutes": 20,
+            "adx_filter": True,
+            "adx_minimum": 20,
+            "news_filter": False,
+            "bb_width_threshold": 0.05,
+            "donchian_contraction_threshold": 0.6,
+            "volume_squeeze_threshold": 0.3,
+            "liquidity_min_volume": 1000000,
+            "liquidity_min_oi": 500,
+            "liquidity_max_spread": 0.10,
+            "stochastic_k_period": 5,
+            "stochastic_d_period": 3,
+            "stochastic_smooth": 2,
+            
+            # Sector Configuration
+            "sector_etfs": ["XLK", "XLF", "XLV", "XLY"],
+            "sector_weight_threshold": 43,
+            "sector_weights": {
+                "XLK": 32,  # Tech
+                "XLF": 14,  # Financials
+                "XLV": 11,  # Health Care
+                "XLY": 11   # Consumer Discretionary
             },
-            "database": {
-                "type": "mongodb",
-                "host": "localhost",
-                "port": 27017,
-                "db_name": "trading_bot"
-            },
-            "trading_config": {
-                "tickers": ["SPY", "QQQ", "AAPL", "MSFT", "TSLA"],
-                "contracts_per_trade": 1,
-                "trailing_stop_method": "Heiken Ashi Candle Trail (1-3 candle lookback)",
-                "no_trade_window_minutes": 3,
-                "auto_close_minutes": 15,
-                "cutoff_time": "15:15",
-                "ema_value": 15,
-                "failsafe_minutes": 20,
-                "adx_filter": True,
-                "adx_minimum": 20,
-                "news_filter": False,
-                "bb_width_threshold": 0.05,              # Bollinger Band Width threshold
-                "donchian_contraction_threshold": 0.6,   # Donchian Channel contraction threshold
-                "volume_squeeze_threshold": 0.3,         # Volume Squeeze threshold
-                "liquidity_min_volume": 1000000,         # Minimum daily volume (1M)
-                "liquidity_min_oi": 500,                 # Minimum open interest
-                "liquidity_max_spread": 0.10,            # Maximum option bid/ask spread
-                "stochastic_k_period": 5,                # Stochastic K period
-                "stochastic_d_period": 3,                # Stochastic D period
-                "stochastic_smooth": 2,                  # Stochastic smooth period
-                "sector_etfs": ["XLK", "XLF", "XLV", "XLY"],  # Sector ETFs to monitor
-                "sector_weight_threshold": 43,           # Threshold for sector alignment
-                "sector_weights": {                      # Sector weights
-                    "XLK": 32,  # Tech
-                    "XLF": 14,  # Financials
-                    "XLV": 11,  # Health Care
-                    "XLY": 11   # Consumer Discretionary
-                },
-                # Add these new fields for Mag7 strategy
-                "use_mag7_confirmation": False,          # Toggle between sector and Mag7
-                "mag7_threshold": 60,                    # Default 60% threshold
-                "mag7_stocks": ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"],                
-            },
-            "ui_config": {
-                "theme": "dark",
-                "log_level": "info",
-                "show_debug_info": False,
-                "chart_timeframes": ["1m", "5m", "15m"]
-            },
-            "logging": {
-                "level": "INFO",
-                "file_enabled": True,
-                "console_enabled": True
-            }
+            
+            # Mag7 Configuration
+            "use_mag7_confirmation": False,  # Toggle between sector and Mag7
+            "mag7_threshold": 60,  # Default 60% threshold
+            "mag7_stocks": ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"],
+            
+            # Selectable Sector Options
+            "selected_sectors": ["XLK", "XLF", "XLV", "XLY"],  # User can select which sectors to use
+            "min_sectors_aligned": 2,  # Minimum number of selected sectors that must be aligned
+        },
+        "ui_config": {
+            "theme": "dark",
+            "log_level": "info",
+            "show_debug_info": False,
+            "chart_timeframes": ["1m", "5m", "15m"]
+        },
+        "logging": {
+            "level": "INFO",
+            "file_enabled": True,
+            "console_enabled": True
         }
+    }
     
     def merge_with_defaults(self, config):
         """

@@ -35,26 +35,22 @@ class JigsawStrategy:
         self.config = config or {}
         self.trading_config = self.config.get("trading_config", {})
         
-        #Strategy state variables
-        self.active_trades = {}  # Active trades by symbol (legacy, kept for compatibility)
-        # Initialize position manager for persistent tracking
+        # Strategy state variables
+        self.active_trades = {}
         self.position_manager = PositionManager()
-        # Load active positions from position manager
         self._sync_positions_from_manager()
-        self.sector_status = {}  # Sector statuses (bullish, bearish, neutral)
-        self.compression_detected = False
-        self.compression_direction = "neutral"
-        self.market_condition = "neutral"  # Overall market condition
-
         
-        
-        # Data containers
+        # Get sector configuration from config
+        self.sector_etfs = self.trading_config.get("sector_etfs", ["XLK", "XLF", "XLV", "XLY"])
         self.sector_weights = self.trading_config.get("sector_weights", {
-            "XLK": 32,  # Tech
-            "XLF": 14,  # Financials
-            "XLV": 11,  # Health Care
-            "XLY": 11   # Consumer Discretionary
+            "XLK": 32,
+            "XLF": 14,
+            "XLV": 11,
+            "XLY": 11
         })
+        
+        # Initialize sector status for configured sectors
+        self.sector_status = {sector: "neutral" for sector in self.sector_etfs}
         self.sector_prices = {}
         
         # Price data for analysis

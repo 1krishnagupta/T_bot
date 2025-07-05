@@ -397,6 +397,65 @@ class MarketDataClient:
         return channel_id
 
 
+
+    def subscribe_to_mag7_stocks(self, mag7_stocks=None):
+        """
+        Subscribe to market data for Magnificent 7 stocks
+        
+        Args:
+            mag7_stocks (list): List of Mag7 stock symbols to subscribe to
+            
+        Returns:
+            int: Channel ID for the subscription
+        """
+        # Use provided list or default
+        if mag7_stocks is None:
+            mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+        
+        # Log the subscription
+        self.logger.info(f"Subscribing to Mag7 stocks: {', '.join(mag7_stocks)}")
+        
+        # Create channel for Mag7 stocks
+        channel_id = self._create_channel()
+        
+        # Wait for channel to be opened
+        time.sleep(0.5)
+        
+        # Setup feed for the channel
+        self._setup_feed(channel_id)
+        
+        # Wait for feed to be configured
+        time.sleep(0.5)
+        
+        # Build subscription list
+        subscriptions = []
+        for symbol in mag7_stocks:
+            for event_type in ["Quote", "Trade", "Summary"]:
+                subscriptions.append({
+                    "type": event_type,
+                    "symbol": symbol
+                })
+        
+        # Send subscription request
+        subscription_msg = {
+            "type": "FEED_SUBSCRIPTION",
+            "channel": channel_id,
+            "reset": True,
+            "add": subscriptions
+        }
+        self._send_message(subscription_msg)
+        
+        # Store channel information
+        self.channels[channel_id] = {
+            "symbols": mag7_stocks,
+            "event_types": ["Quote", "Trade", "Summary"],
+            "is_mag7": True
+        }
+        
+        self.logger.info(f"Subscribed to all Mag7 stocks on channel {channel_id}")
+        return channel_id
+
+
     def _start_sector_polling(self, channel_id, sectors):
         """
         Start a background thread to poll for sector updates continuously

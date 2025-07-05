@@ -343,20 +343,50 @@ class TradingBotThread(QThread):
                 self.alert_signal.emit("Failed to subscribe to ticker data", "warning")
             else:
                 self.update_signal.emit(f"Subscribed to ticker data (channel {ticker_channel})")
+
+        # Thread 3: Subscribe to Mag7 stocks if that strategy is enabled
+        def subscribe_mag7():
+            use_mag7 = self.config.get("trading_config", {}).get("use_mag7_confirmation", False)
+            if use_mag7:
+                mag7_stocks = self.config.get("trading_config", {}).get("mag7_stocks", 
+                    ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
+                
+                self.update_signal.emit(f"Subscribing to Mag7 stocks: {', '.join(mag7_stocks)}")
+                
+                # Subscribe to Mag7 stocks
+                mag7_channel = self.market_data_client.subscribe_to_mag7_stocks(mag7_stocks)
+                
+                if not mag7_channel:
+                    self.update_signal.emit("WARNING: Failed to subscribe to Mag7 data")
+                    self.alert_signal.emit("Failed to subscribe to Mag7 data", "warning")
+                else:
+                    self.update_signal.emit(f"Subscribed to Mag7 data (channel {mag7_channel})")
+                    
+                    # Set up callback for Mag7 updates
+                    if hasattr(self.market_data_client, 'on_mag7_update'):
+                        self.market_data_client.on_mag7_update = strategy.update_mag7_status
+            else:
+                self.update_signal.emit("Mag7 strategy not enabled, using sector confirmation")
+
+
         
-        # Start subscription threads
+        # Start all subscription threads
         sector_thread = threading.Thread(target=subscribe_sectors)
         ticker_thread = threading.Thread(target=subscribe_tickers)
+        mag7_thread = threading.Thread(target=subscribe_mag7)
         
         sector_thread.daemon = True
         ticker_thread.daemon = True
+        mag7_thread.daemon = True
         
         sector_thread.start()
         ticker_thread.start()
+        mag7_thread.start()
         
         # Wait for subscriptions to be set up
         sector_thread.join()
         ticker_thread.join()
+        mag7_thread.join()
         
         # Initialize sector status trackers
         self.sector_statuses = {

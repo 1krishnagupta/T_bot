@@ -172,58 +172,119 @@ class BacktestEngine:
             print(f"[*] DataFrame shape: {df.shape}")
             print(f"[*] DataFrame date range: {df['timestamp'].min()} to {df['timestamp'].max()}")
             
-            # Fetch sector ETF data - IMPORTANT: Use the same data source that was selected
-            print(f"[*] Fetching sector ETF data using {data_source}...")
-            sectors = ["XLK", "XLF", "XLV", "XLY"]
-            sector_data = {}
+            # Fetch sector ETF data or Mag7 data based on configuration
+            print(f"[*] Checking strategy configuration...")
+            use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
             
-            # Get sector weights from config or use defaults
-            sector_weights = self.trading_config.get("sector_weights", {
-                "XLK": 32,
-                "XLF": 14,
-                "XLV": 11,
-                "XLY": 11
-            })
-            
-            # Ensure candle_data_client fetches sector data
-            print(f"[*] Fetching sector data separately...")
-            sector_result = self.candle_data_client.fetch_historical_data_for_backtesting(
-                sectors, period, start_date, end_date,
-                data_source=data_source
-            )
-            
-            for sector in sectors:
-                print(f"[*] Processing data for sector {sector}...")
-                sector_candles = sector_result.get(sector, [])
+            if use_mag7:
+                # Fetch Mag7 stock data
+                print(f"[*] Using Mag7 confirmation strategy")
+                mag7_stocks = self.trading_config.get("mag7_stocks", 
+                    ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
+                print(f"[*] Fetching Mag7 data using {data_source}...")
                 
-                if sector_candles:
-                    sector_df = pd.DataFrame(sector_candles)
+                mag7_data = {}
+                mag7_result = self.candle_data_client.fetch_historical_data_for_backtesting(
+                    mag7_stocks, period, start_date, end_date,
+                    data_source=data_source
+                )
+                
+                for stock in mag7_stocks:
+                    print(f"[*] Processing data for {stock}...")
+                    stock_candles = mag7_result.get(stock, [])
                     
-                    # Standardize column names
-                    sector_df = sector_df.rename(columns={k: v for k, v in col_map.items() if k in sector_df.columns})
+                    if stock_candles:
+                        stock_df = pd.DataFrame(stock_candles)
+                        
+                        # Standardize column names
+                        col_map = {
+                            'Open': 'open', 
+                            'High': 'high', 
+                            'Low': 'low', 
+                            'Close': 'close',
+                            'Volume': 'volume'
+                        }
+                        stock_df = stock_df.rename(columns={k: v for k, v in col_map.items() if k in stock_df.columns})
+                        
+                        # Convert to numeric
+                        for col in ['open', 'high', 'low', 'close']:
+                            if col in stock_df.columns:
+                                stock_df[col] = pd.to_numeric(stock_df[col], errors='coerce')
+                        
+                        # Handle timestamp
+                        if 'timestamp' not in stock_df.columns:
+                            if 'start_time' in stock_df.columns:
+                                stock_df['timestamp'] = stock_df['start_time']
+                        
+                        if 'timestamp' in stock_df.columns:
+                            stock_df['timestamp'] = pd.to_datetime(stock_df['timestamp'])
+                            stock_df = stock_df.set_index('timestamp')
+                            stock_df = stock_df.reindex(df.set_index('timestamp').index, method='ffill')
+                            stock_df = stock_df.reset_index()
+                        
+                        mag7_data[stock] = stock_df
+                        print(f"[✓] Got {len(stock_df)} candles for {stock}")
+                    else:
+                        print(f"[!] No data for {stock}")
+                
+                # Pass Mag7 data to alignment check
+                sector_data = mag7_data  # Use mag7_data as sector_data
+            else:
+                # Original sector ETF fetching logic
+                print(f"[*] Using sector confirmation strategy")
+                print(f"[*] Fetching sector ETF data using {data_source}...")
+                sectors = self.trading_config.get("sector_etfs", ["XLK", "XLF", "XLV", "XLY"])
+                selected_sectors = self.trading_config.get("selected_sectors", sectors)
+                sector_data = {}
+                
+                # Get sector weights from config
+                sector_weights = self.trading_config.get("sector_weights", {
+                    "XLK": 32,
+                    "XLF": 14,
+                    "XLV": 11,
+                    "XLY": 11
+                })
+                
+                # Fetch only selected sectors
+                print(f"[*] Fetching data for selected sectors: {selected_sectors}")
+                sector_result = self.candle_data_client.fetch_historical_data_for_backtesting(
+                    selected_sectors, period, start_date, end_date,
+                    data_source=data_source
+                )
+                
+                for sector in selected_sectors:
+                    print(f"[*] Processing data for sector {sector}...")
+                    sector_candles = sector_result.get(sector, [])
                     
-                    # Convert to numeric
-                    for col in ['open', 'high', 'low', 'close']:
-                        if col in sector_df.columns:
-                            sector_df[col] = pd.to_numeric(sector_df[col], errors='coerce')
-                    
-                    # Add timestamp if needed
-                    if 'timestamp' not in sector_df.columns:
-                        if 'start_time' in sector_df.columns:
-                            sector_df['timestamp'] = sector_df['start_time']
-                    
-                    # Ensure timestamp is string format for consistency
-                    if 'timestamp' in sector_df.columns:
-                        sector_df['timestamp'] = pd.to_datetime(sector_df['timestamp'])
-                        # Align timestamps with main DataFrame
-                        sector_df = sector_df.set_index('timestamp')
-                        sector_df = sector_df.reindex(df.set_index('timestamp').index, method='ffill')
-                        sector_df = sector_df.reset_index()
-                    
-                    sector_data[sector] = sector_df
-                    print(f"[✓] Got {len(sector_df)} candles for sector {sector}")
-                else:
-                    print(f"[!] No data for sector {sector}")
+                    if sector_candles:
+                        sector_df = pd.DataFrame(sector_candles)
+                        
+                        # Standardize column names
+                        sector_df = sector_df.rename(columns={k: v for k, v in col_map.items() if k in sector_df.columns})
+                        
+                        # Convert to numeric
+                        for col in ['open', 'high', 'low', 'close']:
+                            if col in sector_df.columns:
+                                sector_df[col] = pd.to_numeric(sector_df[col], errors='coerce')
+                        
+                        # Add timestamp if needed
+                        if 'timestamp' not in sector_df.columns:
+                            if 'start_time' in sector_df.columns:
+                                sector_df['timestamp'] = sector_df['start_time']
+                        
+                        # Ensure timestamp is string format for consistency
+                        if 'timestamp' in sector_df.columns:
+                            sector_df['timestamp'] = pd.to_datetime(sector_df['timestamp'])
+                            # Align timestamps with main DataFrame
+                            sector_df = sector_df.set_index('timestamp')
+                            sector_df = sector_df.reindex(df.set_index('timestamp').index, method='ffill')
+                            sector_df = sector_df.reset_index()
+                        
+                        sector_data[sector] = sector_df
+                        print(f"[✓] Got {len(sector_df)} candles for sector {sector}")
+                    else:
+                        print(f"[!] No data for sector {sector}")
+
             
             # Calculate technical indicators first
             print(f"[*] Calculating technical indicators...")
@@ -514,11 +575,6 @@ class BacktestEngine:
                     if profit_factor > best_profit_factor:
                         best_profit_factor = profit_factor
                         best_method = method
-
-            # Save complete analysis
-            if not hasattr(self, 'dir_manager') or not self.dir_manager:
-                from Code.bot_core.directory_manager import BacktestDirectoryManager
-                self.dir_manager = BacktestDirectoryManager()
                 
             if not hasattr(self, 'run_id'):
                 self.run_id = self.dir_manager.generate_run_id()

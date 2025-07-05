@@ -1,0 +1,17 @@
+2025-07-05 06:07:35,468 - Code.bot_core.mongodb_handler - ERROR - Failed to start MongoDB after multiple attempts.
+2025-07-05 06:16:55,975 - UIController - CRITICAL - Uncaught exception: AttributeError: 'OrderManager' object has no attribute 'logger'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\order_manager.py", line 95, in _load_active_orders_from_db
+    self.logger.info(f"Loaded {len(self.active_orders)} active orders from database")
+AttributeError: 'OrderManager' object has no attribute 'logger'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 1290, in handle_login_success
+    self.order_manager = OrderManager(api)
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\order_manager.py", line 45, in __init__
+    self._load_active_orders_from_db()
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\order_manager.py", line 98, in _load_active_orders_from_db
+    self.logger.error(f"Error loading orders from database: {e}")
+AttributeError: 'OrderManager' object has no attribute 'logger'

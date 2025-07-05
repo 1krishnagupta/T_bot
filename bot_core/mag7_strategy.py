@@ -22,8 +22,9 @@ class Mag7Strategy:
         self.config = config or {}
         self.trading_config = self.config.get("trading_config", {})
         
-        # Magnificent 7 stocks
-        self.mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+        # Get Mag7 stocks from config instead of hardcoding
+        self.mag7_stocks = self.trading_config.get("mag7_stocks", 
+            ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
         
         # Track status of each Mag7 stock
         self.mag7_status = {}

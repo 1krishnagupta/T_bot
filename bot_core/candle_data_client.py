@@ -8,7 +8,6 @@ import time
 import json
 import logging
 from typing import Dict, List, Optional, Callable, Tuple, Any, Union
-from Code.bot_core.directory_manager import BacktestDirectoryManager
 from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
 
 from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
@@ -290,15 +289,27 @@ class CandleDataClient:
         days_diff = (end_date - start_date).days
         self.logger.info(f"Fetching {days_diff} days of {period_str} data from {start_date} to {end_date}")
         
-        # ALWAYS fetch sector ETFs regardless of what symbols are requested
-        sector_etfs = ["XLK", "XLF", "XLV", "XLY"]
+        # ALWAYS fetch sector ETFs or Mag7 stocks based on strategy
+        use_mag7 = False
+        if hasattr(self, 'config') and self.config:
+            use_mag7 = self.config.get("trading_config", {}).get("use_mag7_confirmation", False)
         
-        # Also fetch Mag7 stocks if Mag7 strategy is enabled
-        mag7_stocks = []
-        if "trading_config" in self.config and self.config["trading_config"].get("use_mag7_confirmation", False):
+        if use_mag7:
+            # Fetch Mag7 stocks
             mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+            if hasattr(self, 'config') and self.config:
+                mag7_stocks = self.config.get("trading_config", {}).get("mag7_stocks", mag7_stocks)
+            
+            all_symbols = list(symbols) + mag7_stocks
+        else:
+            # Fetch sector ETFs
+            sector_etfs = ["XLK", "XLF", "XLV", "XLY"]
+            if hasattr(self, 'config') and self.config:
+                selected_sectors = self.config.get("trading_config", {}).get("selected_sectors", sector_etfs)
+                sector_etfs = selected_sectors
+            
+            all_symbols = list(symbols) + sector_etfs
         
-        all_symbols = list(symbols) + sector_etfs + mag7_stocks
         all_symbols = list(set(all_symbols))  # Remove duplicates
         
         print(f"[*] Fetching data for symbols: {', '.join(all_symbols)}")
