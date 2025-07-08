@@ -1317,6 +1317,16 @@ class UIController(QObject):
             balances["cash_balance"],
             balances["available_trading_funds"]
         )
+
+        # Display current strategy IMMEDIATELY after login
+        if "trading_config" in config:
+            use_mag7 = config["trading_config"].get("use_mag7_confirmation", False)
+            strategy_name = "Magnificent 7 (Mag7) Strategy" if use_mag7 else "Sector Alignment Strategy"
+            dashboard.update_strategy_display(strategy_name)
+            dashboard.update_log(f"Loaded configuration: {strategy_name}")
+        else:
+            dashboard.update_strategy_display("Sector Alignment Strategy")  # Default
+            dashboard.update_log("Using default Sector Alignment Strategy")
         
         # Setup configuration widget
         config_widget = self.app.get_config_widget()
@@ -1324,6 +1334,11 @@ class UIController(QObject):
         if "trading_config" in config:
             config_widget.set_configuration(config["trading_config"])
         config_widget.save_config_requested.connect(self.save_configuration)
+
+        if "trading_config" in config:
+            use_mag7 = config["trading_config"].get("use_mag7_confirmation", False)
+            strategy_name = "Magnificent 7 (Mag7) Strategy" if use_mag7 else "Sector Alignment Strategy"
+            dashboard.update_strategy_display(strategy_name)
         
         # Setup backtest widget
         backtest_widget = self.app.get_backtest_widget()
@@ -1418,58 +1433,76 @@ class UIController(QObject):
         
     def save_configuration(self, trading_config):
         """Save configuration to file"""
-        # Create a proper settings file path (not credentials.txt)
-        settings_path = os.path.abspath(os.path.join(
-            os.path.dirname(__file__), '..', '..', 'config', 'settings.yaml'
-        ))
-        
-        # Load existing settings or create new
         try:
-            if os.path.exists(settings_path):
-                with open(settings_path, 'r') as f:
-                    full_config = yaml.safe_load(f) or {}
+            # Determine which file to save to based on what was loaded
+            if hasattr(self, 'config_path') and self.config_path:
+                save_path = self.config_path
             else:
+                save_path = os.path.abspath(os.path.join(
+                    os.path.dirname(__file__), '..', '..', 'config', 'credentials.txt'
+                ))
+            
+            # Load existing config
+            try:
+                if os.path.exists(save_path):
+                    with open(save_path, 'r') as f:
+                        full_config = yaml.safe_load(f) or {}
+                else:
+                    full_config = {}
+            except:
                 full_config = {}
-        except:
-            full_config = {}
-        
-        # Update trading config section
-        full_config["trading_config"] = trading_config
-        
-        # Keep broker info from main config if available
-        if self.config and "broker" in self.config:
-            full_config["broker"] = self.config["broker"]
-        
-        # Save to settings file
-        try:
-            os.makedirs(os.path.dirname(settings_path), exist_ok=True)
-            with open(settings_path, 'w') as f:
+            
+            # Update trading config section
+            full_config["trading_config"] = trading_config
+            
+            # Keep broker info
+            if "broker" not in full_config and self.config and "broker" in self.config:
+                full_config["broker"] = self.config["broker"]
+            
+            # Save to file
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            with open(save_path, 'w') as f:
                 yaml.dump(full_config, f, default_flow_style=False)
             
-            # Update current config
+            # Update current config in memory
             self.config["trading_config"] = trading_config
             
-            QMessageBox.information(self.app, "Configuration Saved", 
-                                   f"Configuration has been saved to settings.yaml")
-            logger.info(f"Trading configuration saved to {settings_path}")
+            # Update the configuration widget
+            config_widget = self.app.get_config_widget()
+            if config_widget:
+                config_widget.set_configuration(trading_config)
             
-            # Refresh the dashboard to show new configuration
+            # Update dashboard strategy display IMMEDIATELY
             if self.dashboard:
+                strategy_name = "Magnificent 7 (Mag7) Strategy" if trading_config.get('use_mag7_confirmation', False) else "Sector Alignment Strategy"
+                self.dashboard.update_strategy_display(strategy_name)
                 self.dashboard.refresh_market_summary()
-                self.dashboard.update_log(f"Configuration updated: Sector threshold = {trading_config.get('sector_weight_threshold', 43)}%")
                 
-            # Update bot thread configuration if it's running
+                # Log the change
+                self.dashboard.update_log(f"Configuration saved: Switched to {strategy_name}")
+                
+                if trading_config.get('use_mag7_confirmation', False):
+                    self.dashboard.update_log(f"Mag7 settings: Threshold={trading_config.get('mag7_threshold', 60)}%, Min aligned={trading_config.get('mag7_min_aligned', 5)}")
+                else:
+                    self.dashboard.update_log(f"Sector settings: Threshold={trading_config.get('sector_weight_threshold', 43)}%")
+            
+            QMessageBox.information(self.app, "Configuration Saved", 
+                                f"Configuration has been saved to {os.path.basename(save_path)}")
+            
+            # Update bot thread if running
             if hasattr(self, 'bot_thread') and self.bot_thread and self.bot_thread.isRunning():
                 self.bot_thread.config = self.config
                 if hasattr(self.bot_thread, 'jigsaw_strategy') and self.bot_thread.jigsaw_strategy:
                     self.bot_thread.jigsaw_strategy.trading_config = trading_config
+                    self.bot_thread.jigsaw_strategy.config = self.config
                 self.dashboard.update_log("Configuration updated for running bot")
                 
         except Exception as e:
             QMessageBox.critical(self.app, "Error", 
                                 f"Failed to save configuration: {str(e)}")
             logger.error(f"Error saving configuration: {e}")
-        
+
+
 
     def run_backtest(self, params):
         """
@@ -1562,7 +1595,7 @@ class UIController(QObject):
                     limitations_html += "• 15-minute data: Only last 60 days available<br>"
                 
                 limitations_html += """
-                    <small>For full historical data, use TastyTrade API</small>
+                    <small>For full historical data, use pther brokers API</small>
                 </div>
                 """
                 backtest_widget.results_text.append(limitations_html)

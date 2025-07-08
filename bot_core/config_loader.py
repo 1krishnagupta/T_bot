@@ -92,82 +92,79 @@ class ConfigLoader:
             print(f"[✗] Error loading configuration: {str(e)}")
             return self.get_default_config()
     
-    # In bot_core/config_loader.py
-# Find the get_default_config method and update the trading_config section:
-
-def get_default_config(self):
-    """
-    Get default configuration
-    
-    Returns:
-        dict: Default configuration dictionary
-    """
-    return {
-        "broker": {
-            "username": "",
-            "password": "",
-            "account_id": "",
-            "auto_trading_enabled": True,  
-        },
-        "database": {
-            "type": "mongodb",
-            "host": "localhost",
-            "port": 27017,
-            "db_name": "trading_bot"
-        },
-        "trading_config": {
-            "tickers": ["SPY", "QQQ", "AAPL", "MSFT", "TSLA"],
-            "contracts_per_trade": 1,
-            "trailing_stop_method": "Heiken Ashi Candle Trail (1-3 candle lookback)",
-            "no_trade_window_minutes": 3,
-            "auto_close_minutes": 15,
-            "cutoff_time": "15:15",
-            "ema_value": 15,
-            "failsafe_minutes": 20,
-            "adx_filter": True,
-            "adx_minimum": 20,
-            "news_filter": False,
-            "bb_width_threshold": 0.05,
-            "donchian_contraction_threshold": 0.6,
-            "volume_squeeze_threshold": 0.3,
-            "liquidity_min_volume": 1000000,
-            "liquidity_min_oi": 500,
-            "liquidity_max_spread": 0.10,
-            "stochastic_k_period": 5,
-            "stochastic_d_period": 3,
-            "stochastic_smooth": 2,
-            
-            # Sector Configuration
-            "sector_etfs": ["XLK", "XLF", "XLV", "XLY"],
-            "sector_weight_threshold": 43,
-            "sector_weights": {
-                "XLK": 32,  # Tech
-                "XLF": 14,  # Financials
-                "XLV": 11,  # Health Care
-                "XLY": 11   # Consumer Discretionary
+    def get_default_config(self):
+        """
+        Get default configuration
+        
+        Returns:
+            dict: Default configuration dictionary
+        """
+        return {
+            "broker": {
+                "username": "",
+                "password": "",
+                "account_id": "",
+                "auto_trading_enabled": True,  
             },
-            
-            # Mag7 Configuration
-            "use_mag7_confirmation": False,  # Toggle between sector and Mag7
-            "mag7_threshold": 60,  # Default 60% threshold
-            "mag7_stocks": ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"],
-            
-            # Selectable Sector Options
-            "selected_sectors": ["XLK", "XLF", "XLV", "XLY"],  # User can select which sectors to use
-            "min_sectors_aligned": 2,  # Minimum number of selected sectors that must be aligned
-        },
-        "ui_config": {
-            "theme": "dark",
-            "log_level": "info",
-            "show_debug_info": False,
-            "chart_timeframes": ["1m", "5m", "15m"]
-        },
-        "logging": {
-            "level": "INFO",
-            "file_enabled": True,
-            "console_enabled": True
+            "database": {
+                "type": "mongodb",
+                "host": "localhost",
+                "port": 27017,
+                "db_name": "trading_bot"
+            },
+            "trading_config": {
+                "tickers": ["SPY", "QQQ", "AAPL", "MSFT", "TSLA"],
+                "contracts_per_trade": 1,
+                "trailing_stop_method": "Heiken Ashi Candle Trail (1-3 candle lookback)",
+                "no_trade_window_minutes": 3,
+                "auto_close_minutes": 15,
+                "cutoff_time": "15:15",
+                "ema_value": 15,
+                "failsafe_minutes": 20,
+                "adx_filter": True,
+                "adx_minimum": 20,
+                "news_filter": False,
+                "bb_width_threshold": 0.05,
+                "donchian_contraction_threshold": 0.6,
+                "volume_squeeze_threshold": 0.3,
+                "liquidity_min_volume": 1000000,
+                "liquidity_min_oi": 500,
+                "liquidity_max_spread": 0.10,
+                "stochastic_k_period": 5,
+                "stochastic_d_period": 3,
+                "stochastic_smooth": 2,
+                
+                # Sector Configuration
+                "sector_etfs": ["XLK", "XLF", "XLV", "XLY"],
+                "sector_weight_threshold": 43,
+                "sector_weights": {
+                    "XLK": 32,  # Tech
+                    "XLF": 14,  # Financials
+                    "XLV": 11,  # Health Care
+                    "XLY": 11   # Consumer Discretionary
+                },
+                
+                # Mag7 Configuration
+                "use_mag7_confirmation": False,  # Toggle between sector and Mag7
+                "mag7_threshold": 60,  # Default 60% threshold
+                "mag7_stocks": ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"],
+                
+                # Selectable Sector Options
+                "selected_sectors": ["XLK", "XLF", "XLV", "XLY"],  # User can select which sectors to use
+                "min_sectors_aligned": 2,  # Minimum number of selected sectors that must be aligned
+            },
+            "ui_config": {
+                "theme": "dark",
+                "log_level": "info",
+                "show_debug_info": False,
+                "chart_timeframes": ["1m", "5m", "15m"]
+            },
+            "logging": {
+                "level": "INFO",
+                "file_enabled": True,
+                "console_enabled": True
+            }
         }
-    }
     
     def merge_with_defaults(self, config):
         """
@@ -329,14 +326,13 @@ def get_default_config(self):
         # Save full configuration
         return self.save_config(config, path)
 
-# Simple function to load config for backward compatibility
-def load_config(self, path=None):
+    # Simple function to load config for backward compatibility
+    def load_config(self, path=None):
         """
         Load configuration from a file
         
         Args:
-            path (str, optional): Path to the configuration file, overrides the path
-                provided in the constructor
+            path (str, optional): Path to the configuration file
                 
         Returns:
             dict: Configuration dictionary
@@ -344,73 +340,39 @@ def load_config(self, path=None):
         # Use path parameter if provided, otherwise use the one from constructor
         config_path = path if path else self.config_path
         
-        # Initialize config with defaults
+        # Initialize with default config
         config = self.get_default_config()
         
-        # If this is credentials.txt, load broker info only
-        if config_path and 'credentials' in config_path:
-            if os.path.exists(config_path):
-                try:
-                    with open(config_path, 'r') as file:
-                        cred_data = yaml.safe_load(file)
-                        if cred_data and "broker" in cred_data:
-                            config["broker"] = cred_data["broker"]
-                except Exception as e:
-                    self.logger.error(f"Error loading credentials: {e}")
-            
-            # Also try to load settings.yaml for trading config
-            settings_path = os.path.join(os.path.dirname(config_path), 'settings.yaml')
-            if os.path.exists(settings_path):
-                try:
-                    with open(settings_path, 'r') as file:
-                        settings_data = yaml.safe_load(file)
-                        if settings_data and "trading_config" in settings_data:
-                            config["trading_config"] = settings_data["trading_config"]
-                            self.logger.info(f"Loaded trading config from settings.yaml")
-                except Exception as e:
-                    self.logger.error(f"Error loading settings: {e}")
-                    
-            return config
-        
-        # For other files, load normally
-        if config_path is None:
-            config_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'settings.yaml'))
-        
-        # Check if file exists
-        if not os.path.exists(config_path):
-            self.logger.warning(f"Configuration file not found: {config_path}")
-            print(f"[!] Configuration file not found: {config_path}")
-            print("[!] Using default configuration")
-            return self.get_default_config()
-        
-        try:
-            # Load configuration based on file extension
-            file_extension = os.path.splitext(config_path)[1].lower()
-            
-            if file_extension in ['.yaml', '.yml']:
+        if config_path and os.path.exists(config_path):
+            try:
+                # Load configuration based on file extension
+                file_extension = os.path.splitext(config_path)[1].lower()
+                
                 with open(config_path, 'r') as file:
-                    loaded_config = yaml.safe_load(file) or {}
-            elif file_extension == '.json':
-                with open(config_path, 'r') as file:
-                    loaded_config = json.load(file)
-            elif file_extension == '.txt':
-                # Handle TXT files as YAML
-                with open(config_path, 'r') as file:
-                    loaded_config = yaml.safe_load(file) or {}
-            else:
-                self.logger.error(f"Unsupported configuration file format: {file_extension}")
-                print(f"[✗] Unsupported configuration file format: {file_extension}")
-                return self.get_default_config()
-            
-            # Merge with default config to fill in missing values
-            merged_config = self.merge_with_defaults(loaded_config)
-            
-            self.logger.info(f"Configuration loaded from {config_path}")
-            print(f"[✓] Configuration loaded from {config_path}")
-            
-            return merged_config
-            
-        except Exception as e:
-            self.logger.error(f"Error loading configuration: {str(e)}")
-            print(f"[✗] Error loading configuration: {str(e)}")
-            return self.get_default_config()
+                    if file_extension in ['.yaml', '.yml', '.txt']:
+                        loaded_data = yaml.safe_load(file) or {}
+                    elif file_extension == '.json':
+                        loaded_data = json.load(file)
+                    else:
+                        self.logger.error(f"Unsupported configuration file format: {file_extension}")
+                        return self.get_default_config()
+                
+                # Merge with defaults
+                config = self.merge_with_defaults(loaded_data)
+                
+                self.logger.info(f"Configuration loaded from {config_path}")
+                print(f"[✓] Configuration loaded from {config_path}")
+                
+                # Debug: Print what was loaded
+                if "trading_config" in config:
+                    use_mag7 = config["trading_config"].get("use_mag7_confirmation", False)
+                    threshold = config["trading_config"].get("sector_weight_threshold", 43) if not use_mag7 else config["trading_config"].get("mag7_threshold", 60)
+                    print(f"[DEBUG] Loaded config: Strategy={'Mag7' if use_mag7 else 'Sector'}, Threshold={threshold}%")
+                
+                return config
+                
+            except Exception as e:
+                self.logger.error(f"Error loading configuration: {str(e)}")
+                print(f"[✗] Error loading configuration: {str(e)}")
+        
+        return config

@@ -364,13 +364,6 @@ class TradingDashboardWidget(QWidget):
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setFrameShape(QFrame.NoFrame)
-        self.trades_table = QTableWidget()
-        self.trades_table.setColumnCount(11)  # Increased columns
-        self.trades_table.setHorizontalHeaderLabels([
-            "Ticker", "Option Symbol", "Type", "Strike", "Expiry", 
-            "Entry Time", "Entry Price", "Current P/L", 
-            "Stop Level", "Status", "Action"
-        ])
         self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         
         # Create the content widget for the scroll area
@@ -416,6 +409,34 @@ class TradingDashboardWidget(QWidget):
         account_box.setLayout(account_layout)
         layout.addWidget(account_box)
         
+        # ADD STRATEGY DISPLAY HERE - Right after account box
+        self.strategy_frame = QFrame()
+        self.strategy_frame.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                border: 1px solid #bdc3c7;
+                padding: 10px;
+            }
+        """)
+        strategy_layout = QHBoxLayout(self.strategy_frame)
+        strategy_layout.setContentsMargins(15, 10, 15, 10)
+        
+        self.strategy_label = QLabel("Active Strategy: Not Selected")
+        self.strategy_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: #2c3e50;
+                padding: 5px;
+            }
+        """)
+        
+        strategy_layout.addWidget(self.strategy_label)
+        strategy_layout.addStretch()
+        
+        layout.addWidget(self.strategy_frame)
+        
         # Control buttons with different colors and hover effects
         control_layout = QHBoxLayout()
         control_layout.setSpacing(10)
@@ -444,6 +465,8 @@ class TradingDashboardWidget(QWidget):
         """)
         self.start_button.setMinimumHeight(50)
         self.start_button.setCursor(Qt.PointingHandCursor)
+        
+        # ... rest of the buttons setup remains the same ...
         
         # Pause button (orange)
         self.pause_button = QPushButton("Pause")
@@ -546,17 +569,13 @@ class TradingDashboardWidget(QWidget):
         self.kill_button.setMinimumHeight(50)
         self.kill_button.setCursor(Qt.PointingHandCursor)
         
-        control_layout = QHBoxLayout()
-        control_layout.setSpacing(10)
-
         control_layout.addWidget(self.start_button)
         control_layout.addWidget(self.pause_button)
         control_layout.addWidget(self.resume_button)
         control_layout.addWidget(self.stop_button)
         control_layout.addWidget(self.kill_button)
-        # NO test_button here anymore
 
-        # Connect signals (without test button)
+        # Connect signals
         self.start_button.clicked.connect(self.start_bot_requested)
         self.pause_button.clicked.connect(self.pause_bot_requested)
         self.resume_button.clicked.connect(self.resume_bot_requested)
@@ -564,6 +583,7 @@ class TradingDashboardWidget(QWidget):
         self.kill_button.clicked.connect(self.kill_bot_requested)
         
         layout.addLayout(control_layout)
+    
         
         # Market summary panel with sector status and comparison
         market_summary_box = QGroupBox("Market Summary")
@@ -926,29 +946,42 @@ class TradingDashboardWidget(QWidget):
 
     def update_strategy_display(self, strategy_name):
         """Update the display to show which strategy is active"""
-        # You can add a label to show the active strategy
         if hasattr(self, 'strategy_label'):
             self.strategy_label.setText(f"Active Strategy: {strategy_name}")
+            
+            # Update frame and label styling based on strategy
             if "Mag7" in strategy_name:
+                self.strategy_frame.setStyleSheet("""
+                    QFrame {
+                        background-color: #f4ecf7;
+                        border-radius: 10px;
+                        border: 2px solid #8e44ad;
+                        padding: 10px;
+                    }
+                """)
                 self.strategy_label.setStyleSheet("""
                     QLabel {
-                        font-size: 14px;
+                        font-size: 16px;
                         font-weight: bold;
                         color: #8e44ad;
                         padding: 5px;
-                        background-color: #f4ecf7;
-                        border-radius: 3px;
                     }
                 """)
             else:
+                self.strategy_frame.setStyleSheet("""
+                    QFrame {
+                        background-color: #ebf5fb;
+                        border-radius: 10px;
+                        border: 2px solid #2980b9;
+                        padding: 10px;
+                    }
+                """)
                 self.strategy_label.setStyleSheet("""
                     QLabel {
-                        font-size: 14px;
+                        font-size: 16px;
                         font-weight: bold;
                         color: #2980b9;
                         padding: 5px;
-                        background-color: #ebf5fb;
-                        border-radius: 3px;
                     }
                 """)
                 
@@ -1980,7 +2013,7 @@ class ConfigurationWidget(QWidget):
         # Emit signal to save config
         self.save_config_requested.emit(trading_config)
         
-        # Note: The actual update of UI will be done by set_configuration 
+        # The configuration will be updated by set_configuration 
         # which is called from ui_controller after successful save
 
     def get_configuration(self):
@@ -3022,16 +3055,19 @@ class ConfigurationWidget(QWidget):
         """Handle strategy selection change"""
         if "Sector" in strategy_text:
             self.strategy_stack.setCurrentIndex(0)
-            # Update any related UI elements if needed
-            dashboard = self.window().get_dashboard() if hasattr(self.window(), 'get_dashboard') else None
-            if dashboard:
-                dashboard.update_log(f"Switched to Sector Alignment Strategy")
         else:  # Mag7
             self.strategy_stack.setCurrentIndex(1)
-            # Update any related UI elements if needed
-            dashboard = self.window().get_dashboard() if hasattr(self.window(), 'get_dashboard') else None
-            if dashboard:
-                dashboard.update_log(f"Switched to Magnificent 7 Strategy")
+        
+        # Update dashboard immediately when strategy is changed (before saving)
+        try:
+            main_window = self.window()
+            if hasattr(main_window, 'get_dashboard'):
+                dashboard = main_window.get_dashboard()
+                if dashboard:
+                    dashboard.update_strategy_display(strategy_text)
+                    dashboard.update_log(f"Strategy selection changed to: {strategy_text}")
+        except Exception as e:
+            print(f"Error updating dashboard on strategy change: {e}")
 
 
     def create_stochastic_settings(self):

@@ -165,7 +165,7 @@ class ProfessionalBacktestRunner:
                     print("  - 1m data: Only last 7 days available")
                 if '5m' in timeframes or '15m' in timeframes:
                     print("  - 5m/15m data: Only last 60 days available")
-                print("  For full historical data, use TastyTrade API\n")
+                print("  For full historical data, try other brokers API\n")
             
         except Exception as e:
             return {"error": f"Invalid date format: {e}"}

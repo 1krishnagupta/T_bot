@@ -55,3 +55,16 @@ UnboundLocalError: local variable 'summary_stats' referenced before assignment
 2025-07-09 03:07:24,634 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
 2025-07-09 03:07:31,010 - TradeStationDataFetcher - ERROR - All authentication attempts failed
 2025-07-09 03:07:31,089 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 03:37:15,750 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:37:15,750 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:37:15,954 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:37:15,954 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:40:46,493 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 189 days
+2025-07-09 03:40:46,597 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 189 days
+2025-07-09 03:40:46,599 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 189 days
+2025-07-09 03:43:56,965 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:43:56,980 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:43:57,419 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:43:57,435 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
+2025-07-09 03:44:40,508 - BacktestEngine - ERROR - Error in backtest for AAPL: local variable 'sector_weights' referenced before assignment
+2025-07-09 03:44:46,556 - BacktestEngine - ERROR - Error in backtest for NVDA: local variable 'sector_weights' referenced before assignment

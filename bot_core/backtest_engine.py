@@ -104,7 +104,15 @@ class BacktestEngine:
                 # Print configuration table
                 self._print_config_table(strategy_name, use_mag7)
                 
-                
+            # INITIALIZE sector_weights HERE - BEFORE the if/else block
+            # Get sector weights from config (used for both strategies)
+            sector_weights = self.trading_config.get("sector_weights", {
+                "XLK": 32,
+                "XLF": 14,
+                "XLV": 11,
+                "XLY": 11
+            })
+            
             # Get historical candle data with better error handling
             if not self.candle_data_client:
                 self.logger.error("No candle data client provided")
@@ -116,7 +124,7 @@ class BacktestEngine:
                 period,
                 start_date,
                 end_date,
-                data_source=data_source  # ADD THIS PARAMETER
+                data_source=data_source
             ).get(symbol, [])
             
             if not candles:
@@ -240,14 +248,6 @@ class BacktestEngine:
                 sectors = self.trading_config.get("sector_etfs", ["XLK", "XLF", "XLV", "XLY"])
                 selected_sectors = self.trading_config.get("selected_sectors", sectors)
                 sector_data = {}
-                
-                # Get sector weights from config
-                sector_weights = self.trading_config.get("sector_weights", {
-                    "XLK": 32,
-                    "XLF": 14,
-                    "XLV": 11,
-                    "XLY": 11
-                })
                 
                 # Fetch only selected sectors
                 print(f"[*] Fetching data for selected sectors: {selected_sectors}")
@@ -403,11 +403,12 @@ class BacktestEngine:
                 
                 # Only check for trading signals after warmup period
                 if i >= warmup and i < len(df) - 1:
-                    # 1. Check Sector Alignment
+                    # 1. Check Sector Alignment - NOW sector_weights is defined
                     sector_aligned, direction, combined_weight = self._check_sector_alignment(sector_data, i, sector_weights)
                     analysis_record['sector_aligned'] = sector_aligned
                     analysis_record['sector_direction'] = direction
                     analysis_record['sector_weight'] = combined_weight if sector_aligned else 0
+                
                     
                     if sector_aligned:
                         sector_aligned_count += 1
