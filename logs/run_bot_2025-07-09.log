@@ -1,0 +1,182 @@
+2025-07-09 01:24:18,841 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 01:24:18,843 - PositionManager - INFO - Position collections initialized
+2025-07-09 01:24:18,851 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 01:24:18,853 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 01:24:38,829 - BacktestRun_20250709_012438 - INFO - ================================================================================
+2025-07-09 01:24:38,830 - BacktestRun_20250709_012438 - INFO - BACKTEST RUN ID: 20250709_012438
+2025-07-09 01:24:38,830 - BacktestRun_20250709_012438 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 01:24:38,832 - BacktestRun_20250709_012438 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 01:24:38,833 - BacktestRun_20250709_012438 - INFO - ================================================================================
+2025-07-09 01:24:38,909 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 01:24:45,585 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 01:24:46,784 - yfinance - ERROR - $XLF: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004483. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:47,244 - yfinance - ERROR - $XLV: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004484. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:47,706 - yfinance - ERROR - $XLY: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004484. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:48,233 - yfinance - ERROR - $XLK: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004485. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:48,309 - BacktestEngine_20250709_012438 - INFO - 
+Backtest Summary for AAPL:
+2025-07-09 01:24:48,311 - BacktestEngine_20250709_012438 - INFO -   Period: 1m
+2025-07-09 01:24:48,311 - BacktestEngine_20250709_012438 - INFO -   Date Range: 2025-01-01 to 2025-07-09
+2025-07-09 01:24:48,312 - BacktestEngine_20250709_012438 - INFO -   Total Candles: 1
+2025-07-09 01:24:48,312 - BacktestEngine_20250709_012438 - INFO -   Sector Aligned Count: 0
+2025-07-09 01:24:48,314 - BacktestEngine_20250709_012438 - INFO -   Compression Count: 0
+2025-07-09 01:24:48,315 - BacktestEngine_20250709_012438 - INFO -   Entry Signals: 0
+2025-07-09 01:24:48,315 - BacktestEngine_20250709_012438 - INFO -   Trades Entered: 0
+2025-07-09 01:24:48,324 - BacktestEngine - INFO - Saved analysis to C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Analysis\20250709_012438_AAPL_1min_analysis.csv
+2025-07-09 01:24:48,325 - BacktestEngine_20250709_012438 - INFO - Analysis saved: C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Analysis\20250709_012438_AAPL_1min_analysis.csv (1 records)
+2025-07-09 01:24:48,326 - BacktestEngine - INFO - Saved trades to C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Results\Trades\20250709_012438_trades.csv
+2025-07-09 01:24:48,329 - BacktestEngine_20250709_012438 - INFO - Trades saved: C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Results\Trades\20250709_012438_trades.csv (0 trades)
+2025-07-09 01:24:48,347 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 01:24:54,546 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 01:24:55,112 - yfinance - ERROR - $XLF: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004492. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:55,816 - yfinance - ERROR - $XLV: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004492. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:56,439 - yfinance - ERROR - $XLY: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004493. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:57,293 - yfinance - ERROR - $XLK: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004494. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:57,877 - yfinance - ERROR - $NVDA: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-07-10) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1752004494. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-07-09 01:24:57,880 - BacktestEngine - WARNING - No historical data found for NVDA
+2025-07-09 01:45:37,322 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 01:45:37,340 - PositionManager - INFO - Position collections initialized
+2025-07-09 01:45:37,345 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 01:45:37,351 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 01:45:52,949 - UIController - ERROR - Backtest error: Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\backtest_runner.py", line 73, in run_comprehensive_backtest
+    result = backtest_engine.run_backtest_for_ticker(
+UnboundLocalError: local variable 'backtest_engine' referenced before assignment
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 1597, in run_backtest
+    results = runner.run_comprehensive_backtest(backtest_params)
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\backtest_runner.py", line 290, in run_comprehensive_backtest
+    summary_stats['failed_tests'] += 1
+UnboundLocalError: local variable 'summary_stats' referenced before assignment
+
+2025-07-09 01:53:46,080 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 01:53:46,094 - PositionManager - INFO - Position collections initialized
+2025-07-09 01:53:46,099 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 01:53:46,103 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 01:54:04,454 - BacktestRun_20250709_015404 - INFO - ================================================================================
+2025-07-09 01:54:04,455 - BacktestRun_20250709_015404 - INFO - BACKTEST RUN ID: 20250709_015404
+2025-07-09 01:54:04,456 - BacktestRun_20250709_015404 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 01:54:04,458 - BacktestRun_20250709_015404 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 01:54:04,459 - BacktestRun_20250709_015404 - INFO - ================================================================================
+2025-07-09 01:54:04,620 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 01:54:12,364 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 01:54:12,450 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 01:54:12,597 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 01:54:17,915 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 01:54:17,971 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 02:34:35,406 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 02:34:35,421 - PositionManager - INFO - Position collections initialized
+2025-07-09 02:34:35,428 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 02:34:35,434 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 02:36:41,048 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 02:36:41,065 - PositionManager - INFO - Position collections initialized
+2025-07-09 02:36:41,069 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 02:36:41,072 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 02:36:47,408 - BacktestRun_20250709_023647 - INFO - ================================================================================
+2025-07-09 02:36:47,409 - BacktestRun_20250709_023647 - INFO - BACKTEST RUN ID: 20250709_023647
+2025-07-09 02:36:47,411 - BacktestRun_20250709_023647 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 02:36:47,412 - BacktestRun_20250709_023647 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 02:36:47,423 - BacktestRun_20250709_023647 - INFO - ================================================================================
+2025-07-09 02:36:47,705 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:36:55,168 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:36:55,279 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 02:36:55,554 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:37:02,643 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:37:02,715 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 02:48:12,280 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 02:48:12,295 - PositionManager - INFO - Position collections initialized
+2025-07-09 02:48:12,299 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 02:48:12,303 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 02:48:26,962 - BacktestRun_20250709_024826 - INFO - ================================================================================
+2025-07-09 02:48:26,963 - BacktestRun_20250709_024826 - INFO - BACKTEST RUN ID: 20250709_024826
+2025-07-09 02:48:26,965 - BacktestRun_20250709_024826 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 02:48:26,966 - BacktestRun_20250709_024826 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 02:48:26,969 - BacktestRun_20250709_024826 - INFO - ================================================================================
+2025-07-09 02:48:27,212 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:48:34,053 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:48:34,211 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 02:48:34,528 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:48:40,095 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:48:40,223 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 02:49:30,282 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 02:49:30,298 - PositionManager - INFO - Position collections initialized
+2025-07-09 02:49:30,302 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 02:49:30,307 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 02:49:44,217 - BacktestRun_20250709_024944 - INFO - ================================================================================
+2025-07-09 02:49:44,218 - BacktestRun_20250709_024944 - INFO - BACKTEST RUN ID: 20250709_024944
+2025-07-09 02:49:44,218 - BacktestRun_20250709_024944 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 02:49:44,219 - BacktestRun_20250709_024944 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 02:49:44,222 - BacktestRun_20250709_024944 - INFO - ================================================================================
+2025-07-09 02:49:44,339 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:49:51,313 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:49:51,435 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 02:49:51,578 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:49:57,409 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:49:57,451 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 02:54:50,492 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 02:54:50,502 - PositionManager - INFO - Position collections initialized
+2025-07-09 02:54:50,507 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 02:54:50,512 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 02:55:05,856 - BacktestRun_20250709_025505 - INFO - ================================================================================
+2025-07-09 02:55:05,856 - BacktestRun_20250709_025505 - INFO - BACKTEST RUN ID: 20250709_025505
+2025-07-09 02:55:05,857 - BacktestRun_20250709_025505 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 02:55:05,858 - BacktestRun_20250709_025505 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 02:55:05,860 - BacktestRun_20250709_025505 - INFO - ================================================================================
+2025-07-09 02:55:06,103 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:55:13,211 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:55:13,283 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 02:55:13,571 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 02:55:19,568 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 02:55:19,639 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 02:56:52,550 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 02:56:52,565 - PositionManager - INFO - Position collections initialized
+2025-07-09 02:56:52,569 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 02:56:52,573 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 03:01:51,867 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 03:01:51,883 - PositionManager - INFO - Position collections initialized
+2025-07-09 03:01:51,888 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 03:01:51,892 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 03:02:20,733 - BacktestRun_20250709_030220 - INFO - ================================================================================
+2025-07-09 03:02:20,733 - BacktestRun_20250709_030220 - INFO - BACKTEST RUN ID: 20250709_030220
+2025-07-09 03:02:20,734 - BacktestRun_20250709_030220 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 03:02:20,735 - BacktestRun_20250709_030220 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 03:02:20,737 - BacktestRun_20250709_030220 - INFO - ================================================================================
+2025-07-09 03:02:20,814 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 03:02:27,581 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 03:02:27,644 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 03:02:27,753 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 03:02:32,780 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 03:02:32,820 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 03:04:33,588 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 03:04:33,594 - PositionManager - INFO - Position collections initialized
+2025-07-09 03:04:33,595 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 03:04:33,597 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 03:04:50,120 - BacktestRun_20250709_030450 - INFO - ================================================================================
+2025-07-09 03:04:50,120 - BacktestRun_20250709_030450 - INFO - BACKTEST RUN ID: 20250709_030450
+2025-07-09 03:04:50,120 - BacktestRun_20250709_030450 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 03:04:50,120 - BacktestRun_20250709_030450 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 03:04:50,130 - BacktestRun_20250709_030450 - INFO - ================================================================================
+2025-07-09 03:04:50,198 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 03:04:55,681 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 03:04:55,791 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 03:04:55,978 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 03:05:01,227 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 03:05:01,289 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-09 03:07:04,786 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 03:07:04,800 - PositionManager - INFO - Position collections initialized
+2025-07-09 03:07:04,807 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 03:07:04,813 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 03:07:18,081 - BacktestRun_20250709_030718 - INFO - ================================================================================
+2025-07-09 03:07:18,082 - BacktestRun_20250709_030718 - INFO - BACKTEST RUN ID: 20250709_030718
+2025-07-09 03:07:18,083 - BacktestRun_20250709_030718 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 03:07:18,083 - BacktestRun_20250709_030718 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 10, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 03:07:18,086 - BacktestRun_20250709_030718 - INFO - ================================================================================
+2025-07-09 03:07:18,160 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 03:07:24,556 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 03:07:24,634 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 03:07:24,815 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 03:07:31,010 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 03:07:31,089 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed

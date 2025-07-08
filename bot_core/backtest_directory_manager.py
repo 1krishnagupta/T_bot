@@ -85,6 +85,16 @@ This directory contains backtest results and performance metrics.
     def get_historical_data_path(self, symbol, timeframe, start_date, end_date, source):
         """Get the path for historical data file"""
         source_dir = os.path.join(self.historical_data_dir, source)
+        
+        # Create source directory if it doesn't exist
+        os.makedirs(source_dir, exist_ok=True)
+        
+        # Convert dates to string format if they're date objects
+        if hasattr(start_date, 'strftime'):
+            start_date = start_date.strftime('%Y-%m-%d')
+        if hasattr(end_date, 'strftime'):
+            end_date = end_date.strftime('%Y-%m-%d')
+        
         filename = f"{symbol}_{timeframe}_{start_date}_{end_date}_{source}.csv"
         return os.path.join(source_dir, filename)
     

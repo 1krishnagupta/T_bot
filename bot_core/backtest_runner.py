@@ -67,6 +67,7 @@ class ProfessionalBacktestRunner:
         Returns:
             Dictionary with comprehensive results
         """
+
         print("="*80)
         print("STARTING PROFESSIONAL BACKTEST")
         print(f"Parameters: {params}")
@@ -190,14 +191,6 @@ class ProfessionalBacktestRunner:
                 try:
                     # Extract period number from timeframe
                     period = int(timeframe.replace('m', '')) if 'm' in timeframe else 60
-                    
-                    if data_source == "TastyTrade" and self.api:
-                        print(f"[*] Using TastyTrade API for data fetching")
-                        candles = candle_data_client.fetch_historical_data_for_backtesting(
-                            [symbol], period, start_date, end_date, 
-                            data_source=data_source,
-                            api=self.api  # Pass the API instance
-                        )
 
                     # Run backtest using your existing engine
                     result = backtest_engine.run_backtest_for_ticker(
@@ -206,7 +199,20 @@ class ProfessionalBacktestRunner:
                     
                     # Store results
                     all_results[combo_key] = result
-                    summary_stats['successful_tests'] += 1
+                    
+                    # ONLY increment successful if there's no error
+                    if 'error' not in result and 'Error' not in result:
+                        summary_stats['successful_tests'] += 1
+                    else:
+                        summary_stats['failed_tests'] += 1
+                    
+                    if data_source == "TastyTrade" and self.api:
+                        print(f"[*] Using TastyTrade API for data fetching")
+                        candles = candle_data_client.fetch_historical_data_for_backtesting(
+                            [symbol], period, start_date, end_date, 
+                            data_source=data_source,
+                            api=self.api  # Pass the API instance
+                        )
                     
                     # Update summary statistics
                     if result.get('Total Trades', 0) > 0:
@@ -240,9 +246,16 @@ class ProfessionalBacktestRunner:
                         print(f"  ✓ Trades: {trades}, Win Rate: {result.get('Win Rate', 0):.1f}%, PF: {result.get('Profit Factor', 0):.2f}")
                     
                 except Exception as e:
-                    print(f"  ✗ Error: {str(e)}")
+                    error_msg = f"  ✗ Error: {str(e)}"
+                    print(error_msg)
                     summary_stats['failed_tests'] += 1
                     all_results[combo_key] = {"error": str(e)}
+                    
+                    # If it's a data source error, stop the entire backtest
+                    if "authentication failed" in str(e).lower() or "failed to fetch data" in str(e).lower():
+                        print(f"\n[!] Critical error with data source '{data_source}'. Stopping backtest.")
+                        print("[!] Please check your credentials or try a different data source.")
+                        break
         
         # Calculate average win rate
         valid_results = [r for r in all_results.values() if 'Win Rate' in r]

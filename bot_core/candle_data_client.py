@@ -10,6 +10,7 @@ import logging
 from typing import Dict, List, Optional, Callable, Tuple, Any, Union
 from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
 from Code.bot_core.tradestation_data_fetcher import TradeStationDataFetcher
+from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
 
 from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
 
@@ -269,7 +270,7 @@ class CandleDataClient:
     def fetch_historical_data_for_backtesting(self, symbols, period, start_date, end_date=None, data_source="TradeStation", **kwargs):
         """
         Fetch historical data for backtesting from external sources and save to CSV files
-        Now defaults to TradeStation with fallback options
+        Now stops on failure instead of falling back to other sources
         """
         # Import directory manager
         from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
@@ -320,7 +321,7 @@ class CandleDataClient:
         
         # Show data source limitations
         if data_source == "TradeStation":
-            print(f"\n[*] Using TradeStation API (Default)")
+            print(f"\n[*] Using TradeStation API")
             print(f"[*] TradeStation Data Capabilities:")
             print(f"    - 1m data: Up to 40 days")
             print(f"    - 5m data: Up to 6 months")
@@ -328,34 +329,88 @@ class CandleDataClient:
             print(f"    - 30m data: Up to 2 years")
             print(f"    - 1h data: Up to 3 years")
             print(f"    - 1d data: Up to 10 years\n")
+        elif data_source == "TastyTrade":
+            print(f"\n[*] Using TastyTrade API")
+            print(f"[*] TastyTrade Data Capabilities:")
+            print(f"    - Requires active API connection")
+            print(f"    - Real-time and historical options data")
+            print(f"    - All timeframes available with account\n")
         elif data_source == "YFinance":
+            print(f"\n[*] Using Yahoo Finance API")
+            print(f"[*] YFinance Data Capabilities:")
+            print(f"    - 1m data: Only last 7 days")
+            print(f"    - 5m data: Only last 60 days")
+            print(f"    - 15m data: Only last 60 days")
+            print(f"    - 30m+ data: Up to years of data")
+            print(f"    - Free, no authentication required\n")
+            
+            # Check for YFinance limitations
             if period_str == "1m" and days_diff > 7:
-                print(f"[!] WARNING: YFinance only provides 7 days of 1-minute data")
-                print(f"[!] Adjusting start date from {start_date} to last 7 days")
-                start_date = end_date - timedelta(days=7)
-                days_diff = 7
+                error_msg = f"[!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested {days_diff} days"
+                print(error_msg)
+                raise ValueError(error_msg)
             elif period_str in ["5m", "15m"] and days_diff > 60:
-                print(f"[!] WARNING: YFinance only provides 60 days of {period_str} data")
-                print(f"[!] Adjusting start date from {start_date} to last 60 days")
-                start_date = end_date - timedelta(days=60)
-                days_diff = 60
+                error_msg = f"[!] ERROR: YFinance only provides 60 days of {period_str} data, but you requested {days_diff} days"
+                print(error_msg)
+                raise ValueError(error_msg)
         
-        # Initialize TradeStation fetcher if needed
-        tradestation_fetcher = None
+        # Initialize data fetcher based on source
+        data_fetcher = None
+        auth_failed = False
+        
         if data_source == "TradeStation":
             try:
+                from Code.bot_core.tradestation_data_fetcher import TradeStationDataFetcher
                 tradestation_fetcher = TradeStationDataFetcher()
                 if not tradestation_fetcher.test_connection():
-                    print(f"[!] TradeStation connection failed, falling back to YFinance")
-                    data_source = "YFinance"
-                    tradestation_fetcher = None
+                    auth_failed = True
+                    error_msg = "[!] TradeStation authentication failed"
+                    print(error_msg)
+                    print("[!] Possible reasons:")
+                    print("    1. Invalid API credentials")
+                    print("    2. API key doesn't have market data permissions")
+                    print("    3. TradeStation account not active")
+                    print("\n[!] Suggestion: You can try other data sources:")
+                    print("    - YFinance: Free, no auth required (limited history)")
+                    print("    - TastyTrade: Requires account login (full history)")
+                    raise ConnectionError(error_msg)
+                else:
+                    data_fetcher = tradestation_fetcher
             except Exception as e:
-                print(f"[!] Error initializing TradeStation: {e}")
-                print(f"[!] Falling back to YFinance")
-                data_source = "YFinance"
+                error_msg = f"[!] Error initializing TradeStation: {str(e)}"
+                print(error_msg)
+                raise
+                
+        elif data_source == "TastyTrade":
+            try:
+                # Check if API is available
+                api = kwargs.get('api')
+                if not api:
+                    error_msg = "[!] TastyTrade API not available - requires login"
+                    print(error_msg)
+                    print("\n[!] Suggestion: You can try other data sources:")
+                    print("    - YFinance: Free, no auth required (limited history)")
+                    print("    - TradeStation: API key required (extensive history)")
+                    raise ConnectionError(error_msg)
+                else:
+                    from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
+                    data_fetcher = TastyTradeDataFetcher(api=api)
+            except Exception as e:
+                error_msg = f"[!] Error initializing TastyTrade: {str(e)}"
+                print(error_msg)
+                raise
+        
+        # If authentication failed or no fetcher, stop here
+        if auth_failed or (data_source != "YFinance" and not data_fetcher):
+            error_msg = f"[!] Failed to initialize {data_source} data fetcher"
+            print(error_msg)
+            raise RuntimeError(error_msg)
+        
+        # Now fetch data for each symbol
+        fetch_errors = []
         
         for symbol in all_symbols:
-            # Get proper file path from directory manager
+            # Check cache first
             file_path = dir_manager.get_historical_data_path(
                 symbol, period_str, start_date, end_date, data_source
             )
@@ -365,104 +420,39 @@ class CandleDataClient:
                 print(f"[*] Loading cached data for {symbol} from {file_path}")
                 try:
                     df = pd.read_csv(file_path, index_col=0, parse_dates=True)
-                    
-                    # Handle different timestamp column names
-                    if df.index.name in ['Date', 'Datetime', 'date', 'datetime']:
-                        df.index.name = 'timestamp'
-                    
-                    # If timestamp is a column, not index
-                    timestamp_cols = ['timestamp', 'Timestamp', 'date', 'Date', 'datetime', 'Datetime']
-                    for col in timestamp_cols:
-                        if col in df.columns:
-                            df = df.set_index(col)
-                            df.index.name = 'timestamp'
-                            break
-                            
-                    # Ensure index is datetime
-                    if not isinstance(df.index, pd.DatetimeIndex):
-                        df.index = pd.to_datetime(df.index)
-
-                    # Normalize timezone
-                    df = self._normalize_timezone(df)
-                    
-                    # Convert DataFrame to list of dicts
-                    candles = []
-                    for timestamp, row in df.iterrows():
-                        candle = {
-                            "symbol": symbol,
-                            "period": period_str,
-                            "start_time": timestamp.isoformat(),
-                            "timestamp": timestamp.isoformat(),
-                            "open": float(row["open"]),
-                            "high": float(row["high"]),
-                            "low": float(row["low"]),
-                            "close": float(row["close"]),
-                            "volume": float(row["volume"]) if "volume" in row else 0
-                        }
-                        candles.append(candle)
-                    result[symbol] = candles
-                    print(f"[✓] Loaded {len(candles)} candles from cache for {symbol}")
+                    # ... process cached data ...
+                    result[symbol] = self._dataframe_to_candles(df, symbol, period_str)
+                    print(f"[✓] Loaded {len(result[symbol])} candles from cache for {symbol}")
                     continue
                 except Exception as e:
                     print(f"[!] Error loading cached data: {e}")
             
-            # Fetch new data from the selected source
+            # Fetch new data
             try:
-                df = pd.DataFrame()  # Initialize empty DataFrame
+                df = pd.DataFrame()
                 
-                if data_source == "TradeStation" and tradestation_fetcher:
-                    print(f"[*] Fetching data for {symbol} using TradeStation API")
+                if data_source == "TradeStation":
+                    print(f"[*] Fetching data for {symbol} using TradeStation API...")
+                    df = data_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
                     
-                    # Fetch data from TradeStation
-                    df = tradestation_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
-                    
-                    if df.empty:
-                        print(f"[!] No data returned from TradeStation for {symbol}")
-                        continue
-                        
                 elif data_source == "TastyTrade":
-                    print(f"[*] Fetching data for {symbol} using TastyTrade API")
+                    print(f"[*] Fetching data for {symbol} using TastyTrade API...")
+                    timeframe_map = {
+                        "1m": "1Min",
+                        "5m": "5Min",
+                        "15m": "15Min",
+                        "30m": "30Min",
+                        "1h": "1Hour",
+                        "1d": "1Day"
+                    }
+                    tt_timeframe = timeframe_map.get(period_str, "5Min")
+                    df = data_fetcher.fetch_bars(symbol, start_date, end_date, tt_timeframe)
                     
-                    # Use the market data client's API instance if available
-                    if hasattr(self, 'market_data_client') and self.market_data_client and hasattr(self.market_data_client, 'api'):
-                        api = self.market_data_client.api
-                    else:
-                        # Try to get API from kwargs
-                        api = kwargs.get('api')
-                        
-                    if not api:
-                        print(f"[!] No TastyTrade API instance available for {symbol}")
-                        continue
-                    else:
-                        # Initialize fetcher
-                        from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
-                        fetcher = TastyTradeDataFetcher(api=api)
-                        
-                        # Map period to TastyTrade timeframe
-                        timeframe_map = {
-                            "1m": "1Min",
-                            "5m": "5Min", 
-                            "15m": "15Min",
-                            "30m": "30Min",
-                            "1h": "1Hour",
-                            "1d": "1Day"
-                        }
-                        tt_timeframe = timeframe_map.get(period_str, "5Min")
-                        
-                        # Fetch data
-                        df = fetcher.fetch_bars(symbol, start_date, end_date, tt_timeframe)
-                        
-                        if df.empty:
-                            print(f"[!] No data returned from TastyTrade for {symbol}")
-                            continue
-                            
                 elif data_source == "YFinance":
-                    print(f"[*] Fetching data for {symbol} using YFinance")
-                    
-                    # YFinance code
+                    print(f"[*] Fetching data for {symbol} using YFinance...")
+                    import yfinance as yf
                     ticker = yf.Ticker(symbol)
                     
-                    # Map period to YFinance interval
                     interval_map = {
                         "1m": "1m",
                         "5m": "5m",
@@ -473,93 +463,70 @@ class CandleDataClient:
                     }
                     interval = interval_map.get(period_str, "5m")
                     
-                    # Fetch data with already adjusted date range
-                    try:
-                        df = ticker.history(
-                            start=start_date,
-                            end=end_date + timedelta(days=1),
-                            interval=interval
-                        )
-                    except Exception as yf_error:
-                        print(f"[!] YFinance error: {yf_error}")
-                        # Try with period parameter as fallback
-                        if interval == "1m":
-                            df = ticker.history(period="7d", interval=interval)
-                        elif interval == "5m":
-                            df = ticker.history(period="60d", interval=interval)
-                        else:
-                            df = ticker.history(period="max", interval=interval)
-                        
-                        # Filter by date range after fetching
-                        if not df.empty:
-                            df = self._safe_date_filter(df, start_date, end_date)
-                    
-                    if df.empty:
-                        print(f"[!] No data found for {symbol} from YFinance")
-                        continue
-                else:
-                    print(f"[!] Unknown data source: {data_source}")
+                    df = ticker.history(
+                        start=start_date,
+                        end=end_date + timedelta(days=1),
+                        interval=interval
+                    )
+                
+                if df.empty:
+                    error_msg = f"[!] No data returned from {data_source} for {symbol}"
+                    print(error_msg)
+                    fetch_errors.append(f"{symbol}: No data returned")
                     continue
                 
-                # Process dataframe
-                if not df.empty:
-                    # Normalize timezone before processing
-                    df = self._normalize_timezone(df)
-                    
-                    # Standardize column names
-                    df.columns = [col.lower() for col in df.columns]
-                    
-                    # Ensure directory exists
-                    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-                    
-                    # Save to CSV
-                    df.to_csv(file_path)
-                    print(f"[✓] Saved {len(df)} candles to {file_path}")
-                    
-                    # Convert to candles format
-                    candles = []
-                    for timestamp, row in df.iterrows():
-                        candle = {
-                            "symbol": symbol,
-                            "period": period_str,
-                            "start_time": timestamp.isoformat(),
-                            "timestamp": timestamp.isoformat(),
-                            "open": float(row["open"]),
-                            "high": float(row["high"]),
-                            "low": float(row["low"]),
-                            "close": float(row["close"]),
-                            "volume": float(row["volume"]) if "volume" in row else 0
-                        }
-                        candles.append(candle)
-                        
-                    result[symbol] = candles
-                    print(f"[✓] Successfully fetched {len(candles)} candles for {symbol}")
-                else:
-                    print(f"[!] No data retrieved for {symbol}")
-                    
+                # Process and save data
+                print(f"[✓] Received {len(df)} candles for {symbol}")
+                
+                # Save to CSV
+                os.makedirs(os.path.dirname(file_path), exist_ok=True)
+                df.to_csv(file_path)
+                print(f"[✓] Saved data to {file_path}")
+                
+                # Convert to candles format
+                result[symbol] = self._dataframe_to_candles(df, symbol, period_str)
+                
             except Exception as e:
-                print(f"[✗] Error fetching data for {symbol}: {e}")
-                self.logger.error(f"Error fetching data for {symbol}: {e}", exc_info=True)
-                import traceback
-                traceback.print_exc()
+                error_msg = f"[✗] Error fetching data for {symbol}: {str(e)}"
+                print(error_msg)
+                fetch_errors.append(f"{symbol}: {str(e)}")
+                self.logger.error(error_msg, exc_info=True)
+        
+        # If we had any errors, report them
+        if fetch_errors:
+            print(f"\n[!] Failed to fetch data for {len(fetch_errors)} symbols:")
+            for error in fetch_errors:
+                print(f"    - {error}")
+            
+            # If we couldn't fetch critical data, raise an error
+            if len(fetch_errors) == len(all_symbols):
+                raise RuntimeError(f"Failed to fetch data for all symbols from {data_source}")
         
         return result
+
+    def _dataframe_to_candles(self, df, symbol, period_str):
+        """Convert DataFrame to list of candle dictionaries"""
+        candles = []
+        for timestamp, row in df.iterrows():
+            candle = {
+                "symbol": symbol,
+                "period": period_str,
+                "start_time": timestamp.isoformat(),
+                "timestamp": timestamp.isoformat(),
+                "open": float(row.get("open", row.get("Open", 0))),
+                "high": float(row.get("high", row.get("High", 0))),
+                "low": float(row.get("low", row.get("Low", 0))),
+                "close": float(row.get("close", row.get("Close", 0))),
+                "volume": float(row.get("volume", row.get("Volume", 0)))
+            }
+            candles.append(candle)
+        return candles
 
             
 
     def get_candles_for_backtesting(self, symbols, period, start_date, end_date, data_source="YFinance"):
-        
         """
         Get candles for backtesting for multiple symbols
-        
-        Args:
-            symbols (List[str]): List of instrument symbols
-            period (str): Candle period (e.g., "1m", "5m")
-            start_date (Union[str, datetime.date]): Start date
-            end_date (Union[str, datetime.date], optional): End date, defaults to today
-            
-        Returns:
-            Dict[str, List[Dict]]: Dictionary mapping symbols to lists of candles
         """
         result = {}
         
@@ -567,7 +534,6 @@ class CandleDataClient:
         for symbol in symbols:
             candles = self.get_candles_by_date_range(symbol, period, start_date, end_date)
             
-            # If we got candles from the database, use them
             if candles and len(candles) > 0:
                 result[symbol] = candles
                 print(f"[✓] Got {symbol} from MongoDB: {len(candles)} candles")
@@ -576,36 +542,25 @@ class CandleDataClient:
         missing_symbols = [symbol for symbol in symbols if symbol not in result or not result[symbol]]
         if missing_symbols:
             print(f"[*] Fetching missing symbols from {data_source}: {missing_symbols}")
-            external_data = self.fetch_historical_data_for_backtesting(
-                missing_symbols, period, start_date, end_date, 
-                data_source=data_source  # ADD THIS PARAMETER
-            )
-            
-            # Merge the results
-            for symbol, candles in external_data.items():
-                result[symbol] = candles
+            try:
+                external_data = self.fetch_historical_data_for_backtesting(
+                    missing_symbols, period, start_date, end_date, 
+                    data_source=data_source
+                )
                 
-                # Optionally save to MongoDB for future use
-                if self.db and candles:
-                    try:
-                        # Save candles to MongoDB
-                        for candle in candles[:100]:  # Limit to avoid overwhelming DB
-                            candle_data = {
-                                'symbol': symbol,
-                                'period': period if isinstance(period, str) else f"{period}m",
-                                'start_time': candle['start_time'],
-                                'timestamp': candle['timestamp'],
-                                'open': candle['open'],
-                                'high': candle['high'],
-                                'low': candle['low'],
-                                'close': candle['close'],
-                                'volume': candle.get('volume', 0)
-                            }
-                            self.db.insert_one(COLLECTIONS['CANDLES'], candle_data)
-                        print(f"[✓] Saved {min(100, len(candles))} candles to MongoDB for {symbol}")
-                    except Exception as e:
-                        self.logger.error(f"Failed to save to MongoDB: {e}")
-                
+                # Merge the results
+                for symbol, candles in external_data.items():
+                    result[symbol] = candles
+                    
+            except (ConnectionError, RuntimeError) as e:
+                # Re-raise authentication/connection errors to stop backtest
+                print(f"[!] Critical error fetching data: {str(e)}")
+                raise
+            except Exception as e:
+                self.logger.error(f"Failed to fetch external data: {e}")
+                print(f"[!] Error fetching data: {str(e)}")
+                raise
+        
         return result
 
 

@@ -1496,7 +1496,21 @@ class UIController(QObject):
             
             # Get UI widget for displaying results
             backtest_widget = self.app.get_backtest_widget()
-            
+
+            # Create a custom print function that logs to UI
+            original_print = print
+            def ui_print(message, *args, **kwargs):
+                # Print to console
+                original_print(message, *args, **kwargs)
+                # Also send to UI
+                if message.strip():  # Don't send empty messages
+                    backtest_widget.results_text.append(f"<div style='color: #ecf0f1;'>{message}</div>")
+                    QApplication.processEvents()  # Update UI immediately
+
+            # Temporarily replace print function
+            import builtins
+            builtins.print = ui_print
+                
             # Clear previous results
             backtest_widget.results_text.clear()
             
@@ -1585,11 +1599,20 @@ class UIController(QObject):
             # Check for errors
             if 'error' in results:
                 backtest_widget.results_text.append(f"""
-                <div style='background-color: #e74c3c; color: white; padding: 10px; border-radius: 5px;'>
-                    <b>❌ Backtest Error:</b><br>
-                    {results['error']}
+                <div style='background-color: #e74c3c; color: white; padding: 15px; border-radius: 5px;'>
+                    <b>❌ Backtest Failed:</b><br>
+                    {results['error']}<br><br>
+                    <b>Suggestions:</b><br>
+                    • Check your API credentials<br>
+                    • Try a different data source<br>
+                    • Reduce the date range for your selected timeframe<br>
+                    • Ensure you have an active connection
                 </div>
                 """)
+                
+                # Re-enable button
+                backtest_widget.run_button.setEnabled(True)
+                backtest_widget.run_button.setText("Run Backtest")
                 return
             
             # Display results summary
@@ -1680,7 +1703,7 @@ class UIController(QObject):
             """)
             
             # Re-enable button
-            backtest_widget.run_button.setEnabled(True)
+            backtest_widget.run_button.setEnabled(True) 
             backtest_widget.run_button.setText("Run Backtest")
 
 

@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QTabWidget, QWidget, QVB
                             QProgressBar, QFileDialog, QScrollArea)
 from PyQt5.QtCore import Qt, QTime, QTimer, pyqtSignal, QThread, QMetaType, pyqtSlot
 from PyQt5.QtGui import QFont, QColor, QPalette, QPixmap, QCursor, QLinearGradient, QBrush, QGradient, QPainter, QTextCursor
-
+from PyQt5.QtWidgets import QSizePolicy
 from PyQt5.QtCore import QMetaObject, Q_ARG
 
 # Register QTextCursor for thread-safe operations
@@ -3304,15 +3304,32 @@ class BacktestWidget(QWidget):
             }
         """
         
-        # Data source selector (NEW)
+        # Data source selector
         source_label = QLabel("Data Source:")
         source_label.setStyleSheet(label_style)
-        
+
         self.data_source = QComboBox()
-        self.data_source.addItems(["TastyTrade", "YFinance"])
-        self.data_source.setCurrentText("TastyTrade")
+        self.data_source.addItems(["TradeStation", "TastyTrade", "YFinance"])
+        self.data_source.setCurrentText("TradeStation")  # Set TradeStation as default
         self.data_source.setStyleSheet(input_style)
-        self.data_source.setToolTip("Select data provider for historical market data")
+        self.data_source.setToolTip(
+            "TradeStation (Default):\n"
+            "• 1m data: Up to 40 days\n"
+            "• 5m data: Up to 6 months\n"
+            "• 15m data: Up to 1 year\n"
+            "• 30m data: Up to 2 years\n"
+            "• 1h data: Up to 3 years\n"
+            "• 1d data: Up to 10 years\n"
+            "• Best for professional backtesting\n\n"
+            "TastyTrade:\n"
+            "• Requires active API connection\n"
+            "• Good for options data\n"
+            "• Live market data\n\n"
+            "YFinance:\n"
+            "• 1m data: Only 7 days\n"
+            "• 5m/15m data: Only 60 days\n"
+            "• Free but limited"
+        )
         form.addRow(source_label, self.data_source)
         
         # Connect data source change
@@ -3337,7 +3354,7 @@ class BacktestWidget(QWidget):
         tickers_label = QLabel("Tickers:")
         tickers_label.setStyleSheet(label_style)
         
-        self.backtest_tickers = QLineEdit("SPY, QQQ")
+        self.backtest_tickers = QLineEdit("AAPL, NVDA")
         self.backtest_tickers.setStyleSheet(input_style)
         form.addRow(tickers_label, self.backtest_tickers)
         
@@ -3472,11 +3489,21 @@ class BacktestWidget(QWidget):
         self.results_display_layout = QVBoxLayout(self.results_display)
         self.results_display_layout.setContentsMargins(10, 10, 10, 10)
         self.results_display_layout.setSpacing(20)  # Add spacing between sections
+
+        log_label = QLabel("Backtest Progress Log:")
+        log_label.setStyleSheet("""
+            font-size: 14px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        """)
+        self.results_display_layout.addWidget(log_label)
         
         # Progress text (for live updates)
         self.results_text = QTextEdit()
         self.results_text.setReadOnly(True)
-        self.results_text.setMaximumHeight(150)
+        self.results_text.setMinimumHeight(300)  # Add this line - sets minimum height
+        self.results_text.setMaximumHeight(400)
         self.results_text.setStyleSheet("""
             QTextEdit {
                 background-color: #2c3e50;
@@ -3515,7 +3542,8 @@ class BacktestWidget(QWidget):
                 color: #1976d2;
             }
         """)
-        self.summary_table.setMinimumHeight(200)
+        self.summary_table.setMinimumHeight(300)
+        self.summary_table.setMaximumHeight(400)
         self.summary_table.verticalHeader().setDefaultSectionSize(40)  # Set row height
         self.summary_table.horizontalHeader().setMinimumHeight(40)     # Set header height
         
@@ -3546,6 +3574,7 @@ class BacktestWidget(QWidget):
             }
         """)
         self.trades_table.setMinimumHeight(300)
+        self.trades_table.setMaximumHeight(400)
         self.trades_table.verticalHeader().setDefaultSectionSize(40)  # Set row height
         self.trades_table.horizontalHeader().setMinimumHeight(40)     # Set header height
         
@@ -3641,7 +3670,19 @@ class BacktestWidget(QWidget):
         """Handle data source selection change"""
         try:
             # Update UI based on selected data source
-            if source == "TastyTrade":
+            if source == "TradeStation":
+                # Show info about TradeStation data
+                info_text = """
+                <div style='background-color: #2980b9; color: white; padding: 8px; border-radius: 5px; margin: 5px 0;'>
+                    <b>TradeStation Data Selected (Recommended)</b><br>
+                    • Professional-grade historical market data<br>
+                    • Up to 10 years of daily data<br>
+                    • Up to 40 days of 1-minute data<br>
+                    • Best accuracy for backtesting<br>
+                    • No authentication required for historical data
+                </div>
+                """
+            elif source == "TastyTrade":
                 # Show info about TastyTrade data
                 info_text = """
                 <div style='background-color: #3498db; color: white; padding: 8px; border-radius: 5px; margin: 5px 0;'>
@@ -3649,7 +3690,7 @@ class BacktestWidget(QWidget):
                     • Uses live market data from TastyTrade API<br>
                     • Requires active TastyTrade connection<br>
                     • Provides accurate historical options data<br>
-                    • Best for production backtesting
+                    • Good for options-specific backtesting
                 </div>
                 """
             else:  # YFinance
@@ -3667,16 +3708,25 @@ class BacktestWidget(QWidget):
             self.results_text.clear()
             self.results_text.append(info_text)
             
-            # You could also adjust date limits based on data source
+            # Additional warnings for data limitations
             if source == "YFinance" and self.timeframes.currentText() == "1m":
                 # YFinance only provides 7 days of 1-minute data
                 warning_text = """
                 <div style='background-color: #e74c3c; color: white; padding: 8px; border-radius: 5px; margin: 5px 0;'>
                     <b>⚠️ Warning:</b> YFinance only provides 7 days of 1-minute data.<br>
-                    Consider using 5m or higher timeframes for longer date ranges.
+                    Consider using TradeStation or 5m/higher timeframes for longer date ranges.
                 </div>
                 """
                 self.results_text.append(warning_text)
+            elif source == "TradeStation" and self.timeframes.currentText() == "1m":
+                # TradeStation provides 40 days of 1-minute data
+                info_text = """
+                <div style='background-color: #27ae60; color: white; padding: 8px; border-radius: 5px; margin: 5px 0;'>
+                    <b>✓ TradeStation 1-minute data:</b> Up to 40 days available<br>
+                    Ensure your date range doesn't exceed this limit for best results.
+                </div>
+                """
+                self.results_text.append(info_text)
                 
         except Exception as e:
             self.logger.error(f"Error in data source change handler: {e}")
@@ -3691,7 +3741,6 @@ class BacktestWidget(QWidget):
             'start_date': self.start_date.text(),
             'end_date': self.end_date.text(),
             'data_source': self.data_source.currentText()
-            # NO alpaca_key or alpaca_secret in params
         }
         
         # Disable run button while backtest is running
@@ -3756,6 +3805,17 @@ class BacktestWidget(QWidget):
                     Results saved to Backtest_Data directory
                 </div>
             """)
+
+            # Display data source used
+            data_source_info = f"""
+                <div style='background-color: #34495e; color: white; padding: 8px; border-radius: 5px; margin-top: 5px;'>
+                    <b>Data Source:</b> {self.data_source.currentText()} - 
+                    {"Professional-grade historical data" if self.data_source.currentText() == "TradeStation" else 
+                    "Live market data API" if self.data_source.currentText() == "TastyTrade" else 
+                    "Free limited data"}
+                </div>
+            """
+            self.results_text.append(data_source_info)
             
         except Exception as e:
             self.results_text.append(f"<div style='color: red;'>Error displaying results: {str(e)}</div>")

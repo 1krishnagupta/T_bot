@@ -53,36 +53,62 @@ class TradeStationDataFetcher:
             if self.access_token and self.token_expiry and datetime.now() < self.token_expiry:
                 return True
             
-            # Request new token
-            headers = {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
+            # TradeStation uses different auth endpoints based on environment
+            # Try the correct auth endpoint for your account type
             
-            # Create basic auth header
-            auth_string = f"{self.api_key}:{self.api_secret}"
-            auth_bytes = auth_string.encode('ascii')
-            auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
-            headers["Authorization"] = f"Basic {auth_b64}"
+            # First, try the standard auth endpoint
+            auth_urls = [
+                "https://signin.tradestation.com/oauth/token",  # Current URL
+                "https://signin.tradestation.com/authorize",     # Alternative
+                "https://api.tradestation.com/v2/security/authorize"  # Legacy
+            ]
             
-            data = {
-                "grant_type": "client_credentials",
-                "scope": "marketdata"
-            }
-            
-            response = requests.post(self.auth_url, headers=headers, data=data)
-            
-            if response.status_code == 200:
-                token_data = response.json()
-                self.access_token = token_data.get("access_token")
-                expires_in = token_data.get("expires_in", 3600)
-                self.token_expiry = datetime.now() + timedelta(seconds=expires_in - 60)  # Buffer
+            for auth_url in auth_urls:
+                self.logger.info(f"Trying auth URL: {auth_url}")
                 
-                self.logger.info("Successfully authenticated with TradeStation API")
-                return True
-            else:
-                self.logger.error(f"Authentication failed: {response.status_code} {response.text}")
-                return False
+                headers = {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
                 
+                # Create basic auth header
+                auth_string = f"{self.api_key}:{self.api_secret}"
+                auth_bytes = auth_string.encode('ascii')
+                auth_b64 = base64.b64encode(auth_bytes).decode('ascii')
+                headers["Authorization"] = f"Basic {auth_b64}"
+                
+                # Try different grant types
+                grant_types = ["client_credentials", "password", "authorization_code"]
+                
+                for grant_type in grant_types:
+                    data = {
+                        "grant_type": grant_type,
+                        "scope": "marketdata"
+                    }
+                    
+                    # For password grant, you might need username/password
+                    # For authorization_code, you need a code from OAuth flow
+                    
+                    try:
+                        response = requests.post(auth_url, headers=headers, data=data)
+                        
+                        if response.status_code == 200:
+                            token_data = response.json()
+                            self.access_token = token_data.get("access_token")
+                            expires_in = token_data.get("expires_in", 3600)
+                            self.token_expiry = datetime.now() + timedelta(seconds=expires_in - 60)
+                            
+                            self.logger.info(f"Successfully authenticated with TradeStation API using {grant_type}")
+                            return True
+                        else:
+                            self.logger.debug(f"Auth failed with {grant_type}: {response.status_code}")
+                    except Exception as e:
+                        self.logger.debug(f"Error with {grant_type}: {e}")
+                        continue
+            
+            # If all attempts fail, log the error
+            self.logger.error("All authentication attempts failed")
+            return False
+            
         except Exception as e:
             self.logger.error(f"Error during authentication: {e}")
             return False

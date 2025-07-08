@@ -96,11 +96,15 @@ class BacktestEngine:
             # IMPORTANT: Update the trading config with latest values from UI
             if self.config and 'trading_config' in self.config:
                 self.trading_config = self.config['trading_config']
-                print(f"[*] Updated trading config from UI:")
-                print(f"    - Sector threshold: {self.trading_config.get('sector_weight_threshold', 43)}%")
-                print(f"    - BB width threshold: {self.trading_config.get('bb_width_threshold', 0.05)}")
-                print(f"    - Compression threshold: {self.trading_config.get('donchian_contraction_threshold', 0.6)}")
-            
+                
+                # Check which strategy is being used
+                use_mag7 = self.trading_config.get('use_mag7_confirmation', False)
+                strategy_name = "Magnificent 7 (Mag7)" if use_mag7 else "Sector Alignment"
+
+                # Print configuration table
+                self._print_config_table(strategy_name, use_mag7)
+                
+                
             # Get historical candle data with better error handling
             if not self.candle_data_client:
                 self.logger.error("No candle data client provided")
@@ -285,6 +289,13 @@ class BacktestEngine:
                     else:
                         print(f"[!] No data for sector {sector}")
 
+                # Ensure data is properly aligned
+                print(f"\n[*] Data alignment check:")
+                print(f"  - Main ticker ({symbol}): {len(df)} candles")
+                for sector, sector_df in sector_data.items():
+                    print(f"  - {sector}: {len(sector_df)} candles")
+                    if len(sector_df) != len(df):
+                        print(f"    [!] WARNING: Data length mismatch!")
             
             # Calculate technical indicators first
             print(f"[*] Calculating technical indicators...")
@@ -400,6 +411,10 @@ class BacktestEngine:
                     
                     if sector_aligned:
                         sector_aligned_count += 1
+                        print(f"  [✓] Candle {i}: Sector aligned ({direction}, weight={combined_weight}%)")
+                    else:
+                        if i % 100 == 0:  # Log every 100th candle to avoid spam
+                            print(f"  [✗] Candle {i}: No sector alignment")
                     
                     if not sector_aligned:
                         analysis_record['skip_reason'] = f'No sector alignment (weight={combined_weight}%, threshold={self.trading_config.get("sector_weight_threshold", 43)}%)'
@@ -542,7 +557,19 @@ class BacktestEngine:
                 print(f"  - Sector data available: {len(sector_data)} sectors")
                 print(f"  - Sector weight threshold: {self.trading_config.get('sector_weight_threshold', 43)}%")
                 print(f"  - Compression threshold: {self.trading_config.get('bb_width_threshold', 0.05)}")
-                print(f"  - Stochastic settings: K={self.trading_config.get('stochastic_k_period', 5)}, D={self.trading_config.get('stochastic_d_period', 3)}")
+                print(f"  - Donchian threshold: {self.trading_config.get('donchian_contraction_threshold', 0.6)}")
+                print(f"  - Volume squeeze threshold: {self.trading_config.get('volume_squeeze_threshold', 0.3)}")
+                
+                # Sample some data to see what's happening
+                if len(analysis_data) > 100:
+                    sample_idx = len(analysis_data) // 2
+                    sample = analysis_data[sample_idx]
+                    print(f"\n  Sample candle analysis (idx {sample_idx}):")
+                    print(f"    - Close: {sample.get('close', 'N/A')}")
+                    print(f"    - BB Width: {sample.get('bb_width', 'N/A')}")
+                    print(f"    - Sector aligned: {sample.get('sector_aligned', False)}")
+                    print(f"    - Compression: {sample.get('compression_detected', False)}")
+                    print(f"    - Skip reason: {sample.get('skip_reason', 'N/A')}")
                 
                 # Check if sector data is valid
                 for sector, df in sector_data.items():
@@ -656,6 +683,117 @@ class BacktestEngine:
             import traceback
             traceback.print_exc()
             return self._get_empty_result(error=str(e))
+        
+
+    def _print_config_table(self, strategy_name, use_mag7):
+        """Print configuration parameters in a formatted table"""
+        all_params = self._get_all_config_params()
+        
+        print(f"\n[*] Active Strategy: {strategy_name}")
+        print("=" * 60)
+        print("| Parameter                      | Value               |")
+        print("=" * 60)
+        
+        # Define the order of parameters to display
+        if use_mag7:
+            # Mag7 strategy parameters first
+            priority_keys = ['use_mag7_confirmation', 'mag7_threshold', 'mag7_price_change_threshold', 
+                            'mag7_min_aligned', 'mag7_stocks', 'tickers']
+        else:
+            # Sector strategy parameters first
+            priority_keys = ['use_mag7_confirmation', 'sector_weight_threshold', 'sector_etfs', 'tickers']
+        
+        # Add common parameters
+        common_keys = ['bb_width_threshold', 'donchian_contraction_threshold', 'volume_squeeze_threshold',
+                    'ema_value', 'stochastic_k_period', 'stochastic_d_period', 'stochastic_smooth',
+                    'stop_loss_method', 'contracts_per_trade', 'auto_trading_enabled']
+        
+        # Display priority parameters first
+        for key in priority_keys:
+            if key in self.trading_config and key in all_params:
+                display_name, formatter = all_params[key]
+                value = self.trading_config[key]
+                try:
+                    formatted_value = formatter(value)
+                except:
+                    formatted_value = str(value)
+                print(f"| {display_name:<30} | {formatted_value:<19} |")
+        
+        # Display common parameters
+        for key in common_keys:
+            if key in self.trading_config and key in all_params:
+                display_name, formatter = all_params[key]
+                value = self.trading_config[key]
+                try:
+                    formatted_value = formatter(value)
+                except:
+                    formatted_value = str(value)
+                print(f"| {display_name:<30} | {formatted_value:<19} |")
+        
+        # Display any remaining parameters not in priority or common lists
+        displayed_keys = set(priority_keys + common_keys)
+        for key, (display_name, formatter) in all_params.items():
+            if key in self.trading_config and key not in displayed_keys:
+                # Skip strategy-specific parameters that don't apply
+                if not use_mag7 and key in ['mag7_threshold', 'mag7_price_change_threshold', 'mag7_min_aligned', 'mag7_stocks']:
+                    continue
+                if use_mag7 and key in ['sector_weight_threshold', 'sector_etfs']:
+                    continue
+                    
+                value = self.trading_config[key]
+                try:
+                    formatted_value = formatter(value)
+                except:
+                    formatted_value = str(value)
+                print(f"| {display_name:<30} | {formatted_value:<19} |")
+        
+        print("=" * 60)
+
+    
+    def _get_all_config_params(self):
+        """Get all configuration parameters dynamically"""
+        # Define all possible parameters with their display names and formatters
+        all_params = {
+            # Common parameters
+            "bb_width_threshold": ("BB Width Threshold", lambda x: f"{x:.3f}"),
+            "donchian_contraction_threshold": ("Donchian Contraction", lambda x: f"{x:.1f}"),
+            "volume_squeeze_threshold": ("Volume Squeeze Threshold", lambda x: f"{x:.1f}"),
+            "ema_value": ("EMA Period", lambda x: f"{x}"),
+            "adx_filter": ("ADX Filter Enabled", lambda x: "Yes" if x else "No"),
+            "adx_minimum": ("ADX Minimum", lambda x: f"{x}"),
+            "stochastic_k_period": ("Stochastic K Period", lambda x: f"{x}"),
+            "stochastic_d_period": ("Stochastic D Period", lambda x: f"{x}"),
+            "stochastic_smooth": ("Stochastic Smooth", lambda x: f"{x}"),
+            "stop_loss_method": ("Stop Loss Method", lambda x: x),
+            "atr_multiple": ("ATR Multiple", lambda x: f"{x:.1f}"),
+            "fixed_stop_percentage": ("Fixed Stop %", lambda x: f"{x:.1f}%"),
+            "contracts_per_trade": ("Contracts per Trade", lambda x: f"{x}"),
+            "auto_trading_enabled": ("Auto Trading", lambda x: "Yes" if x else "No"),
+            "no_trade_window_minutes": ("No Trade Window", lambda x: f"{x} min"),
+            "auto_close_minutes": ("Auto Close Time", lambda x: f"{x} min"),
+            "cutoff_time": ("Cutoff Time", lambda x: x),
+            "failsafe_minutes": ("Failsafe Minutes", lambda x: f"{x} min"),
+            "news_filter": ("News Filter", lambda x: "Yes" if x else "No"),
+            "volume_spike_threshold": ("Volume Spike", lambda x: f"{x:.1f}x"),
+            "liquidity_min_volume": ("Min Volume", lambda x: f"{x:,}"),
+            "liquidity_min_oi": ("Min Open Interest", lambda x: f"{x:,}"),
+            "liquidity_max_spread": ("Max Spread", lambda x: f"${x:.2f}"),
+            "trailing_stop_method": ("Trailing Stop", lambda x: x.split("(")[0].strip()),
+            
+            # Strategy-specific parameters
+            "use_mag7_confirmation": ("Strategy Type", lambda x: "Mag7" if x else "Sector"),
+            "sector_weight_threshold": ("Sector Weight Threshold", lambda x: f"{x}%"),
+            "sector_etfs": ("Sector ETFs", lambda x: ", ".join(x) if isinstance(x, list) else x),
+            "mag7_threshold": ("Mag7 Alignment Threshold", lambda x: f"{x}%"),
+            "mag7_price_change_threshold": ("Price Change Threshold", lambda x: f"{x}%"),
+            "mag7_min_aligned": ("Min Aligned Stocks", lambda x: f"{x}"),
+            "mag7_stocks": ("Mag7 Stocks", lambda x: ", ".join(x) if isinstance(x, list) else x),
+            "tickers": ("Trading Tickers", lambda x: ", ".join(x) if isinstance(x, list) else x),
+        }
+        
+        return all_params
+
+
             
     def _save_analysis_to_csv(self, analysis_data, filename):
         """
