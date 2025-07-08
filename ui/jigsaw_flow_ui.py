@@ -3,9 +3,10 @@ import os
 from datetime import datetime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, 
                             QHBoxLayout, QLabel, QLineEdit, QPushButton, QCheckBox, 
-                            QComboBox, QRadioButton, QStackedWidget, QSpinBox, QDoubleSpinBox, QTableWidget, QTableWidgetItem, 
-                            QGroupBox, QFormLayout, QTimeEdit, QMessageBox, QSplitter, 
-                            QTextEdit, QGridLayout, QFrame, QProgressBar, QFileDialog, QScrollArea)
+                            QComboBox, QRadioButton, QStackedWidget, QSpinBox, QDoubleSpinBox, 
+                            QTableWidget, QTableWidgetItem, QGroupBox, QFormLayout, QTimeEdit, 
+                            QMessageBox, QSplitter, QTextEdit, QGridLayout, QFrame, 
+                            QProgressBar, QFileDialog, QScrollArea)
 from PyQt5.QtCore import Qt, QTime, QTimer, pyqtSignal, QThread, QMetaType, pyqtSlot
 from PyQt5.QtGui import QFont, QColor, QPalette, QPixmap, QCursor, QLinearGradient, QBrush, QGradient, QPainter, QTextCursor
 
@@ -921,6 +922,36 @@ class TradingDashboardWidget(QWidget):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.scroll_area)
+
+
+    def update_strategy_display(self, strategy_name):
+        """Update the display to show which strategy is active"""
+        # You can add a label to show the active strategy
+        if hasattr(self, 'strategy_label'):
+            self.strategy_label.setText(f"Active Strategy: {strategy_name}")
+            if "Mag7" in strategy_name:
+                self.strategy_label.setStyleSheet("""
+                    QLabel {
+                        font-size: 14px;
+                        font-weight: bold;
+                        color: #8e44ad;
+                        padding: 5px;
+                        background-color: #f4ecf7;
+                        border-radius: 3px;
+                    }
+                """)
+            else:
+                self.strategy_label.setStyleSheet("""
+                    QLabel {
+                        font-size: 14px;
+                        font-weight: bold;
+                        color: #2980b9;
+                        padding: 5px;
+                        background-color: #ebf5fb;
+                        border-radius: 3px;
+                    }
+                """)
+                
         
     def set_account_info(self, account_id, balance, available):
         """Update account display with values"""
@@ -1954,6 +1985,9 @@ class ConfigurationWidget(QWidget):
 
     def get_configuration(self):
         """Get configuration from widget values"""
+        # Determine which strategy is selected
+        use_mag7 = "Mag7" in self.strategy_selector.currentText()
+        
         config = {
             'tickers': [t.strip() for t in self.ticker_list.text().split(',')],
             'contracts_per_trade': self.contracts.value(),
@@ -1989,7 +2023,10 @@ class ConfigurationWidget(QWidget):
             'liquidity_min_oi': self.min_oi.value(),
             'liquidity_max_spread': self.max_spread.value(),
             
-            # Sector settings
+            # Strategy selection
+            'use_mag7_confirmation': use_mag7,
+            
+            # Sector settings (always include, even if not active)
             'sector_etfs': [t.strip() for t in self.sector_etfs.text().split(',')],
             'sector_weight_threshold': self.sector_threshold.value(),
             'sector_weights': {
@@ -1997,12 +2034,14 @@ class ConfigurationWidget(QWidget):
                 'XLF': self.xlf_weight.value(),
                 'XLV': self.xlv_weight.value(),
                 'XLY': self.xly_weight.value()
-            }
+            },
+            
+            # Mag7 settings (always include, even if not active)
+            'mag7_stocks': [t.strip() for t in self.mag7_stocks.text().split(',')],
+            'mag7_threshold': self.mag7_threshold.value(),
+            'mag7_price_change_threshold': self.mag7_price_change.value(),
+            'mag7_min_aligned': self.mag7_min_aligned.value()
         }
-        
-        # Debug logging
-        print(f"[DEBUG] Getting configuration from UI:")
-        print(f"  - sector_weight_threshold: {config['sector_weight_threshold']}")
         
         return config
         
@@ -2047,6 +2086,15 @@ class ConfigurationWidget(QWidget):
         self.xlf_weight.setValue(14)
         self.xlv_weight.setValue(11)
         self.xly_weight.setValue(11)
+
+        # Reset strategy selection
+        self.strategy_selector.setCurrentText("Sector Alignment Strategy")
+        
+        # Reset Mag7 settings
+        self.mag7_stocks.setText("AAPL, MSFT, AMZN, NVDA, GOOG, TSLA, META")
+        self.mag7_threshold.setValue(60)
+        self.mag7_price_change.setValue(0.1)
+        self.mag7_min_aligned.setValue(5)
         
         QMessageBox.information(self, "Reset Configuration", "Configuration has been reset to defaults")
         
@@ -2054,6 +2102,13 @@ class ConfigurationWidget(QWidget):
         """Set widget values from config"""
         if not config:
             return
+        
+        # Set strategy selector first
+        if "use_mag7_confirmation" in config:
+            if config["use_mag7_confirmation"]:
+                self.strategy_selector.setCurrentText("Magnificent 7 (Mag7) Strategy")
+            else:
+                self.strategy_selector.setCurrentText("Sector Alignment Strategy")
         
         # Debug logging
         print(f"[DEBUG] Setting configuration in UI:")
@@ -2168,6 +2223,24 @@ class ConfigurationWidget(QWidget):
                 self.xlv_weight.setValue(weights["XLV"])
             if "XLY" in weights:
                 self.xly_weight.setValue(weights["XLY"])
+
+        
+        # Set Mag7 settings
+        if "mag7_stocks" in config:
+            if isinstance(config["mag7_stocks"], list):
+                self.mag7_stocks.setText(", ".join(config["mag7_stocks"]))
+            else:
+                self.mag7_stocks.setText(str(config["mag7_stocks"]))
+        
+        if "mag7_threshold" in config:
+            self.mag7_threshold.setValue(config["mag7_threshold"])
+        
+        if "mag7_price_change_threshold" in config:
+            self.mag7_price_change.setValue(config["mag7_price_change_threshold"])
+        
+        if "mag7_min_aligned" in config:
+            self.mag7_min_aligned.setValue(config["mag7_min_aligned"])
+
 
     def create_section(self, title, content_widget):
         """Create a styled section with title and content"""
@@ -2705,8 +2778,10 @@ class ConfigurationWidget(QWidget):
         widget.setLayout(form)
         return widget
     
+
+
     def create_sector_settings(self):
-        """Create widget for sector configuration"""
+        """Create widget for sector/strategy configuration with dynamic switching"""
         widget = QWidget()
         form = QFormLayout()
         form.setContentsMargins(10, 10, 10, 10)
@@ -2723,7 +2798,7 @@ class ConfigurationWidget(QWidget):
         """
         
         input_style = """
-            QLineEdit, QSpinBox {
+            QLineEdit, QSpinBox, QComboBox {
                 padding: 8px;
                 border: 1px solid #bdc3c7;
                 border-radius: 4px;
@@ -2732,11 +2807,42 @@ class ConfigurationWidget(QWidget):
                 font-size: 14px;
                 min-width: 200px;
             }
-            QLineEdit:focus, QSpinBox:focus {
+            QLineEdit:focus, QSpinBox:focus, QComboBox:focus {
                 border: 1px solid #3498db;
                 background-color: white;
             }
         """
+        
+        # Strategy Selection
+        strategy_label = QLabel("Trading Strategy:")
+        strategy_label.setStyleSheet(label_style + " font-weight: bold;")
+        
+        strategy_layout = QHBoxLayout()
+        self.strategy_selector = QComboBox()
+        self.strategy_selector.addItems(["Sector Alignment Strategy", "Magnificent 7 (Mag7) Strategy"])
+        self.strategy_selector.setStyleSheet(input_style)
+        self.strategy_selector.currentTextChanged.connect(self.on_strategy_changed)
+        
+        strategy_info = self.create_info_button("Select between Sector Alignment (tracks sector ETFs) or Mag7 (tracks top 7 tech stocks) strategy")
+        strategy_layout.addWidget(self.strategy_selector)
+        strategy_layout.addWidget(strategy_info)
+        form.addRow(strategy_label, strategy_layout)
+        
+        # Add separator
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        separator.setStyleSheet("margin: 10px 0;")
+        form.addRow(separator)
+        
+        # Create stacked widget for dynamic content
+        self.strategy_stack = QStackedWidget()
+        
+        # === SECTOR ALIGNMENT SETTINGS ===
+        sector_widget = QWidget()
+        sector_form = QFormLayout(sector_widget)
+        sector_form.setContentsMargins(0, 0, 0, 0)
+        sector_form.setSpacing(15)
         
         # Sector ETFs
         sector_etfs_label = QLabel("Sector ETFs:")
@@ -2748,7 +2854,7 @@ class ConfigurationWidget(QWidget):
         sector_etfs_info = self.create_info_button("Sector ETFs to monitor for alignment. Default are Tech, Financials, Health, Consumer.")
         sector_etfs_layout.addWidget(self.sector_etfs)
         sector_etfs_layout.addWidget(sector_etfs_info)
-        form.addRow(sector_etfs_label, sector_etfs_layout)
+        sector_form.addRow(sector_etfs_label, sector_etfs_layout)
         
         # Sector weight threshold
         sector_threshold_label = QLabel("Sector Threshold (%):")
@@ -2762,12 +2868,12 @@ class ConfigurationWidget(QWidget):
         sector_threshold_info = self.create_info_button("Minimum combined weight of aligned sectors required for trading. 43% ensures majority alignment.")
         sector_threshold_layout.addWidget(self.sector_threshold)
         sector_threshold_layout.addWidget(sector_threshold_info)
-        form.addRow(sector_threshold_label, sector_threshold_layout)
+        sector_form.addRow(sector_threshold_label, sector_threshold_layout)
         
         # Individual sector weights
         sector_weights_label = QLabel("Sector Weights:")
         sector_weights_label.setStyleSheet(label_style + " font-weight: bold;")
-        form.addRow(sector_weights_label, QLabel(""))
+        sector_form.addRow(sector_weights_label, QLabel(""))
         
         # XLK weight
         xlk_label = QLabel("  XLK (Tech) Weight:")
@@ -2782,7 +2888,7 @@ class ConfigurationWidget(QWidget):
         xlk_info = self.create_info_button("Technology sector weight in S&P 500. Default is 32%.")
         xlk_layout.addWidget(self.xlk_weight)
         xlk_layout.addWidget(xlk_info)
-        form.addRow(xlk_label, xlk_layout)
+        sector_form.addRow(xlk_label, xlk_layout)
         
         # XLF weight
         xlf_label = QLabel("  XLF (Financials) Weight:")
@@ -2797,7 +2903,7 @@ class ConfigurationWidget(QWidget):
         xlf_info = self.create_info_button("Financials sector weight in S&P 500. Default is 14%.")
         xlf_layout.addWidget(self.xlf_weight)
         xlf_layout.addWidget(xlf_info)
-        form.addRow(xlf_label, xlf_layout)
+        sector_form.addRow(xlf_label, xlf_layout)
         
         # XLV weight
         xlv_label = QLabel("  XLV (Healthcare) Weight:")
@@ -2812,7 +2918,7 @@ class ConfigurationWidget(QWidget):
         xlv_info = self.create_info_button("Healthcare sector weight in S&P 500. Default is 11%.")
         xlv_layout.addWidget(self.xlv_weight)
         xlv_layout.addWidget(xlv_info)
-        form.addRow(xlv_label, xlv_layout)
+        sector_form.addRow(xlv_label, xlv_layout)
         
         # XLY weight
         xly_label = QLabel("  XLY (Consumer) Weight:")
@@ -2827,11 +2933,107 @@ class ConfigurationWidget(QWidget):
         xly_info = self.create_info_button("Consumer Discretionary sector weight in S&P 500. Default is 11%.")
         xly_layout.addWidget(self.xly_weight)
         xly_layout.addWidget(xly_info)
-        form.addRow(xly_label, xly_layout)
+        sector_form.addRow(xly_label, xly_layout)
+        
+        # === MAG7 SETTINGS ===
+        mag7_widget = QWidget()
+        mag7_form = QFormLayout(mag7_widget)
+        mag7_form.setContentsMargins(0, 0, 0, 0)
+        mag7_form.setSpacing(15)
+        
+        # Mag7 stocks list
+        mag7_stocks_label = QLabel("Mag7 Stocks:")
+        mag7_stocks_label.setStyleSheet(label_style)
+        
+        mag7_stocks_layout = QHBoxLayout()
+        self.mag7_stocks = QLineEdit("AAPL, MSFT, AMZN, NVDA, GOOG, TSLA, META")
+        self.mag7_stocks.setStyleSheet(input_style)
+        mag7_stocks_info = self.create_info_button("The Magnificent 7 stocks to monitor. You can customize this list.")
+        mag7_stocks_layout.addWidget(self.mag7_stocks)
+        mag7_stocks_layout.addWidget(mag7_stocks_info)
+        mag7_form.addRow(mag7_stocks_label, mag7_stocks_layout)
+        
+        # Mag7 threshold
+        mag7_threshold_label = QLabel("Mag7 Alignment Threshold (%):")
+        mag7_threshold_label.setStyleSheet(label_style)
+        
+        mag7_threshold_layout = QHBoxLayout()
+        self.mag7_threshold = QSpinBox()
+        self.mag7_threshold.setRange(40, 80)
+        self.mag7_threshold.setValue(60)
+        self.mag7_threshold.setSuffix("%")
+        self.mag7_threshold.setStyleSheet(input_style)
+        mag7_threshold_info = self.create_info_button("Percentage of Mag7 stocks that must be aligned (bullish/bearish) to trigger trades. Default is 60%.")
+        mag7_threshold_layout.addWidget(self.mag7_threshold)
+        mag7_threshold_layout.addWidget(mag7_threshold_info)
+        mag7_form.addRow(mag7_threshold_label, mag7_threshold_layout)
+        
+        # Individual stock analysis settings
+        mag7_analysis_label = QLabel("Analysis Settings:")
+        mag7_analysis_label.setStyleSheet(label_style + " font-weight: bold;")
+        mag7_form.addRow(mag7_analysis_label, QLabel(""))
+        
+        # Price change threshold
+        price_change_label = QLabel("  Price Change Threshold (%):")
+        price_change_label.setStyleSheet(label_style)
+        
+        price_change_layout = QHBoxLayout()
+        self.mag7_price_change = QDoubleSpinBox()
+        self.mag7_price_change.setRange(0.05, 1.0)
+        self.mag7_price_change.setSingleStep(0.05)
+        self.mag7_price_change.setValue(0.1)
+        self.mag7_price_change.setSuffix("%")
+        self.mag7_price_change.setDecimals(2)
+        self.mag7_price_change.setStyleSheet(input_style)
+        price_change_info = self.create_info_button("Minimum price change to consider a stock bullish/bearish. Default is 0.1%.")
+        price_change_layout.addWidget(self.mag7_price_change)
+        price_change_layout.addWidget(price_change_info)
+        mag7_form.addRow(price_change_label, price_change_layout)
+        
+        # Add minimum aligned stocks
+        min_aligned_label = QLabel("  Minimum Aligned Stocks:")
+        min_aligned_label.setStyleSheet(label_style)
+        
+        min_aligned_layout = QHBoxLayout()
+        self.mag7_min_aligned = QSpinBox()
+        self.mag7_min_aligned.setRange(3, 7)
+        self.mag7_min_aligned.setValue(5)
+        self.mag7_min_aligned.setStyleSheet(input_style)
+        min_aligned_info = self.create_info_button("Minimum number of Mag7 stocks that must be aligned. Default is 5 out of 7.")
+        min_aligned_layout.addWidget(self.mag7_min_aligned)
+        min_aligned_layout.addWidget(min_aligned_info)
+        mag7_form.addRow(min_aligned_label, min_aligned_layout)
+        
+        # Add widgets to stack
+        self.strategy_stack.addWidget(sector_widget)
+        self.strategy_stack.addWidget(mag7_widget)
+        
+        # Add stack to form
+        form.addRow(self.strategy_stack)
         
         widget.setLayout(form)
+        
+        # Set initial state
+        self.on_strategy_changed(self.strategy_selector.currentText())
+        
         return widget
-    
+
+    def on_strategy_changed(self, strategy_text):
+        """Handle strategy selection change"""
+        if "Sector" in strategy_text:
+            self.strategy_stack.setCurrentIndex(0)
+            # Update any related UI elements if needed
+            dashboard = self.window().get_dashboard() if hasattr(self.window(), 'get_dashboard') else None
+            if dashboard:
+                dashboard.update_log(f"Switched to Sector Alignment Strategy")
+        else:  # Mag7
+            self.strategy_stack.setCurrentIndex(1)
+            # Update any related UI elements if needed
+            dashboard = self.window().get_dashboard() if hasattr(self.window(), 'get_dashboard') else None
+            if dashboard:
+                dashboard.update_log(f"Switched to Magnificent 7 Strategy")
+
+
     def create_stochastic_settings(self):
         """Create widget for stochastic oscillator settings"""
         widget = QWidget()

@@ -1501,11 +1501,11 @@ class UIController(QObject):
             backtest_widget.results_text.clear()
             
             # Extract parameters
-            tickers = params.get('tickers', ['SPY', 'QQQ'])
-            timeframe = params.get('timeframe', '5m')
+            tickers = params.get('tickers', ['AAPL', 'NVDA'])
+            timeframe = params.get('timeframe', '1m')
             start_date = params.get('start_date')
             end_date = params.get('end_date')
-            data_source = params.get('data_source', 'YFinance')
+            data_source = params.get('data_source', 'TradeStation')
             
             # Display header
             backtest_widget.results_text.append(f"""

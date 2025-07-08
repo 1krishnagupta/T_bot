@@ -31,6 +31,20 @@ class JigsawStrategy:
         self.market_data = market_data_client
         self.order_manager = order_manager
         
+        # Setup logging FIRST before any other operations
+        today = datetime.now().strftime("%Y-%m-%d")
+        log_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'logs'))
+        os.makedirs(log_folder, exist_ok=True)
+        log_file = os.path.join(log_folder, f"jigsaw_strategy_{today}.log")
+        
+        self.logger = logging.getLogger("JigsawStrategy")
+        self.logger.setLevel(logging.INFO)
+        if not self.logger.handlers:
+            handler = logging.FileHandler(log_file)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+        
         # Load configuration
         self.config = config or {}
         self.trading_config = self.config.get("trading_config", {})
@@ -61,27 +75,14 @@ class JigsawStrategy:
         self.market_open_time = datetime.now().replace(hour=9, minute=30, second=0, microsecond=0)
         self.market_close_time = datetime.now().replace(hour=16, minute=0, second=0, microsecond=0)
         
-        # Setup logging
-        today = datetime.now().strftime("%Y-%m-%d")
-        log_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'logs'))
-        os.makedirs(log_folder, exist_ok=True)
-        log_file = os.path.join(log_folder, f"jigsaw_strategy_{today}.log")
-        
-        self.logger = logging.getLogger("JigsawStrategy")
-        self.logger.setLevel(logging.INFO)
-        if not self.logger.handlers:
-            handler = logging.FileHandler(log_file)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
-        
-            # Initialize Mag7 strategy if configured
-            self.mag7_strategy = None
-            if self.trading_config.get("use_mag7_confirmation", False):
-                self.mag7_strategy = Mag7Strategy(market_data_client, config)
+        # Initialize Mag7 strategy if configured
+        self.mag7_strategy = None
+        if self.trading_config.get("use_mag7_confirmation", False):
+            self.mag7_strategy = Mag7Strategy(market_data_client, config)
                     
         # Strategy initialized flag
         self.initialized = False
+        
         
     def initialize(self):
         """Initialize the strategy and subscribe to market data"""

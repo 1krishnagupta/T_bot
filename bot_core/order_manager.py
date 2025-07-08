@@ -25,6 +25,20 @@ class OrderManager:
         self.api = api
         self.account_id = account_id
         
+        # Setup logging FIRST before any other operations
+        today = datetime.now().strftime("%Y-%m-%d")
+        log_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'logs'))
+        os.makedirs(log_folder, exist_ok=True)
+        log_file = os.path.join(log_folder, f"order_manager_{today}.log")
+        
+        self.logger = logging.getLogger("OrderManager")
+        self.logger.setLevel(logging.INFO)
+        if not self.logger.handlers:
+            handler = logging.FileHandler(log_file)
+            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+        
         # Ensure we have an account ID
         if not self.account_id:
             self.account_id = self._get_account_id()
@@ -43,20 +57,6 @@ class OrderManager:
         
         # Load active orders from database on startup
         self._load_active_orders_from_db()
-        
-        # Setup logging
-        today = datetime.now().strftime("%Y-%m-%d")
-        log_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'logs'))
-        os.makedirs(log_folder, exist_ok=True)
-        log_file = os.path.join(log_folder, f"order_manager_{today}.log")
-        
-        self.logger = logging.getLogger("OrderManager")
-        self.logger.setLevel(logging.INFO)
-        if not self.logger.handlers:
-            handler = logging.FileHandler(log_file)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
             
     def _get_account_id(self) -> str:
         """

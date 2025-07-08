@@ -1,0 +1,7 @@
+2025-07-06 04:19:18,345 - MarketDataClient - ERROR - Error sending message: Connection is already closed.
+2025-07-06 04:20:11,893 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x00000276CCDE2E50>: cannot schedule new futures after shutdown
+2025-07-06 04:20:11,894 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-07-06 04:20:11,999 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x00000276CCDE2E50>: cannot schedule new futures after shutdown
+2025-07-06 04:20:12,007 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-07-06 04:20:12,143 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x00000276CCDE2E50>: cannot schedule new futures after shutdown
+2025-07-06 04:20:12,144 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown

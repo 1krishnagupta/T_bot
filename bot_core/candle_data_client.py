@@ -9,6 +9,7 @@ import json
 import logging
 from typing import Dict, List, Optional, Callable, Tuple, Any, Union
 from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
+from Code.bot_core.tradestation_data_fetcher import TradeStationDataFetcher
 
 from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
 
@@ -263,12 +264,15 @@ class CandleDataClient:
         return self.get_candles_from_db(symbol, period, start_time, end_time)
     
     
-    def fetch_historical_data_for_backtesting(self, symbols, period, start_date, end_date=None, data_source="TastyTrade", **kwargs):
+
+
+    def fetch_historical_data_for_backtesting(self, symbols, period, start_date, end_date=None, data_source="TradeStation", **kwargs):
         """
         Fetch historical data for backtesting from external sources and save to CSV files
-        FIXED: Only use the selected data source, don't fall back to other sources
+        Now defaults to TradeStation with fallback options
         """
         # Import directory manager
+        from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
         dir_manager = BacktestDirectoryManager()
         
         result = {}
@@ -314,8 +318,17 @@ class CandleDataClient:
         
         print(f"[*] Fetching data for symbols: {', '.join(all_symbols)}")
         
-        # Check for YFinance limitations and adjust date range if needed
-        if data_source == "YFinance":
+        # Show data source limitations
+        if data_source == "TradeStation":
+            print(f"\n[*] Using TradeStation API (Default)")
+            print(f"[*] TradeStation Data Capabilities:")
+            print(f"    - 1m data: Up to 40 days")
+            print(f"    - 5m data: Up to 6 months")
+            print(f"    - 15m data: Up to 1 year")
+            print(f"    - 30m data: Up to 2 years")
+            print(f"    - 1h data: Up to 3 years")
+            print(f"    - 1d data: Up to 10 years\n")
+        elif data_source == "YFinance":
             if period_str == "1m" and days_diff > 7:
                 print(f"[!] WARNING: YFinance only provides 7 days of 1-minute data")
                 print(f"[!] Adjusting start date from {start_date} to last 7 days")
@@ -326,6 +339,20 @@ class CandleDataClient:
                 print(f"[!] Adjusting start date from {start_date} to last 60 days")
                 start_date = end_date - timedelta(days=60)
                 days_diff = 60
+        
+        # Initialize TradeStation fetcher if needed
+        tradestation_fetcher = None
+        if data_source == "TradeStation":
+            try:
+                tradestation_fetcher = TradeStationDataFetcher()
+                if not tradestation_fetcher.test_connection():
+                    print(f"[!] TradeStation connection failed, falling back to YFinance")
+                    data_source = "YFinance"
+                    tradestation_fetcher = None
+            except Exception as e:
+                print(f"[!] Error initializing TradeStation: {e}")
+                print(f"[!] Falling back to YFinance")
+                data_source = "YFinance"
         
         for symbol in all_symbols:
             # Get proper file path from directory manager
@@ -357,6 +384,7 @@ class CandleDataClient:
 
                     # Normalize timezone
                     df = self._normalize_timezone(df)
+                    
                     # Convert DataFrame to list of dicts
                     candles = []
                     for timestamp, row in df.iterrows():
@@ -378,11 +406,21 @@ class CandleDataClient:
                 except Exception as e:
                     print(f"[!] Error loading cached data: {e}")
             
-            # Fetch new data ONLY from the selected source
+            # Fetch new data from the selected source
             try:
                 df = pd.DataFrame()  # Initialize empty DataFrame
                 
-                if data_source == "TastyTrade":
+                if data_source == "TradeStation" and tradestation_fetcher:
+                    print(f"[*] Fetching data for {symbol} using TradeStation API")
+                    
+                    # Fetch data from TradeStation
+                    df = tradestation_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
+                    
+                    if df.empty:
+                        print(f"[!] No data returned from TradeStation for {symbol}")
+                        continue
+                        
+                elif data_source == "TastyTrade":
                     print(f"[*] Fetching data for {symbol} using TastyTrade API")
                     
                     # Use the market data client's API instance if available
@@ -394,9 +432,10 @@ class CandleDataClient:
                         
                     if not api:
                         print(f"[!] No TastyTrade API instance available for {symbol}")
-                        continue  # Skip this symbol if no API
+                        continue
                     else:
                         # Initialize fetcher
+                        from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
                         fetcher = TastyTradeDataFetcher(api=api)
                         
                         # Map period to TastyTrade timeframe
@@ -410,33 +449,12 @@ class CandleDataClient:
                         }
                         tt_timeframe = timeframe_map.get(period_str, "5Min")
                         
-                        # For large date ranges, fetch in chunks
-                        if days_diff > 30 and period_str in ["1m", "5m"]:
-                            # Fetch in monthly chunks
-                            all_dfs = []
-                            current_start = start_date
-                            
-                            while current_start < end_date:
-                                current_end = min(current_start + timedelta(days=30), end_date)
-                                print(f"  Fetching chunk: {current_start} to {current_end}")
-                                
-                                chunk_df = fetcher.fetch_bars(symbol, current_start, current_end, tt_timeframe)
-                                if not chunk_df.empty:
-                                    all_dfs.append(chunk_df)
-                                
-                                current_start = current_end + timedelta(days=1)
-                                time.sleep(1)  # Rate limiting
-                            
-                            if all_dfs:
-                                df = pd.concat(all_dfs)
-                                df = df[~df.index.duplicated(keep='first')]
-                        else:
-                            # Single fetch
-                            df = fetcher.fetch_bars(symbol, start_date, end_date, tt_timeframe)
+                        # Fetch data
+                        df = fetcher.fetch_bars(symbol, start_date, end_date, tt_timeframe)
                         
                         if df.empty:
                             print(f"[!] No data returned from TastyTrade for {symbol}")
-                            continue  # Skip this symbol
+                            continue
                             
                 elif data_source == "YFinance":
                     print(f"[*] Fetching data for {symbol} using YFinance")

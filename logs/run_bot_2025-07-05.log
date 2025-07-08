@@ -15,3 +15,26 @@ Traceback (most recent call last):
   File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\order_manager.py", line 98, in _load_active_orders_from_db
     self.logger.error(f"Error loading orders from database: {e}")
 AttributeError: 'OrderManager' object has no attribute 'logger'
+2025-07-05 06:32:29,811 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-05 06:32:29,865 - PositionManager - INFO - Position collections initialized
+2025-07-05 06:32:29,867 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-05 06:32:29,869 - UIController - CRITICAL - Uncaught exception: AttributeError: 'JigsawStrategy' object has no attribute 'logger'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\jigsaw_strategy.py", line 1938, in _sync_positions_from_manager
+    self.logger.info(f"Synced {len(self.active_trades)} active positions from position manager")
+AttributeError: 'JigsawStrategy' object has no attribute 'logger'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 1293, in handle_login_success
+    self.jigsaw_strategy = JigsawStrategy(
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\jigsaw_strategy.py", line 41, in __init__
+    self._sync_positions_from_manager()
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\jigsaw_strategy.py", line 1945, in _sync_positions_from_manager
+    self.logger.error(f"Error syncing positions from manager: {e}")
+AttributeError: 'JigsawStrategy' object has no attribute 'logger'
+2025-07-05 06:34:25,328 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-05 06:34:25,336 - PositionManager - INFO - Position collections initialized
+2025-07-05 06:34:25,338 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-05 06:34:25,340 - JigsawStrategy - INFO - Synced 0 active positions from position manager
