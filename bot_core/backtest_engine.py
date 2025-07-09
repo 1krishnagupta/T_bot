@@ -97,26 +97,23 @@ class BacktestEngine:
             if self.config and 'trading_config' in self.config:
                 self.trading_config = self.config['trading_config']
                 
-                # Check which strategy is being used
+                # Check which strategy is being used - DEFINE strategy_name HERE
                 use_mag7 = self.trading_config.get('use_mag7_confirmation', False)
                 strategy_name = "Magnificent 7 (Mag7)" if use_mag7 else "Sector Alignment"
 
                 # Print configuration table
                 self._print_config_table(strategy_name, use_mag7)
                 
-            # INITIALIZE sector_weights HERE - BEFORE the if/else block
-            # Get sector weights from config (used for both strategies)
-            sector_weights = self.trading_config.get("sector_weights", {
-                "XLK": 32,
-                "XLF": 14,
-                "XLV": 11,
-                "XLY": 11
-            })
+            # Get configuration values
+            use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
             
             # Get historical candle data with better error handling
             if not self.candle_data_client:
                 self.logger.error("No candle data client provided")
                 return self._get_empty_result()
+            
+            # Pass config to candle_data_client
+            self.candle_data_client.config = self.config
                 
             # Fetch data from the selected source
             candles = self.candle_data_client.get_candles_for_backtesting(
@@ -184,10 +181,13 @@ class BacktestEngine:
             print(f"[*] DataFrame shape: {df.shape}")
             print(f"[*] DataFrame date range: {df['timestamp'].min()} to {df['timestamp'].max()}")
             
-            # Fetch sector ETF data or Mag7 data based on configuration
+            # Fetch additional data based on strategy
             print(f"[*] Checking strategy configuration...")
             use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
-            
+
+            # Initialize sector_data BEFORE the loop
+            sector_data = {}
+
             if use_mag7:
                 # Fetch Mag7 stock data
                 print(f"[*] Using Mag7 confirmation strategy")
@@ -195,7 +195,6 @@ class BacktestEngine:
                     ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
                 print(f"[*] Fetching Mag7 data using {data_source}...")
                 
-                mag7_data = {}
                 mag7_result = self.candle_data_client.fetch_historical_data_for_backtesting(
                     mag7_stocks, period, start_date, end_date,
                     data_source=data_source
@@ -234,20 +233,16 @@ class BacktestEngine:
                             stock_df = stock_df.reindex(df.set_index('timestamp').index, method='ffill')
                             stock_df = stock_df.reset_index()
                         
-                        mag7_data[stock] = stock_df
+                        sector_data[stock] = stock_df
                         print(f"[✓] Got {len(stock_df)} candles for {stock}")
                     else:
                         print(f"[!] No data for {stock}")
-                
-                # Pass Mag7 data to alignment check
-                sector_data = mag7_data  # Use mag7_data as sector_data
             else:
                 # Original sector ETF fetching logic
                 print(f"[*] Using sector confirmation strategy")
                 print(f"[*] Fetching sector ETF data using {data_source}...")
                 sectors = self.trading_config.get("sector_etfs", ["XLK", "XLF", "XLV", "XLY"])
                 selected_sectors = self.trading_config.get("selected_sectors", sectors)
-                sector_data = {}
                 
                 # Fetch only selected sectors
                 print(f"[*] Fetching data for selected sectors: {selected_sectors}")
@@ -264,6 +259,13 @@ class BacktestEngine:
                         sector_df = pd.DataFrame(sector_candles)
                         
                         # Standardize column names
+                        col_map = {
+                            'Open': 'open', 
+                            'High': 'high', 
+                            'Low': 'low', 
+                            'Close': 'close',
+                            'Volume': 'volume'
+                        }
                         sector_df = sector_df.rename(columns={k: v for k, v in col_map.items() if k in sector_df.columns})
                         
                         # Convert to numeric
@@ -276,7 +278,7 @@ class BacktestEngine:
                             if 'start_time' in sector_df.columns:
                                 sector_df['timestamp'] = sector_df['start_time']
                         
-                        # Ensure timestamp is string format for consistency
+                        # Ensure timestamp is datetime format
                         if 'timestamp' in sector_df.columns:
                             sector_df['timestamp'] = pd.to_datetime(sector_df['timestamp'])
                             # Align timestamps with main DataFrame
@@ -289,44 +291,53 @@ class BacktestEngine:
                     else:
                         print(f"[!] No data for sector {sector}")
 
-                # Ensure data is properly aligned
-                print(f"\n[*] Data alignment check:")
-                print(f"  - Main ticker ({symbol}): {len(df)} candles")
-                for sector, sector_df in sector_data.items():
-                    print(f"  - {sector}: {len(sector_df)} candles")
-                    if len(sector_df) != len(df):
-                        print(f"    [!] WARNING: Data length mismatch!")
-            
+            # Ensure data is properly aligned
+            print(f"\n[*] Data alignment check:")
+            print(f"  - Main ticker ({symbol}): {len(df)} candles")
+            for name, data_df in sector_data.items():
+                print(f"  - {name}: {len(data_df)} candles")
+                if len(data_df) != len(df):
+                    print(f"    [!] WARNING: Data length mismatch!")
+
+            # Initialize sector_weights HERE - BEFORE the main loop
+            # Get sector weights from config (used for both strategies)
+            sector_weights = self.trading_config.get("sector_weights", {
+                "XLK": 32,
+                "XLF": 14,
+                "XLV": 11,
+                "XLY": 11
+            })
+
             # Calculate technical indicators first
             print(f"[*] Calculating technical indicators...")
-            
+
             # 1. Calculate EMAs
             df['ema9'] = df['close'].ewm(span=9, adjust=False).mean()
             df['ema15'] = df['close'].ewm(span=15, adjust=False).mean()
-            
+
             # 2. Calculate VWAP
             df['vwap'] = self._calculate_vwap(df)
-            
+
             # 3. Calculate Bollinger Bands
             df['bb_middle'] = df['close'].rolling(window=20).mean()
             df['bb_std'] = df['close'].rolling(window=20).std()
             df['bb_upper'] = df['bb_middle'] + (df['bb_std'] * 2)
             df['bb_lower'] = df['bb_middle'] - (df['bb_std'] * 2)
             df['bb_width'] = (df['bb_upper'] - df['bb_lower']) / df['bb_middle']
-            
+
             # 4. Calculate Stochastic
             df['stoch_k'], df['stoch_d'] = self._calculate_stochastic_full(df)
-            
+
             # 5. Calculate ATR
             df['atr'] = self._calculate_atr_series(df)
-            
+
             # Calculate Heiken Ashi
             ha_df = self._calculate_heiken_ashi(df)
-            
+
             # Initialize tracking
             trades = []
             analysis_data = []
-            
+
             # Initial equity
             initial_equity = 10
             current_equity = initial_equity
@@ -334,7 +345,7 @@ class BacktestEngine:
             # Initialize best_method and all_method_stats
             best_method = None
             all_method_stats = {}
-            
+
             # Test different trailing methods
             trailing_methods = [
                 "Heiken Ashi Candle Trail (1-3 candle lookback)",
@@ -343,7 +354,7 @@ class BacktestEngine:
                 "ATR-Based Trail (1.5x ATR)",
                 "Fixed Tick/Point Trail (custom value)"
             ]
-            
+
             method_results = {}
             for method in trailing_methods:
                 method_results[method] = {
@@ -355,16 +366,16 @@ class BacktestEngine:
                     "max_drawdown": 0,
                     "equity_curve": [initial_equity]
                 }
-            
+
             # Process ALL candles (start from 0 for complete analysis)
             print(f"[*] Analyzing {len(df)} candles for trade signals...")
-            
+
             # Process candles from the beginning with minimal warmup
             warmup = min(30, len(df) // 10)  # Use 10% of data or 30, whichever is smaller
-            
+
             # Track active trades
             active_trades = {}
-            
+
             # Add some debugging counters
             sector_aligned_count = 0
             compression_count = 0
@@ -372,7 +383,8 @@ class BacktestEngine:
             trend_aligned_count = 0
             entry_signal_count = 0
             trade_count = 0
-            
+
+            # NOW START THE MAIN LOOP - sector_data is already defined
             # Analyze ALL candles including warmup period
             for i in range(len(df)):
                 current_time = df.iloc[i]['timestamp'] if 'timestamp' in df.columns else i
@@ -403,23 +415,49 @@ class BacktestEngine:
                 
                 # Only check for trading signals after warmup period
                 if i >= warmup and i < len(df) - 1:
-                    # 1. Check Sector Alignment - NOW sector_weights is defined
-                    sector_aligned, direction, combined_weight = self._check_sector_alignment(sector_data, i, sector_weights)
-                    analysis_record['sector_aligned'] = sector_aligned
-                    analysis_record['sector_direction'] = direction
-                    analysis_record['sector_weight'] = combined_weight if sector_aligned else 0
-                
+                    # 1. Check alignment based on strategy type
+                    use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
                     
-                    if sector_aligned:
-                        sector_aligned_count += 1
-                        print(f"  [✓] Candle {i}: Sector aligned ({direction}, weight={combined_weight}%)")
-                    else:
-                        if i % 100 == 0:  # Log every 100th candle to avoid spam
-                            print(f"  [✗] Candle {i}: No sector alignment")
+                    # Initialize alignment variables
+                    aligned = False
+                    direction = "neutral"
+                    alignment_value = 0
                     
-                    if not sector_aligned:
-                        analysis_record['skip_reason'] = f'No sector alignment (weight={combined_weight}%, threshold={self.trading_config.get("sector_weight_threshold", 43)}%)'
+                    if use_mag7:
+                        # Check Mag7 alignment
+                        aligned, direction, alignment_value = self._check_mag7_alignment(sector_data, i)
+                        analysis_record['sector_aligned'] = aligned  # Keep field name for compatibility
+                        analysis_record['sector_direction'] = direction
+                        analysis_record['sector_weight'] = alignment_value if aligned else 0
+                        
+                        if aligned:
+                            sector_aligned_count += 1
+                            print(f"  [✓] Candle {i}: Mag7 aligned ({direction}, {alignment_value:.1f}% stocks aligned)")
+                        else:
+                            if i % 100 == 0:  # Log every 100th candle to avoid spam
+                                print(f"  [✗] Candle {i}: No Mag7 alignment")
+                        
+                        if not aligned:
+                            analysis_record['skip_reason'] = f'No Mag7 alignment (aligned={alignment_value:.1f}%, threshold={self.trading_config.get("mag7_threshold", 60)}%)'
                     else:
+                        # Check Sector alignment (original ETF-based logic)
+                        aligned, direction, alignment_value = self._check_sector_alignment(sector_data, i, sector_weights)
+                        analysis_record['sector_aligned'] = aligned
+                        analysis_record['sector_direction'] = direction
+                        analysis_record['sector_weight'] = alignment_value if aligned else 0
+                        
+                        if aligned:
+                            sector_aligned_count += 1
+                            print(f"  [✓] Candle {i}: Sector aligned ({direction}, weight={alignment_value}%)")
+                        else:
+                            if i % 100 == 0:  # Log every 100th candle to avoid spam
+                                print(f"  [✗] Candle {i}: No sector alignment")
+                        
+                        if not aligned:
+                            analysis_record['skip_reason'] = f'No sector alignment (weight={alignment_value}%, threshold={self.trading_config.get("sector_weight_threshold", 43)}%)'
+                    
+                    # Continue with common logic for both strategies
+                    if aligned:
                         # 2. Check for Compression
                         compression_detected, comp_direction = self._detect_compression(df, i)
                         analysis_record['compression_detected'] = compression_detected
@@ -429,7 +467,7 @@ class BacktestEngine:
                             compression_count += 1
                         
                         if not compression_detected or comp_direction != direction:
-                            analysis_record['skip_reason'] = 'No compression or direction mismatch'
+                            analysis_record['skip_reason'] = f'No compression or direction mismatch (compression={comp_direction}, {strategy_name.lower()}={direction})'
                         else:
                             # 3. Check Momentum
                             stoch_aligned = False
@@ -444,7 +482,10 @@ class BacktestEngine:
                                 momentum_aligned_count += 1
                             
                             if not stoch_aligned:
-                                analysis_record['skip_reason'] = 'Momentum not aligned'
+                                if direction == "bullish":
+                                    analysis_record['skip_reason'] = f'Momentum not aligned (Stoch K={df.iloc[i]["stoch_k"]:.1f} <= 20)'
+                                else:
+                                    analysis_record['skip_reason'] = f'Momentum not aligned (Stoch K={df.iloc[i]["stoch_k"]:.1f} >= 80)'
                             else:
                                 # 3b. Price relative to VWAP and EMA15
                                 trend_aligned = False
@@ -460,7 +501,10 @@ class BacktestEngine:
                                     trend_aligned_count += 1
                                 
                                 if not trend_aligned:
-                                    analysis_record['skip_reason'] = 'Trend not aligned'
+                                    if direction == "bullish":
+                                        analysis_record['skip_reason'] = f'Trend not aligned (Price={df.iloc[i]["close"]:.2f} must be > VWAP={df.iloc[i]["vwap"]:.2f} and EMA15={df.iloc[i]["ema15"]:.2f})'
+                                    else:
+                                        analysis_record['skip_reason'] = f'Trend not aligned (Price={df.iloc[i]["close"]:.2f} must be < VWAP={df.iloc[i]["vwap"]:.2f} and EMA15={df.iloc[i]["ema15"]:.2f})'
                                 else:
                                     # 4. Check Entry Trigger
                                     if i < len(ha_df):
@@ -471,12 +515,15 @@ class BacktestEngine:
                                             entry_signal_count += 1
                                         
                                         if not entry_signal or entry_signal != direction:
-                                            analysis_record['skip_reason'] = 'No entry signal'
+                                            analysis_record['skip_reason'] = f'No entry signal (HA signal={entry_signal}, expected={direction})'
                                         else:
                                             # Valid trade signal found!
                                             analysis_record['trade_entered'] = True
                                             analysis_record['trade_direction'] = entry_signal
                                             trade_count += 1
+                                            
+                                            # Log the trade entry
+                                            print(f"  [💰] TRADE ENTERED at candle {i}: {direction.upper()} @ ${df.iloc[i]['close']:.2f}")
                                             
                                             # Simulate trades for each trailing method
                                             for method in trailing_methods:
@@ -539,13 +586,16 @@ class BacktestEngine:
                                                 current_equity += best_trade["pnl_dollars"]
                 else:
                     analysis_record['skip_reason'] = 'Warmup period' if i < warmup else 'End of data'
-                
+                                
                 # Add record to analysis data
                 analysis_data.append(analysis_record)
             
             print(f"[✓] Analysis complete. Processed {len(analysis_data)} candles.")
+            
+            # Print statistics with correct labels
+            strategy_type = "Mag7" if use_mag7 else "Sector"
             print(f"\n[*] Signal Statistics:")
-            print(f"  - Sector Aligned: {sector_aligned_count} times")
+            print(f"  - {strategy_type} Aligned: {alignment_count} times")
             print(f"  - Compression Detected: {compression_count} times")
             print(f"  - Momentum Aligned: {momentum_aligned_count} times")
             print(f"  - Trend Aligned: {trend_aligned_count} times")
@@ -555,8 +605,15 @@ class BacktestEngine:
             # Add debug info about why trades weren't entered
             if trade_count == 0:
                 print(f"\n[!] No trades found. Debugging info:")
-                print(f"  - Sector data available: {len(sector_data)} sectors")
-                print(f"  - Sector weight threshold: {self.trading_config.get('sector_weight_threshold', 43)}%")
+                print(f"  - {strategy_type} data available: {len(alignment_data)} symbols")
+                
+                if use_mag7:
+                    print(f"  - Mag7 threshold: {self.trading_config.get('mag7_threshold', 60)}%")
+                    print(f"  - Mag7 stocks configured: {self.trading_config.get('mag7_stocks', ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'])}")
+                else:
+                    print(f"  - Sector weight threshold: {self.trading_config.get('sector_weight_threshold', 43)}%")
+                    print(f"  - Sectors configured: {self.trading_config.get('selected_sectors', ['XLK', 'XLF', 'XLV', 'XLY'])}")
+                
                 print(f"  - Compression threshold: {self.trading_config.get('bb_width_threshold', 0.05)}")
                 print(f"  - Donchian threshold: {self.trading_config.get('donchian_contraction_threshold', 0.6)}")
                 print(f"  - Volume squeeze threshold: {self.trading_config.get('volume_squeeze_threshold', 0.3)}")
@@ -568,16 +625,16 @@ class BacktestEngine:
                     print(f"\n  Sample candle analysis (idx {sample_idx}):")
                     print(f"    - Close: {sample.get('close', 'N/A')}")
                     print(f"    - BB Width: {sample.get('bb_width', 'N/A')}")
-                    print(f"    - Sector aligned: {sample.get('sector_aligned', False)}")
+                    print(f"    - Alignment detected: {sample.get('alignment_detected', False)}")
                     print(f"    - Compression: {sample.get('compression_detected', False)}")
                     print(f"    - Skip reason: {sample.get('skip_reason', 'N/A')}")
                 
-                # Check if sector data is valid
-                for sector, df in sector_data.items():
-                    if isinstance(df, pd.DataFrame) and not df.empty:
-                        print(f"  - {sector}: {len(df)} candles, date range: {df.iloc[0]['timestamp']} to {df.iloc[-1]['timestamp']}")
+                # Check if alignment data is valid
+                for symbol_name, data_df in alignment_data.items():
+                    if isinstance(data_df, pd.DataFrame) and not data_df.empty:
+                        print(f"  - {symbol_name}: {len(data_df)} candles, date range: {data_df.iloc[0]['timestamp']} to {data_df.iloc[-1]['timestamp']}")
                     else:
-                        print(f"  - {sector}: No data!")
+                        print(f"  - {symbol_name}: No data!")
             
             # Determine best trailing method
             best_profit_factor = 0
@@ -604,10 +661,10 @@ class BacktestEngine:
                         best_profit_factor = profit_factor
                         best_method = method
                 
+            # Create run-specific logger if not exists
             if not hasattr(self, 'run_id'):
                 self.run_id = self.dir_manager.generate_run_id()
             
-            # Create run-specific logger if not exists
             if not hasattr(self, 'run_logger'):
                 run_log_path = self.dir_manager.get_log_path(self.run_id)
                 self.run_logger = logging.getLogger(f"BacktestEngine_{self.run_id}")
@@ -625,24 +682,56 @@ class BacktestEngine:
             self.run_logger.info(f"  Period: {period}m")
             self.run_logger.info(f"  Date Range: {start_date} to {end_date}")
             self.run_logger.info(f"  Total Candles: {len(df)}")
-            self.run_logger.info(f"  Sector Aligned Count: {sector_aligned_count}")
+            self.run_logger.info(f"  Strategy: {strategy_name}")
+            self.run_logger.info(f"  Alignment Count: {sector_aligned_count}")
             self.run_logger.info(f"  Compression Count: {compression_count}")
             self.run_logger.info(f"  Entry Signals: {entry_signal_count}")
             self.run_logger.info(f"  Trades Entered: {trade_count}")
             
-            # Save analysis data
-            analysis_path = self.dir_manager.get_analysis_path(self.run_id, f"{symbol}_{period}min_analysis")
-            self._save_analysis_to_csv(analysis_data, analysis_path)
-            print(f"[✓] Saved complete analysis ({len(analysis_data)} records) to {analysis_path}")
-            self.logger.info(f"Saved analysis to {analysis_path}")
-            self.run_logger.info(f"Analysis saved: {analysis_path} ({len(analysis_data)} records)")
+            # Save analysis data - FIX THIS SECTION
+            try:
+                # Ensure we have the directory manager
+                if not hasattr(self, 'dir_manager'):
+                    from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
+                    self.dir_manager = BacktestDirectoryManager()
+                
+                # Get strategy type for filename
+                use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
+                strategy_suffix = "mag7" if use_mag7 else "sector"
+                
+                # Generate analysis path with strategy name
+                analysis_path = self.dir_manager.get_analysis_path(
+                    self.run_id, 
+                    f"{symbol}_{period}min_{strategy_suffix}_analysis"
+                )
+                
+                # Make sure the directory exists
+                os.makedirs(os.path.dirname(analysis_path), exist_ok=True)
+                
+                # Save analysis data
+                self._save_analysis_to_csv(analysis_data, analysis_path)
+                
+                print(f"[✓] Saved {strategy_suffix} strategy analysis ({len(analysis_data)} records) to {analysis_path}")
+                self.logger.info(f"Saved {strategy_suffix} analysis to {analysis_path}")
+                self.run_logger.info(f"{strategy_suffix.capitalize()} analysis saved: {analysis_path} ({len(analysis_data)} records)")
+                
+            except Exception as e:
+                print(f"[✗] Error saving analysis data: {str(e)}")
+                self.logger.error(f"Error saving analysis data: {str(e)}")
+                import traceback
+                traceback.print_exc()
             
             # Save trades data
-            trades_path = self.dir_manager.get_results_path(self.run_id, 'trades')
-            self._save_trades_to_csv(trades, trades_path)
-            print(f"[✓] Saved trades to {trades_path}")
-            self.logger.info(f"Saved trades to {trades_path}")
-            self.run_logger.info(f"Trades saved: {trades_path} ({len(trades)} trades)")
+            try:
+                trades_path = self.dir_manager.get_results_path(self.run_id, 'trades')
+                os.makedirs(os.path.dirname(trades_path), exist_ok=True)
+                self._save_trades_to_csv(trades, trades_path)
+                print(f"[✓] Saved trades to {trades_path}")
+                self.logger.info(f"Saved trades to {trades_path}")
+                self.run_logger.info(f"Trades saved: {trades_path} ({len(trades)} trades)")
+            except Exception as e:
+                print(f"[✗] Error saving trades data: {str(e)}")
+                self.logger.error(f"Error saving trades data: {str(e)}")
 
             # Return results - handle case where no trades were found
             if best_method and best_method in all_method_stats:
@@ -659,7 +748,8 @@ class BacktestEngine:
                     "Final Equity": round(stats['final_equity'], 2),
                     "Optimal Trailing Method": best_method,
                     "All Methods": all_method_stats,
-                    "Trades": trades
+                    "Trades": trades,
+                    "Strategy": strategy_suffix  # Add strategy to results
                 }
                 
                 return result
@@ -668,14 +758,15 @@ class BacktestEngine:
                 empty_result = self._get_empty_result()
                 empty_result["Debug Info"] = {
                     "Total Candles": len(df),
-                    "Sector Aligned": sector_aligned_count,
+                    "Strategy": strategy_suffix,
+                    f"{strategy_suffix.capitalize()} Aligned": sector_aligned_count,
                     "Compression Detected": compression_count,
                     "Momentum Aligned": momentum_aligned_count,
                     "Trend Aligned": trend_aligned_count,
                     "Entry Signals": entry_signal_count,
                     "Trades": trade_count
                 }
-                print("\n[!] No trades found. Check the debug info above.")
+                print(f"\n[!] No trades found using {strategy_suffix} strategy. Check the debug info above.")
                 return empty_result
                 
         except Exception as e:
@@ -798,25 +889,188 @@ class BacktestEngine:
             
     def _save_analysis_to_csv(self, analysis_data, filename):
         """
-        Save detailed analysis data to CSV
+        Save detailed analysis data to CSV with configuration parameters
         
         Args:
             analysis_data (list): List of analysis records
             filename (str): Output filename
         """
-        if not analysis_data:
-            return
-            
-        # Identify all keys in analysis data
-        all_keys = set()
-        for record in analysis_data:
-            all_keys.update(record.keys())
+        print(f"[DEBUG] _save_analysis_to_csv called with filename: {filename}")
+        print(f"[DEBUG] Analysis data length: {len(analysis_data) if analysis_data else 0}")
         
-        # Write to CSV
-        with open(filename, 'w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=sorted(list(all_keys)))
-            writer.writeheader()
-            writer.writerows(analysis_data)
+        if not analysis_data:
+            print("[DEBUG] No analysis data to save!")
+            return
+        
+        try:
+            # Determine which strategy is being used
+            use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
+            strategy_name = "Mag7" if use_mag7 else "Sector"
+            print(f"[DEBUG] Strategy detected: {strategy_name}")
+            
+            # Get all configuration parameters
+            config_params = {
+                'strategy_type': strategy_name,
+                'bb_width_threshold': self.trading_config.get("bb_width_threshold", 0.05),
+                'donchian_threshold': self.trading_config.get("donchian_contraction_threshold", 0.6),
+                'volume_squeeze_threshold': self.trading_config.get("volume_squeeze_threshold", 0.3),
+                'stochastic_k_period': self.trading_config.get("stochastic_k_period", 5),
+                'stochastic_d_period': self.trading_config.get("stochastic_d_period", 3),
+                'stochastic_smooth': self.trading_config.get("stochastic_smooth", 2),
+                'ema_value': self.trading_config.get("ema_value", 15),
+                'adx_filter': self.trading_config.get("adx_filter", True),
+                'adx_minimum': self.trading_config.get("adx_minimum", 20),
+                'stop_loss_method': self.trading_config.get("stop_loss_method", "ATR Multiple"),
+                'atr_multiple': self.trading_config.get("atr_multiple", 1.5),
+                'fixed_stop_percentage': self.trading_config.get("fixed_stop_percentage", 1.0),
+                'trailing_stop_method': self.trading_config.get("trailing_stop_method", "Heiken Ashi Candle Trail"),
+                'contracts_per_trade': self.trading_config.get("contracts_per_trade", 1),
+                'no_trade_window_minutes': self.trading_config.get("no_trade_window_minutes", 3),
+                'auto_close_minutes': self.trading_config.get("auto_close_minutes", 15),
+                'cutoff_time': self.trading_config.get("cutoff_time", "15:15"),
+                'failsafe_minutes': self.trading_config.get("failsafe_minutes", 20),
+                'volume_spike_threshold': self.trading_config.get("volume_spike_threshold", 1.5),
+            }
+            
+            # Add strategy-specific parameters
+            if use_mag7:
+                config_params.update({
+                    'mag7_threshold': self.trading_config.get("mag7_threshold", 60),
+                    'mag7_price_change_threshold': self.trading_config.get("mag7_price_change_threshold", 0.2),
+                    'mag7_min_aligned': self.trading_config.get("mag7_min_aligned", 4),
+                    'mag7_stocks': ', '.join(self.trading_config.get("mag7_stocks", 
+                        ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]))
+                })
+            else:
+                config_params.update({
+                    'sector_weight_threshold': self.trading_config.get("sector_weight_threshold", 43),
+                    'sector_etfs': ', '.join(self.trading_config.get("selected_sectors", 
+                        self.trading_config.get("sector_etfs", ["XLK", "XLF", "XLV", "XLY"]))),
+                    'xlk_weight': self.trading_config.get("sector_weights", {}).get("XLK", 32),
+                    'xlf_weight': self.trading_config.get("sector_weights", {}).get("XLF", 14),
+                    'xlv_weight': self.trading_config.get("sector_weights", {}).get("XLV", 11),
+                    'xly_weight': self.trading_config.get("sector_weights", {}).get("XLY", 11),
+                })
+            
+            # Create enhanced analysis records with config parameters
+            enhanced_records = []
+            for i, record in enumerate(analysis_data):
+                if i == 0:  # Debug first record
+                    print(f"[DEBUG] First record keys: {list(record.keys())[:10]}...")
+                    
+                enhanced_record = {}
+                
+                # First add all config parameters
+                for key, value in config_params.items():
+                    enhanced_record[f'config_{key}'] = value
+                
+                # Then add comparison values for key metrics
+                if 'bb_width' in record and record['bb_width'] is not None:
+                    enhanced_record['bb_width_vs_threshold'] = f"{record['bb_width']:.4f} vs {config_params['bb_width_threshold']:.4f}"
+                    enhanced_record['bb_compression'] = 'YES' if record['bb_width'] < config_params['bb_width_threshold'] else 'NO'
+                
+                if 'stoch_k' in record and record['stoch_k'] is not None:
+                    if record.get('sector_direction') == 'bullish' or record.get('compression_direction') == 'bullish':
+                        enhanced_record['stoch_momentum_aligned'] = 'YES' if record['stoch_k'] > 20 else 'NO'
+                        enhanced_record['stoch_k_vs_threshold'] = f"{record['stoch_k']:.1f} vs >20"
+                    elif record.get('sector_direction') == 'bearish' or record.get('compression_direction') == 'bearish':
+                        enhanced_record['stoch_momentum_aligned'] = 'YES' if record['stoch_k'] < 80 else 'NO'
+                        enhanced_record['stoch_k_vs_threshold'] = f"{record['stoch_k']:.1f} vs <80"
+                
+                if 'atr' in record and record['atr'] is not None:
+                    enhanced_record['stop_loss_distance'] = f"{record['atr'] * config_params['atr_multiple']:.2f}" if config_params['stop_loss_method'] == 'ATR Multiple' else f"{config_params['fixed_stop_percentage']}%"
+                
+                # Add alignment specific info
+                if use_mag7:
+                    if 'sector_weight' in record:  # Actually Mag7 percentage
+                        enhanced_record['mag7_alignment'] = f"{record['sector_weight']:.1f}% vs {config_params['mag7_threshold']}%"
+                        enhanced_record['mag7_aligned'] = 'YES' if record.get('sector_aligned', False) else 'NO'
+                else:
+                    if 'sector_weight' in record:
+                        enhanced_record['sector_alignment'] = f"{record['sector_weight']}% vs {config_params['sector_weight_threshold']}%"
+                        enhanced_record['sector_aligned'] = 'YES' if record.get('sector_aligned', False) else 'NO'
+                
+                # Add all original record fields
+                for key, value in record.items():
+                    # Rename sector fields for Mag7 strategy
+                    if use_mag7 and key == 'sector_aligned':
+                        enhanced_record['mag7_aligned'] = value
+                    elif use_mag7 and key == 'sector_direction':
+                        enhanced_record['mag7_direction'] = value
+                    elif use_mag7 and key == 'sector_weight':
+                        enhanced_record['mag7_percentage'] = value
+                    else:
+                        enhanced_record[key] = value
+                
+                enhanced_records.append(enhanced_record)
+            
+            print(f"[DEBUG] Created {len(enhanced_records)} enhanced records")
+            
+            # Identify all keys in enhanced records
+            all_keys = set()
+            for record in enhanced_records:
+                all_keys.update(record.keys())
+            
+            print(f"[DEBUG] Total unique keys: {len(all_keys)}")
+            
+            # Define column order - config parameters first, then comparisons, then data
+            config_keys = [k for k in sorted(all_keys) if k.startswith('config_')]
+            comparison_keys = ['bb_width_vs_threshold', 'bb_compression', 'stoch_k_vs_threshold', 
+                            'stoch_momentum_aligned', 'stop_loss_distance', 'mag7_alignment', 
+                            'mag7_aligned', 'sector_alignment', 'sector_aligned']
+            comparison_keys = [k for k in comparison_keys if k in all_keys]
+            
+            # Core data columns in logical order
+            core_columns = ['candle_idx', 'timestamp', 'open', 'high', 'low', 'close', 'volume',
+                        'ema9', 'ema15', 'vwap', 'bb_width', 'stoch_k', 'stoch_d', 'atr']
+            
+            # Strategy-specific columns
+            if use_mag7:
+                strategy_columns = ['mag7_aligned', 'mag7_direction', 'mag7_percentage']
+            else:
+                strategy_columns = ['sector_aligned', 'sector_direction', 'sector_weight']
+            
+            # Signal columns
+            signal_columns = ['compression_detected', 'compression_direction', 'momentum_aligned',
+                            'trend_aligned', 'entry_signal', 'trade_entered', 'trade_direction',
+                            'skip_reason', 'equity']
+            
+            # Combine all columns in order
+            ordered_keys = config_keys + comparison_keys
+            for col_list in [core_columns, strategy_columns, signal_columns]:
+                for col in col_list:
+                    if col in all_keys and col not in ordered_keys:
+                        ordered_keys.append(col)
+            
+            # Add any remaining keys
+            for key in sorted(all_keys):
+                if key not in ordered_keys:
+                    ordered_keys.append(key)
+            
+            print(f"[DEBUG] Writing CSV with {len(ordered_keys)} columns")
+            
+            # Write to CSV
+            import csv
+            with open(filename, 'w', newline='') as f:
+                writer = csv.DictWriter(f, fieldnames=ordered_keys)
+                writer.writeheader()
+                writer.writerows(enhanced_records)
+                
+            print(f"[DEBUG] Successfully wrote CSV to: {filename}")
+            
+            # Verify file was created
+            if os.path.exists(filename):
+                file_size = os.path.getsize(filename)
+                print(f"[DEBUG] File created successfully, size: {file_size} bytes")
+            else:
+                print(f"[DEBUG] ERROR: File was not created!")
+                
+        except Exception as e:
+            print(f"[DEBUG] ERROR in _save_analysis_to_csv: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            raise
+
             
     def _save_trades_to_csv(self, trades, filename):
         """
@@ -879,12 +1133,14 @@ class BacktestEngine:
         
         return ha
     
+
+
     def _check_sector_alignment(self, sector_data, idx, sector_weights):
         """
         Check for sector alignment OR Mag7 alignment based on configuration
         
         Args:
-            sector_data (dict): Dictionary of sector DataFrames
+            sector_data (dict): Dictionary of sector DataFrames (or Mag7 DataFrames)
             idx (int): Current index
             sector_weights (dict): Sector weights dictionary
             
@@ -893,6 +1149,7 @@ class BacktestEngine:
         """
         # Check if we should use Mag7 instead
         if self.trading_config.get("use_mag7_confirmation", False):
+            # For Mag7, pass the Mag7 data directly
             return self._check_mag7_alignment(sector_data, idx)
         
         # Original sector alignment logic
@@ -939,7 +1196,8 @@ class BacktestEngine:
             return True, xlk_status, aligned_weight
         
         return False, "neutral", aligned_weight
-    
+
+
 
     def _check_mag7_alignment(self, market_data, idx):
         """
@@ -952,13 +1210,14 @@ class BacktestEngine:
         Returns:
             tuple: (aligned, direction, percentage)
         """
-        # Get Mag7 stocks
-        mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+        # Get Mag7 stocks from config
+        mag7_stocks = self.trading_config.get("mag7_stocks", 
+            ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
         
         # Get threshold from config
         threshold = float(self.trading_config.get("mag7_threshold", 60))
         
-        # Extract Mag7 data
+        # Extract Mag7 data from market_data
         mag7_data = {}
         for symbol in mag7_stocks:
             if symbol in market_data:
@@ -978,10 +1237,12 @@ class BacktestEngine:
             current_price = df.iloc[idx]['close']
             avg_5 = df.iloc[idx-5:idx]['close'].mean()
             
-            # Determine status
-            if current_price > avg_5 * 1.002:  # 0.2% above average
+            # Determine status with price change threshold
+            price_change_threshold = self.trading_config.get("mag7_price_change_threshold", 0.2) / 100  # Convert percentage to decimal
+            
+            if current_price > avg_5 * (1 + price_change_threshold):  # Above average by threshold
                 stock_statuses[symbol] = "bullish"
-            elif current_price < avg_5 * 0.998:  # 0.2% below average
+            elif current_price < avg_5 * (1 - price_change_threshold):  # Below average by threshold
                 stock_statuses[symbol] = "bearish"
             else:
                 stock_statuses[symbol] = "neutral"
@@ -995,7 +1256,7 @@ class BacktestEngine:
         bullish_pct = (bullish_count / total_stocks) * 100
         bearish_pct = (bearish_count / total_stocks) * 100
         
-        self.logger.info(f"Mag7 alignment: {bullish_count} bullish ({bullish_pct:.1f}%), "
+        self.logger.info(f"Mag7 alignment at candle {idx}: {bullish_count} bullish ({bullish_pct:.1f}%), "
                         f"{bearish_count} bearish ({bearish_pct:.1f}%)")
         
         # Check alignment

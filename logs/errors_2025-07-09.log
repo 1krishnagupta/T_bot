@@ -68,3 +68,9 @@ UnboundLocalError: local variable 'summary_stats' referenced before assignment
 2025-07-09 03:43:57,435 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] ERROR: YFinance only provides 60 days of 5m data, but you requested 189 days
 2025-07-09 03:44:40,508 - BacktestEngine - ERROR - Error in backtest for AAPL: local variable 'sector_weights' referenced before assignment
 2025-07-09 03:44:46,556 - BacktestEngine - ERROR - Error in backtest for NVDA: local variable 'sector_weights' referenced before assignment
+2025-07-09 05:31:51,169 - BacktestEngine - ERROR - Error in backtest for AAPL: local variable 'sector_data' referenced before assignment
+2025-07-09 05:32:13,202 - BacktestEngine - ERROR - Error in backtest for NVDA: local variable 'sector_data' referenced before assignment
+2025-07-09 05:40:58,564 - BacktestEngine - ERROR - Error in backtest for AAPL: local variable 'sector_data' referenced before assignment
+2025-07-09 05:41:19,570 - BacktestEngine - ERROR - Error in backtest for NVDA: local variable 'sector_data' referenced before assignment
+2025-07-09 05:52:05,306 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_count' is not defined
+2025-07-09 05:52:33,210 - BacktestEngine - ERROR - Error in backtest for NVDA: name 'alignment_count' is not defined

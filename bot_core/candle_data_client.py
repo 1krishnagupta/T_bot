@@ -266,7 +266,6 @@ class CandleDataClient:
     
     
 
-
     def fetch_historical_data_for_backtesting(self, symbols, period, start_date, end_date=None, data_source="TradeStation", **kwargs):
         """
         Fetch historical data for backtesting from external sources and save to CSV files
@@ -294,26 +293,37 @@ class CandleDataClient:
         days_diff = (end_date - start_date).days
         self.logger.info(f"Fetching {days_diff} days of {period_str} data from {start_date} to {end_date}")
         
-        # ALWAYS fetch sector ETFs or Mag7 stocks based on strategy
+        # FIXED: Check strategy type BEFORE fetching additional symbols
         use_mag7 = False
-        if hasattr(self, 'config') and self.config:
-            use_mag7 = self.config.get("trading_config", {}).get("use_mag7_confirmation", False)
+        config = kwargs.get('config')
+        if not config and hasattr(self, 'config'):
+            config = self.config
+        
+        if config:
+            use_mag7 = config.get("trading_config", {}).get("use_mag7_confirmation", False)
+        
+        # Only fetch additional symbols based on strategy type
+        all_symbols = list(symbols)  # Start with requested symbols
         
         if use_mag7:
-            # Fetch Mag7 stocks
+            # Fetch Mag7 stocks for Mag7 strategy
             mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
-            if hasattr(self, 'config') and self.config:
-                mag7_stocks = self.config.get("trading_config", {}).get("mag7_stocks", mag7_stocks)
+            if config:
+                mag7_stocks = config.get("trading_config", {}).get("mag7_stocks", mag7_stocks)
             
-            all_symbols = list(symbols) + mag7_stocks
+            # Add Mag7 stocks to symbols list
+            all_symbols.extend(mag7_stocks)
+            print(f"[*] Using Mag7 strategy - fetching Mag7 stocks: {', '.join(mag7_stocks)}")
         else:
-            # Fetch sector ETFs
+            # Fetch sector ETFs for sector alignment strategy
             sector_etfs = ["XLK", "XLF", "XLV", "XLY"]
-            if hasattr(self, 'config') and self.config:
-                selected_sectors = self.config.get("trading_config", {}).get("selected_sectors", sector_etfs)
+            if config:
+                selected_sectors = config.get("trading_config", {}).get("selected_sectors", sector_etfs)
                 sector_etfs = selected_sectors
             
-            all_symbols = list(symbols) + sector_etfs
+            # Add sector ETFs to symbols list
+            all_symbols.extend(sector_etfs)
+            print(f"[*] Using Sector Alignment strategy - fetching ETFs: {', '.join(sector_etfs)}")
         
         all_symbols = list(set(all_symbols))  # Remove duplicates
         
@@ -504,6 +514,8 @@ class CandleDataClient:
         
         return result
 
+    
+
     def _dataframe_to_candles(self, df, symbol, period_str):
         """Convert DataFrame to list of candle dictionaries"""
         candles = []
@@ -543,9 +555,11 @@ class CandleDataClient:
         if missing_symbols:
             print(f"[*] Fetching missing symbols from {data_source}: {missing_symbols}")
             try:
+                # Pass config to fetch_historical_data_for_backtesting
                 external_data = self.fetch_historical_data_for_backtesting(
                     missing_symbols, period, start_date, end_date, 
-                    data_source=data_source
+                    data_source=data_source,
+                    config=getattr(self, 'config', None)  # Pass the config if available
                 )
                 
                 # Merge the results

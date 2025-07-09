@@ -84,6 +84,7 @@ class JigsawStrategy:
         self.initialized = False
         
         
+    
     def initialize(self):
         """Initialize the strategy and subscribe to market data"""
         if self.initialized:
@@ -94,22 +95,55 @@ class JigsawStrategy:
             self.tickers = self.trading_config.get("tickers", ["SPY", "QQQ", "AAPL", "MSFT", "TSLA"])
             if not isinstance(self.tickers, list):
                 self.tickers = [t.strip() for t in self.tickers.split(',')]
-                
-            # Initialize sector status tracking for real market data
-            self.sector_status = {
-                "XLK": "neutral",
-                "XLF": "neutral",
-                "XLV": "neutral",
-                "XLY": "neutral"
-            }
-            self.sector_prices = {}
-                
-            # Subscribe to real sector ETF data
-            self.market_data.subscribe_to_sector_etfs()
             
-            # Initialize Mag7 strategy if enabled
-            if self.mag7_strategy:
-                self.mag7_strategy.initialize()
+            # Check which strategy is being used
+            use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
+            
+            if use_mag7:
+                # Initialize Mag7 strategy if enabled
+                if self.mag7_strategy:
+                    self.mag7_strategy.initialize()
+                    self.logger.info("Initialized Mag7 strategy")
+                
+                # Get Mag7 stocks from config
+                mag7_stocks = self.trading_config.get("mag7_stocks", 
+                    ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
+                
+                # FIXED: Use the dedicated subscribe_to_mag7_stocks method
+                if hasattr(self.market_data, 'subscribe_to_mag7_stocks'):
+                    # Subscribe using the dedicated method
+                    channel_id = self.market_data.subscribe_to_mag7_stocks(mag7_stocks)
+                    self.logger.info(f"Subscribed to Mag7 stocks using dedicated method, channel: {channel_id}")
+                    
+                    # IMPORTANT: Set the callback for Mag7 updates
+                    self.market_data.on_mag7_update = self.update_mag7_status
+                else:
+                    # Fallback: Subscribe manually if method doesn't exist
+                    self.logger.warning("subscribe_to_mag7_stocks method not found, subscribing manually")
+                    for stock in mag7_stocks:
+                        streamer_symbol = self.instrument_fetcher.get_streamer_symbol(stock)
+                        self.market_data.subscribe(
+                            [streamer_symbol],
+                            event_types=["Quote", "Trade", "Summary"]
+                        )
+                
+            else:
+                # Initialize sector status tracking for real market data
+                self.sector_status = {
+                    "XLK": "neutral",
+                    "XLF": "neutral",
+                    "XLV": "neutral",
+                    "XLY": "neutral"
+                }
+                self.sector_prices = {}
+                
+                # Subscribe to real sector ETF data
+                self.market_data.subscribe_to_sector_etfs()
+                self.logger.info("Subscribed to sector ETFs for sector alignment strategy")
+                
+                # IMPORTANT: Set the callback for sector updates
+                if hasattr(self.market_data, 'on_sector_update'):
+                    self.market_data.on_sector_update = self.update_sector_status
             
             # Subscribe to real market data for watchlist tickers from config
             for ticker in self.tickers:
@@ -118,12 +152,16 @@ class JigsawStrategy:
                     [streamer_symbol],
                     event_types=["Quote", "Trade", "Summary"]
                 )
-                
+            
             self.initialized = True
-            self.logger.info("Jigsaw strategy initialized successfully with real market data connections")
+            strategy_type = "Mag7" if use_mag7 else "Sector Alignment"
+            self.logger.info(f"Jigsaw strategy initialized successfully with {strategy_type} confirmation")
             
         except Exception as e:
             self.logger.error(f"Error initializing strategy: {e}")
+
+
+
     
     def update_sector_status(self, sector, status, price):
         """
@@ -134,6 +172,10 @@ class JigsawStrategy:
             status (str): Status ("bullish", "bearish", "neutral")
             price (float): Current price
         """
+        # Only process sector updates if NOT using Mag7 strategy
+        if self.trading_config.get("use_mag7_confirmation", False):
+            return  # Ignore sector updates when using Mag7
+        
         # Store the sector status and price from real market data
         self.sector_status[sector] = status
         self.sector_prices[sector] = price
@@ -143,6 +185,7 @@ class JigsawStrategy:
         
         # Check for potential trade setups after sector update
         self.check_for_trade_setups()
+
     
     def update_mag7_status(self, symbol, price):
         """
@@ -152,28 +195,47 @@ class JigsawStrategy:
             symbol (str): Stock symbol
             price (float): Current price
         """
+        # Only process Mag7 updates if using Mag7 strategy
+        if not self.trading_config.get("use_mag7_confirmation", False):
+            return  # Ignore Mag7 updates when using sector alignment
+            
         if self.mag7_strategy and symbol in self.mag7_strategy.mag7_stocks:
             self.mag7_strategy.update_mag7_status(symbol, price)
             
             # Check for trade setups after Mag7 update
             self.check_for_trade_setups()
 
+
     def check_for_trade_setups(self):
         """Check for potential trade setups based on real market conditions"""
-        # Check if sector alignment exists
-        sector_aligned, direction, weight = self.detect_sector_alignment()
+        # Check which strategy is active
+        use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
         
-        if not sector_aligned:
-            return
+        if use_mag7:
+            # Check Mag7 alignment
+            if self.mag7_strategy:
+                aligned, direction, percentage = self.mag7_strategy.check_mag7_alignment()
+                if not aligned:
+                    return
+                
+                self.logger.info(f"Mag7 alignment detected: {direction} with {percentage:.1f}% alignment")
+        else:
+            # Check sector alignment
+            sector_aligned, direction, weight = self.detect_sector_alignment()
+            if not sector_aligned:
+                return
+                
+            self.logger.info(f"Sector alignment detected: {direction} with {weight}% weight")
         
-        # We have sector alignment, now check for compression in our watchlist
+        # We have alignment, now check for compression in our watchlist
         for ticker in self.tickers:
             compression_detected, comp_direction = self.detect_compression(ticker)
             
-            # Make sure compression direction matches sector alignment
+            # Make sure compression direction matches alignment direction
             if compression_detected and comp_direction == direction:
                 # We have a potential trade setup!
-                self.logger.info(f"TRADE SIGNAL: {comp_direction.upper()} compression breakout on {ticker} confirmed with sector alignment ({weight}%)")
+                strategy_name = "Mag7" if use_mag7 else "Sector"
+                self.logger.info(f"TRADE SIGNAL: {comp_direction.upper()} compression breakout on {ticker} confirmed with {strategy_name} alignment")
                 
                 # If we're not already in a trade for this ticker, enter it
                 if ticker not in self.active_trades:
@@ -1553,7 +1615,12 @@ class JigsawStrategy:
                 self.logger.info(f"Using Mag7 alignment: aligned={aligned}, direction={direction}, percentage={percentage}%")
                 return aligned, direction, percentage
             
-            # Original sector alignment logic
+            # Original sector alignment logic - only execute if NOT using Mag7
+            # Check if we have sector data
+            if not hasattr(self, 'sector_status') or not self.sector_status:
+                self.logger.warning("No sector status data available")
+                return False, "neutral", 0
+                
             # Log current sector status for debugging
             self.logger.info(f"Checking sector alignment. Current statuses: {self.sector_status}")
             

@@ -18,8 +18,8 @@ class MarketDataClient:
     """Client for streaming real-time market data from TastyTrade/DXLink"""
     
     def __init__(self, api_quote_token, on_quote=None, on_trade=None, on_greek=None, 
-            on_candle=None, on_sector_update=None, save_to_db=True, build_candles=True, 
-            candle_periods=(1, 2, 3, 5, 15), api=None): 
+            on_candle=None, on_sector_update=None, on_mag7_update=None, save_to_db=True, 
+            build_candles=True, candle_periods=(1, 2, 3, 5, 15), api=None): 
         """
         Initialize the market data client
         
@@ -30,6 +30,7 @@ class MarketDataClient:
             on_greek (callable): Callback for greek events
             on_candle (callable): Callback for candle events
             on_sector_update (callable): Callback for sector ETF updates
+            on_mag7_update (callable): Callback for Mag7 stock updates (NEW)
             save_to_db (bool): Whether to save data to database
             build_candles (bool): Whether to build candles from tick data
             candle_periods (tuple): Candle periods in minutes to build
@@ -73,6 +74,7 @@ class MarketDataClient:
         self.on_greek = on_greek
         self.on_candle = on_candle
         self.on_sector_update = on_sector_update
+        self.on_mag7_update = on_mag7_update  # NEW: Store Mag7 callback
         
         # For tracking sector ETF data
         self.sector_prices = {}
@@ -99,6 +101,8 @@ class MarketDataClient:
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
+
+
             
     def _save_quote_to_db(self, quote):
         """
@@ -875,7 +879,7 @@ class MarketDataClient:
 
                 # Check if this is a Mag7 stock and we have a callback
                 mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
-                if symbol in mag7_stocks and hasattr(self, 'on_mag7_update') and self.on_mag7_update:
+                if symbol in mag7_stocks and self.on_mag7_update:  # Use self.on_mag7_update instead of hasattr
                     # Calculate mid price
                     if bid_price > 0 and ask_price > 0:
                         price = (bid_price + ask_price) / 2
