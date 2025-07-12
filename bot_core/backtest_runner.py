@@ -135,6 +135,17 @@ class ProfessionalBacktestRunner:
         # Set run ID and directory manager
         backtest_engine.run_id = run_id
         backtest_engine.dir_manager = self.dir_manager
+
+        # Create run-specific logger for the backtest engine
+        run_log_path = self.dir_manager.get_log_path(run_id)
+        backtest_engine.run_logger = logging.getLogger(f"BacktestEngine_{run_id}")
+        backtest_engine.run_logger.setLevel(logging.INFO)
+        
+        if not backtest_engine.run_logger.handlers:
+            handler = logging.FileHandler(run_log_path)
+            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+            handler.setFormatter(formatter)
+            backtest_engine.run_logger.addHandler(handler)
         
         # Results storage
         all_results = {}

@@ -38,6 +38,10 @@ class BacktestEngine:
         self.logger = logging.getLogger("BacktestEngine")
         self.logger.setLevel(logging.INFO)
         if not self.logger.handlers:
+            # Initialize directory manager
+            from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
+            self.dir_manager = BacktestDirectoryManager()
+            self.run_id = self.dir_manager.generate_run_id()
             handler = logging.FileHandler(log_file)
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
@@ -377,7 +381,7 @@ class BacktestEngine:
             active_trades = {}
 
             # Add some debugging counters
-            sector_aligned_count = 0
+            alignment_count = 0  # Generic counter for any alignment strategy
             compression_count = 0
             momentum_aligned_count = 0
             trend_aligned_count = 0
@@ -431,7 +435,7 @@ class BacktestEngine:
                         analysis_record['sector_weight'] = alignment_value if aligned else 0
                         
                         if aligned:
-                            sector_aligned_count += 1
+                            alignment_count += 1
                             print(f"  [✓] Candle {i}: Mag7 aligned ({direction}, {alignment_value:.1f}% stocks aligned)")
                         else:
                             if i % 100 == 0:  # Log every 100th candle to avoid spam
@@ -447,7 +451,7 @@ class BacktestEngine:
                         analysis_record['sector_weight'] = alignment_value if aligned else 0
                         
                         if aligned:
-                            sector_aligned_count += 1
+                            alignment_count += 1
                             print(f"  [✓] Candle {i}: Sector aligned ({direction}, weight={alignment_value}%)")
                         else:
                             if i % 100 == 0:  # Log every 100th candle to avoid spam
@@ -509,6 +513,12 @@ class BacktestEngine:
                                     # 4. Check Entry Trigger
                                     if i < len(ha_df):
                                         entry_signal = self._check_entry_signal(df.iloc[i-1], df.iloc[i], ha_df.iloc[i])
+                                        
+                                        # Debug: Log why entry signal might be None
+                                        if entry_signal is None and i % 100 == 0:  # Log every 100th candle
+                                            ha_candle = ha_df.iloc[i]
+                                            print(f"  [DEBUG] No HA signal at candle {i}: HA_open={ha_candle['open']:.4f}, HA_close={ha_candle['close']:.4f}, HA_low={ha_candle['low']:.4f}, HA_high={ha_candle['high']:.4f}")
+                                        
                                         analysis_record['entry_signal'] = entry_signal
                                         
                                         if entry_signal:
@@ -605,7 +615,9 @@ class BacktestEngine:
             # Add debug info about why trades weren't entered
             if trade_count == 0:
                 print(f"\n[!] No trades found. Debugging info:")
-                print(f"  - {strategy_type} data available: {len(alignment_data)} symbols")
+                # Use the correct data variable based on strategy
+                data_count = len(sector_data) if sector_data else 0
+                print(f"  - {strategy_type} data available: {data_count} symbols")
                 
                 if use_mag7:
                     print(f"  - Mag7 threshold: {self.trading_config.get('mag7_threshold', 60)}%")
@@ -683,27 +695,28 @@ class BacktestEngine:
             self.run_logger.info(f"  Date Range: {start_date} to {end_date}")
             self.run_logger.info(f"  Total Candles: {len(df)}")
             self.run_logger.info(f"  Strategy: {strategy_name}")
-            self.run_logger.info(f"  Alignment Count: {sector_aligned_count}")
+            self.run_logger.info(f"  Alignment Count: {alignment_count}")
             self.run_logger.info(f"  Compression Count: {compression_count}")
             self.run_logger.info(f"  Entry Signals: {entry_signal_count}")
             self.run_logger.info(f"  Trades Entered: {trade_count}")
             
-            # Save analysis data - FIX THIS SECTION
+            # Save analysis data
             try:
-                # Ensure we have the directory manager
+                # Ensure we have the directory manager and run_id
                 if not hasattr(self, 'dir_manager'):
                     from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
                     self.dir_manager = BacktestDirectoryManager()
+                
+                if not hasattr(self, 'run_id'):
+                    self.run_id = self.dir_manager.generate_run_id()
                 
                 # Get strategy type for filename
                 use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
                 strategy_suffix = "mag7" if use_mag7 else "sector"
                 
                 # Generate analysis path with strategy name
-                analysis_path = self.dir_manager.get_analysis_path(
-                    self.run_id, 
-                    f"{symbol}_{period}min_{strategy_suffix}_analysis"
-                )
+                analysis_filename = f"{symbol}_{period}min_{strategy_suffix}_analysis"
+                analysis_path = self.dir_manager.get_analysis_path(self.run_id, analysis_filename)
                 
                 # Make sure the directory exists
                 os.makedirs(os.path.dirname(analysis_path), exist_ok=True)
@@ -713,7 +726,10 @@ class BacktestEngine:
                 
                 print(f"[✓] Saved {strategy_suffix} strategy analysis ({len(analysis_data)} records) to {analysis_path}")
                 self.logger.info(f"Saved {strategy_suffix} analysis to {analysis_path}")
-                self.run_logger.info(f"{strategy_suffix.capitalize()} analysis saved: {analysis_path} ({len(analysis_data)} records)")
+                
+                # Also save to run logger if available
+                if hasattr(self, 'run_logger'):
+                    self.run_logger.info(f"{strategy_suffix.capitalize()} analysis saved: {analysis_path} ({len(analysis_data)} records)")
                 
             except Exception as e:
                 print(f"[✗] Error saving analysis data: {str(e)}")
@@ -723,7 +739,13 @@ class BacktestEngine:
             
             # Save trades data
             try:
-                trades_path = self.dir_manager.get_results_path(self.run_id, 'trades')
+                # Ensure we have run_id
+                if not hasattr(self, 'run_id'):
+                    self.run_id = self.dir_manager.generate_run_id()
+                    
+                # Create a unique filename for each symbol
+                trades_filename = f"trades_{symbol}_{period}min"
+                trades_path = self.dir_manager.get_results_path(self.run_id, trades_filename)
                 os.makedirs(os.path.dirname(trades_path), exist_ok=True)
                 self._save_trades_to_csv(trades, trades_path)
                 print(f"[✓] Saved trades to {trades_path}")
@@ -759,7 +781,7 @@ class BacktestEngine:
                 empty_result["Debug Info"] = {
                     "Total Candles": len(df),
                     "Strategy": strategy_suffix,
-                    f"{strategy_suffix.capitalize()} Aligned": sector_aligned_count,
+                    f"{strategy_suffix.capitalize()} Aligned": alignment_count,
                     "Compression Detected": compression_count,
                     "Momentum Aligned": momentum_aligned_count,
                     "Trend Aligned": trend_aligned_count,
@@ -1585,12 +1607,13 @@ class BacktestEngine:
             ha_high = float(ha_candle["high"])
             ha_low = float(ha_candle["low"])
             
-            # Bullish signal - Flat-bottom, no lower wick = strong bullish candle
-            if abs(ha_open - ha_low) < 0.0001 and ha_close > ha_open:
+            # Bullish signal - Small or no lower wick = strong bullish candle
+            wick_tolerance = (ha_high - ha_low) * 0.1  # 10% of candle range
+            if abs(ha_open - ha_low) < wick_tolerance and ha_close > ha_open:
                 return "bullish"
                 
-            # Bearish signal - Flat-top, no upper wick = strong bearish candle  
-            if abs(ha_open - ha_high) < 0.0001 and ha_close < ha_open:
+            # Bearish signal - Small or no upper wick = strong bearish candle  
+            if abs(ha_open - ha_high) < wick_tolerance and ha_close < ha_open:
                 return "bearish"
         except Exception as e:
             self.logger.error(f"Error in entry signal check: {e}")
@@ -1686,8 +1709,14 @@ class BacktestEngine:
             # Simulate the trade
             entry_price = float(data.iloc[start_idx]['close'])
             max_profit = 0
+            min_holding_bars = 3  # Minimum 3 bars (15 minutes for 5m candles)
             
             for i in range(start_idx + 1, min(start_idx + max_bars, len(data))):
+                # Calculate bars held
+                bars_held = i - start_idx
+                # Skip exit checks if minimum holding period not met
+                if bars_held < min_holding_bars:
+                    continue
                 if i >= len(data):
                     break
                     
@@ -1782,17 +1811,30 @@ class BacktestEngine:
                     ha_open = float(ha_data.iloc[i]["open"])
                     ha_close = float(ha_data.iloc[i]["close"])
                     
+                    # Calculate current profit percentage
+                    if direction == "bullish":
+                        current_profit_pct = ((current_price - entry_price) / entry_price) * 100
+                    else:
+                        current_profit_pct = ((entry_price - current_price) / entry_price) * 100
+                    
+                    # Only exit on HA reversal if we have a minimum profit or are at a loss
+                    min_profit_before_exit = 0.5  # 0.5% minimum profit before allowing HA exit
+                    
                     if (direction == "bullish" and ha_open > ha_close) or (direction == "bearish" and ha_open < ha_close):
-                        return i, current_price, "Heiken Ashi reversal"
+                        # Only exit if we have decent profit or are losing money
+                        if current_profit_pct >= min_profit_before_exit or current_profit_pct < -0.1:
+                            return i, current_price, "Heiken Ashi reversal"
                         
                 # Check for opposing Stochastic crossover
                 if 'stoch_k' in data.columns and 'stoch_d' in data.columns:
                     k = data.iloc[i]['stoch_k']
                     d = data.iloc[i]['stoch_d']
+                    prev_k = data.iloc[i-1]['stoch_k'] if i > start_idx + 1 else k
                     
-                    if direction == "bullish" and k > 80 and k < d:
+                    # Only exit if stochastic is strongly overbought/oversold and crossing
+                    if direction == "bullish" and k > 85 and prev_k > d and k < d:
                         return i, current_price, "Stochastic overbought and crossing down"
-                    elif direction == "bearish" and k < 20 and k > d:
+                    elif direction == "bearish" and k < 15 and prev_k < d and k > d:
                         return i, current_price, "Stochastic oversold and crossing up"
                         
                 # Check for VWAP or EMA crossover against trade

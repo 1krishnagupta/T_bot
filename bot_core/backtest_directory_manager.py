@@ -110,7 +110,11 @@ This directory contains backtest results and performance metrics.
     
     def get_analysis_path(self, run_id, analysis_type):
         """Get the path for analysis file"""
-        filename = f"{run_id}_{analysis_type}.csv"
+        # Ensure analysis_type doesn't already have .csv extension
+        if analysis_type.endswith('.csv'):
+            filename = f"{run_id}_{analysis_type}"
+        else:
+            filename = f"{run_id}_{analysis_type}.csv"
         return os.path.join(self.analysis_dir, filename)
     
     def get_log_path(self, run_id):

@@ -1,0 +1,28 @@
+2025-07-12 17:22:29,051 - BacktestEngine - ERROR - Error in backtest for AAPL: 'TradeStationDataFetcher' object has no attribute 'logger'
+2025-07-12 17:22:29,233 - CandleDataClient - ERROR - Failed to fetch external data: 'TradeStationDataFetcher' object has no attribute 'logger'
+2025-07-12 17:22:29,236 - BacktestEngine - ERROR - Error in backtest for NVDA: 'TradeStationDataFetcher' object has no attribute 'logger'
+2025-07-12 17:27:12,973 - TradeStationDataFetcher - ERROR - No refresh token available. Cannot authenticate.
+2025-07-12 17:27:12,992 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-12 17:27:13,139 - TradeStationDataFetcher - ERROR - No refresh token available. Cannot authenticate.
+2025-07-12 17:27:13,162 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-12 17:31:38,475 - TradeStationDataFetcher - ERROR - No refresh token available. Cannot authenticate with TradeStation.
+2025-07-12 17:31:38,476 - TradeStationDataFetcher - ERROR - To get a refresh token:
+2025-07-12 17:31:38,477 - TradeStationDataFetcher - ERROR - 1. Visit: https://api.tradestation.com/docs/fundamentals/authentication/auth-overview
+2025-07-12 17:31:38,481 - TradeStationDataFetcher - ERROR - 2. Follow the OAuth2 authorization flow
+2025-07-12 17:31:38,482 - TradeStationDataFetcher - ERROR - 3. Save the refresh token and set it in the code or environment variable
+2025-07-12 17:31:38,550 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-12 17:31:38,785 - TradeStationDataFetcher - ERROR - No refresh token available. Cannot authenticate with TradeStation.
+2025-07-12 17:31:38,786 - TradeStationDataFetcher - ERROR - To get a refresh token:
+2025-07-12 17:31:38,786 - TradeStationDataFetcher - ERROR - 1. Visit: https://api.tradestation.com/docs/fundamentals/authentication/auth-overview
+2025-07-12 17:31:38,787 - TradeStationDataFetcher - ERROR - 2. Follow the OAuth2 authorization flow
+2025-07-12 17:31:38,787 - TradeStationDataFetcher - ERROR - 3. Save the refresh token and set it in the code or environment variable
+2025-07-12 17:31:38,834 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
+2025-07-12 18:12:09,990 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 41 days
+2025-07-12 18:12:10,164 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 41 days
+2025-07-12 18:12:10,168 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 41 days
+2025-07-12 18:13:33,650 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_count' is not defined
+2025-07-12 18:14:17,982 - BacktestEngine - ERROR - Error in backtest for NVDA: name 'alignment_count' is not defined
+2025-07-12 18:25:55,192 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_data' is not defined
+2025-07-12 18:26:09,408 - BacktestEngine - ERROR - Error in backtest for NVDA: name 'alignment_data' is not defined
+2025-07-12 18:42:45,298 - BacktestEngine - ERROR - Error in backtest for AAPL: local variable 'sector_aligned_count' referenced before assignment
+2025-07-12 18:42:58,573 - BacktestEngine - ERROR - Error in backtest for NVDA: local variable 'sector_aligned_count' referenced before assignment

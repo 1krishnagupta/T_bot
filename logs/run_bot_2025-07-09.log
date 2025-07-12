@@ -15618,3 +15618,18 @@ Backtest Summary for NVDA:
 2025-07-09 05:52:33,196 - BacktestEngine - INFO - Mag7 alignment at candle 1911: 1 bullish (14.3%), 0 bearish (0.0%)
 2025-07-09 05:52:33,203 - BacktestEngine - INFO - Mag7 alignment at candle 1912: 4 bullish (57.1%), 0 bearish (0.0%)
 2025-07-09 05:52:33,210 - BacktestEngine - ERROR - Error in backtest for NVDA: name 'alignment_count' is not defined
+2025-07-09 23:16:16,744 - OrderManager - INFO - Loaded 0 active orders from database
+2025-07-09 23:16:16,750 - PositionManager - INFO - Position collections initialized
+2025-07-09 23:16:16,751 - PositionManager - INFO - Loaded 0 active positions from database
+2025-07-09 23:16:16,753 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-07-09 23:16:37,779 - BacktestRun_20250709_231637 - INFO - ================================================================================
+2025-07-09 23:16:37,779 - BacktestRun_20250709_231637 - INFO - BACKTEST RUN ID: 20250709_231637
+2025-07-09 23:16:37,779 - BacktestRun_20250709_231637 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-07-09', 'data_source': 'TradeStation'}
+2025-07-09 23:16:37,779 - BacktestRun_20250709_231637 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.02, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-07-09 23:16:37,779 - BacktestRun_20250709_231637 - INFO - ================================================================================
+2025-07-09 23:16:38,030 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 23:16:48,563 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 23:16:48,594 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TradeStation authentication failed
+2025-07-09 23:16:48,780 - CandleDataClient - INFO - Fetching 189 days of 1m data from 2025-01-01 to 2025-07-09
+2025-07-09 23:16:53,739 - TradeStationDataFetcher - ERROR - All authentication attempts failed
+2025-07-09 23:16:53,849 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
