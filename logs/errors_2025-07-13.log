@@ -25,3 +25,4 @@
 2025-07-13 16:36:42,105 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_data' is not defined
 2025-07-13 16:59:35,196 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_data' is not defined
 2025-07-13 17:25:36,519 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_data' is not defined
+2025-07-13 23:24:27,133 - BacktestEngine - ERROR - Error in backtest for AAPL: name 'alignment_data' is not defined

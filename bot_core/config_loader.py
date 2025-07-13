@@ -133,6 +133,81 @@ class ConfigLoader:
                 "stochastic_k_period": 5,
                 "stochastic_d_period": 3,
                 "stochastic_smooth": 2,
+
+                # === HEIKEN ASHI CONFIGURATION ===
+                "ha_wick_tolerance": 0.1,  # Heiken Ashi wick tolerance (0.1 = 10% of candle range)
+                                           # Used to identify strong bullish/bearish candles
+                                           # Lower values = stricter signal, fewer trades
+                                           # Higher values = more lenient, more trades
+                                           # Range: 0.01 (1%) to 0.3 (30%), Default: 0.1 (10%)
+                
+                # === PRICE CHANGE THRESHOLDS ===
+                "sector_price_change_threshold": 0.2,  # Minimum % change to consider sector bullish/bearish
+                                                      # Used in sector alignment detection
+                                                      # Lower = more sensitive, Higher = less sensitive
+                                                      # Range: 0.05% to 1.0%, Default: 0.2%
+                
+                "mag7_lookback_periods": 5,  # Number of periods to look back for Mag7 average
+                                            # Used to calculate moving average for trend detection
+                                            # Range: 3 to 20, Default: 5
+                
+                # === COMPRESSION DETECTION PARAMETERS ===
+                "compression_lookback": 20,  # Number of candles to look back for compression
+                                           # Used for Bollinger Bands and Donchian Channels
+                                           # Range: 10 to 50, Default: 20
+                
+                "compression_threshold_count": 2,  # How many compression indicators needed (out of 3)
+                                                 # 1 = Any single indicator, 2 = At least 2, 3 = All 3
+                                                 # Range: 1 to 3, Default: 2
+                
+                # === ENTRY SIGNAL PARAMETERS ===
+                "min_bars_held": 3,  # Minimum bars to hold position before allowing exit
+                                    # Prevents premature exits on noise
+                                    # Range: 1 to 10, Default: 3
+                
+                "ha_exit_min_profit": 0.5,  # Minimum profit % before allowing HA reversal exit
+                                           # Prevents exits on small reversals when profitable
+                                           # Range: 0.1% to 2.0%, Default: 0.5%
+                
+                # === TREND ALIGNMENT PARAMETERS ===
+                "trend_alignment_threshold": 0.0,  # Price distance from VWAP/EMA as % for trend alignment
+                                                 # 0 = Price must be exactly above/below
+                                                 # 0.1 = Price can be within 0.1% for alignment
+                                                 # Range: 0.0% to 0.5%, Default: 0.0%
+                
+                # === STOCHASTIC PARAMETERS ===
+                "stoch_bullish_threshold": 20,  # Stochastic must be above this for bullish trades
+                                               # Higher = more selective entries
+                                               # Range: 10 to 40, Default: 20
+                
+                "stoch_bearish_threshold": 80,  # Stochastic must be below this for bearish trades
+                                              # Lower = more selective entries
+                                              # Range: 60 to 90, Default: 80
+                
+                "stoch_exit_overbought": 80,  # Exit long positions when stoch crosses down from here
+                                             # Range: 70 to 95, Default: 80
+                
+                "stoch_exit_oversold": 20,  # Exit short positions when stoch crosses up from here
+                                          # Range: 5 to 30, Default: 20
+                
+                # === VOLUME ANALYSIS ===
+                "volume_lookback": 10,  # Bars to look back for average volume calculation
+                                      # Used for volume spike detection
+                                      # Range: 5 to 20, Default: 10
+                
+                # === TRAILING STOP PARAMETERS ===
+                "ha_lookback_candles": 3,  # Number of HA candles to look back for trailing stop
+                                         # Range: 1 to 5, Default: 3
+                
+                "ema_trail_period": 9,  # EMA period for EMA trailing stop
+                                      # Range: 5 to 20, Default: 9
+                
+                "percent_trail_value": 1.5,  # Percentage for % price trailing stop
+                                           # Range: 0.5% to 5.0%, Default: 1.5%
+                
+                "fixed_trail_points": 5.0,  # Fixed points for tick/point trailing stop
+                                          # Range: 1.0 to 20.0, Default: 5.0
+                
                 
                 # Sector Configuration
                 "sector_etfs": ["XLK", "XLF", "XLV", "XLY"],

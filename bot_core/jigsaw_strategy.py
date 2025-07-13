@@ -441,13 +441,18 @@ class JigsawStrategy:
         # Get last candle
         last_candle = ha.iloc[-1]
         
+        # Get wick tolerance from config
+        wick_tolerance_pct = self.trading_config.get("ha_wick_tolerance", 0.1)
+        candle_range = last_candle['high'] - last_candle['low']
+        wick_tolerance = candle_range * wick_tolerance_pct if candle_range > 0 else 0.0001
+        
         if direction == "bullish":
-            # Check for flat-bottom, no lower wick (strong bullish candle)
-            return (last_candle['open'] == last_candle['low'] and 
+            # Check for small or no lower wick (strong bullish candle)
+            return (abs(last_candle['open'] - last_candle['low']) < wick_tolerance and 
                     last_candle['close'] > last_candle['open'])
         elif direction == "bearish":
-            # Check for flat-top, no upper wick (strong bearish candle)
-            return (last_candle['open'] == last_candle['high'] and 
+            # Check for small or no upper wick (strong bearish candle)
+            return (abs(last_candle['open'] - last_candle['high']) < wick_tolerance and 
                     last_candle['close'] < last_candle['open'])
                     
         return False
@@ -668,11 +673,15 @@ class JigsawStrategy:
             # 3a. Calculate Stochastic Oscillator (Barry Burns' method)
             k, d = self.calculate_stochastic(data_5m, k_period=5, d_period=3, smooth=2)
             
+            # Get stochastic thresholds from config
+            stoch_bullish_threshold = self.trading_config.get("stoch_bullish_threshold", 20)
+            stoch_bearish_threshold = self.trading_config.get("stoch_bearish_threshold", 80)
+            
             # Check if momentum is aligned with direction
             stoch_aligned = False
-            if direction == "bullish" and k > 20:  # Bullish and above 20
+            if direction == "bullish" and k > stoch_bullish_threshold:
                 stoch_aligned = True
-            elif direction == "bearish" and k < 80:  # Bearish and below 80
+            elif direction == "bearish" and k < stoch_bearish_threshold:
                 stoch_aligned = True
                 
             if not stoch_aligned:
@@ -1272,10 +1281,14 @@ class JigsawStrategy:
                 # Exit Condition: Opposing Stochastic crossover
                 k, d = self.calculate_stochastic(data_5m)
                 
-                if trade["type"] == "Long" and k > 80 and k < d:
+                # Get exit thresholds from config
+                stoch_exit_overbought = self.trading_config.get("stoch_exit_overbought", 80)
+                stoch_exit_oversold = self.trading_config.get("stoch_exit_oversold", 20)
+                
+                if trade["type"] == "Long" and k > stoch_exit_overbought and k < d:
                     self.exit_trade(symbol, reason="Stochastic overbought and crossing down")
                     continue
-                elif trade["type"] == "Short" and k < 20 and k > d:
+                elif trade["type"] == "Short" and k < stoch_exit_oversold and k > d:
                     self.exit_trade(symbol, reason="Stochastic oversold and crossing up")
                     continue
                 

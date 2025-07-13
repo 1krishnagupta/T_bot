@@ -293,6 +293,45 @@ class CandleDataClient:
         days_diff = (end_date - start_date).days
         self.logger.info(f"Fetching {days_diff} days of {period_str} data from {start_date} to {end_date}")
         
+        # Check if we've already shown data source limitations
+        if not hasattr(self, '_shown_data_limitations'):
+            self._shown_data_limitations = True
+            
+            # Show data source limitations only once
+            if data_source == "TradeStation":
+                print(f"\n[*] Using TradeStation API")
+                print(f"[*] TradeStation Data Capabilities:")
+                print(f"    - 1m data: Up to 40 days")
+                print(f"    - 5m data: Up to 6 months")
+                print(f"    - 15m data: Up to 1 year")
+                print(f"    - 30m data: Up to 2 years")
+                print(f"    - 1h data: Up to 3 years")
+                print(f"    - 1d data: Up to 10 years\n")
+            elif data_source == "TastyTrade":
+                print(f"\n[*] Using TastyTrade API")
+                print(f"[*] TastyTrade Data Capabilities:")
+                print(f"    - Requires active API connection")
+                print(f"    - Real-time and historical options data")
+                print(f"    - All timeframes available with account\n")
+            elif data_source == "YFinance":
+                print(f"\n[*] Using Yahoo Finance API")
+                print(f"[*] YFinance Data Capabilities:")
+                print(f"    - 1m data: Only last 7 days")
+                print(f"    - 5m data: Only last 60 days")
+                print(f"    - 15m data: Only last 60 days")
+                print(f"    - 30m+ data: Up to years of data")
+                print(f"    - Free, no authentication required\n")
+                
+                # Check for YFinance limitations
+                if period_str == "1m" and days_diff > 7:
+                    error_msg = f"[!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested {days_diff} days"
+                    print(error_msg)
+                    raise ValueError(error_msg)
+                elif period_str in ["5m", "15m"] and days_diff > 60:
+                    error_msg = f"[!] ERROR: YFinance only provides 60 days of {period_str} data, but you requested {days_diff} days"
+                    print(error_msg)
+                    raise ValueError(error_msg)
+        
         # FIXED: Check strategy type BEFORE fetching additional symbols
         use_mag7 = False
         config = kwargs.get('config')
@@ -302,8 +341,8 @@ class CandleDataClient:
         if config:
             use_mag7 = config.get("trading_config", {}).get("use_mag7_confirmation", False)
         
-        # Only fetch additional symbols based on strategy type
-        all_symbols = list(symbols)  # Start with requested symbols
+        # Create a set of all symbols we need to fetch
+        all_symbols_set = set(symbols)  # Start with requested symbols
         
         if use_mag7:
             # Fetch Mag7 stocks for Mag7 strategy
@@ -311,9 +350,13 @@ class CandleDataClient:
             if config:
                 mag7_stocks = config.get("trading_config", {}).get("mag7_stocks", mag7_stocks)
             
-            # Add Mag7 stocks to symbols list
-            all_symbols.extend(mag7_stocks)
-            print(f"[*] Using Mag7 strategy - fetching Mag7 stocks: {', '.join(mag7_stocks)}")
+            # Add Mag7 stocks to symbols set
+            all_symbols_set.update(mag7_stocks)
+            
+            # Only print this once
+            if not hasattr(self, '_shown_mag7_info'):
+                self._shown_mag7_info = True
+                print(f"[*] Using Mag7 strategy - fetching Mag7 stocks: {', '.join(mag7_stocks)}")
         else:
             # Fetch sector ETFs for sector alignment strategy
             sector_etfs = ["XLK", "XLF", "XLV", "XLY"]
@@ -321,48 +364,17 @@ class CandleDataClient:
                 selected_sectors = config.get("trading_config", {}).get("selected_sectors", sector_etfs)
                 sector_etfs = selected_sectors
             
-            # Add sector ETFs to symbols list
-            all_symbols.extend(sector_etfs)
-            print(f"[*] Using Sector Alignment strategy - fetching ETFs: {', '.join(sector_etfs)}")
-        
-        all_symbols = list(set(all_symbols))  # Remove duplicates
-        
-        print(f"[*] Fetching data for symbols: {', '.join(all_symbols)}")
-        
-        # Show data source limitations
-        if data_source == "TradeStation":
-            print(f"\n[*] Using TradeStation API")
-            print(f"[*] TradeStation Data Capabilities:")
-            print(f"    - 1m data: Up to 40 days")
-            print(f"    - 5m data: Up to 6 months")
-            print(f"    - 15m data: Up to 1 year")
-            print(f"    - 30m data: Up to 2 years")
-            print(f"    - 1h data: Up to 3 years")
-            print(f"    - 1d data: Up to 10 years\n")
-        elif data_source == "TastyTrade":
-            print(f"\n[*] Using TastyTrade API")
-            print(f"[*] TastyTrade Data Capabilities:")
-            print(f"    - Requires active API connection")
-            print(f"    - Real-time and historical options data")
-            print(f"    - All timeframes available with account\n")
-        elif data_source == "YFinance":
-            print(f"\n[*] Using Yahoo Finance API")
-            print(f"[*] YFinance Data Capabilities:")
-            print(f"    - 1m data: Only last 7 days")
-            print(f"    - 5m data: Only last 60 days")
-            print(f"    - 15m data: Only last 60 days")
-            print(f"    - 30m+ data: Up to years of data")
-            print(f"    - Free, no authentication required\n")
+            # Add sector ETFs to symbols set
+            all_symbols_set.update(sector_etfs)
             
-            # Check for YFinance limitations
-            if period_str == "1m" and days_diff > 7:
-                error_msg = f"[!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested {days_diff} days"
-                print(error_msg)
-                raise ValueError(error_msg)
-            elif period_str in ["5m", "15m"] and days_diff > 60:
-                error_msg = f"[!] ERROR: YFinance only provides 60 days of {period_str} data, but you requested {days_diff} days"
-                print(error_msg)
-                raise ValueError(error_msg)
+            # Only print this once
+            if not hasattr(self, '_shown_sector_info'):
+                self._shown_sector_info = True
+                print(f"[*] Using Sector Alignment strategy - fetching ETFs: {', '.join(sector_etfs)}")
+        
+        all_symbols = list(all_symbols_set)  # Convert back to list
+        
+        print(f"[*] Fetching data for {len(all_symbols)} unique symbols...")
         
         # Initialize data fetcher based on source
         data_fetcher = None
@@ -427,12 +439,18 @@ class CandleDataClient:
             
             # Check if we already have this data cached
             if os.path.exists(file_path):
-                print(f"[*] Loading cached data for {symbol} from {file_path}")
+                # Only show cache message once
+                if not hasattr(self, '_shown_cache_message'):
+                    self._shown_cache_message = True
+                    print(f"[*] Using cached data where available...")
+                
+                # Log to logger instead of console
+                self.logger.info(f"Loading cached data for {symbol}")
+                
                 try:
                     df = pd.read_csv(file_path, index_col=0, parse_dates=True)
                     # ... process cached data ...
                     result[symbol] = self._dataframe_to_candles(df, symbol, period_str)
-                    print(f"[✓] Loaded {len(result[symbol])} candles from cache for {symbol}")
                     continue
                 except Exception as e:
                     print(f"[!] Error loading cached data: {e}")
@@ -442,11 +460,11 @@ class CandleDataClient:
                 df = pd.DataFrame()
                 
                 if data_source == "TradeStation":
-                    print(f"[*] Fetching data for {symbol} using TradeStation API...")
+                    print(f"[*] Fetching data for {symbol}...")
                     df = data_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
                     
                 elif data_source == "TastyTrade":
-                    print(f"[*] Fetching data for {symbol} using TastyTrade API...")
+                    print(f"[*] Fetching data for {symbol}...")
                     timeframe_map = {
                         "1m": "1Min",
                         "5m": "5Min",
@@ -459,7 +477,7 @@ class CandleDataClient:
                     df = data_fetcher.fetch_bars(symbol, start_date, end_date, tt_timeframe)
                     
                 elif data_source == "YFinance":
-                    print(f"[*] Fetching data for {symbol} using YFinance...")
+                    print(f"[*] Fetching data for {symbol}...")
                     import yfinance as yf
                     ticker = yf.Ticker(symbol)
                     
@@ -491,7 +509,6 @@ class CandleDataClient:
                 # Save to CSV
                 os.makedirs(os.path.dirname(file_path), exist_ok=True)
                 df.to_csv(file_path)
-                print(f"[✓] Saved data to {file_path}")
                 
                 # Convert to candles format
                 result[symbol] = self._dataframe_to_candles(df, symbol, period_str)

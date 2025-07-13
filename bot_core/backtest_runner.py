@@ -129,8 +129,11 @@ class ProfessionalBacktestRunner:
         # IMPORTANT: Ensure config is properly set
         if self.config and 'trading_config' in self.config:
             backtest_engine.trading_config = self.config['trading_config']
-            print(f"[*] Backtest engine using config:")
-            print(f"    - Sector threshold: {backtest_engine.trading_config.get('sector_weight_threshold', 43)}%")
+            use_mag7 = backtest_engine.trading_config.get('use_mag7_confirmation', False)
+            if use_mag7:
+                print(f"[*] Backtest engine using Mag7 strategy with {backtest_engine.trading_config.get('mag7_threshold', 60)}% threshold")
+            else:
+                print(f"[*] Backtest engine using Sector strategy with {backtest_engine.trading_config.get('sector_weight_threshold', 43)}% threshold")
 
         # Set run ID and directory manager
         backtest_engine.run_id = run_id

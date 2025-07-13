@@ -105,8 +105,10 @@ class BacktestEngine:
                 use_mag7 = self.trading_config.get('use_mag7_confirmation', False)
                 strategy_name = "Magnificent 7 (Mag7)" if use_mag7 else "Sector Alignment"
 
-                # Print configuration table
-                self._print_config_table(strategy_name, use_mag7)
+                # Print configuration table only once per backtest run
+                if not hasattr(self, '_config_table_shown'):
+                    self._config_table_shown = True
+                    self._print_config_table(strategy_name, use_mag7)
                 
             # Get configuration values
             use_mag7 = self.trading_config.get("use_mag7_confirmation", False)
@@ -204,8 +206,12 @@ class BacktestEngine:
                     data_source=data_source
                 )
                 
+                # Only show processing message once
+                if not hasattr(self, '_shown_mag7_processing'):
+                    self._shown_mag7_processing = True
+                    print(f"[*] Processing Mag7 stock data...")
+                
                 for stock in mag7_stocks:
-                    print(f"[*] Processing data for {stock}...")
                     stock_candles = mag7_result.get(stock, [])
                     
                     if stock_candles:
@@ -436,10 +442,7 @@ class BacktestEngine:
                         
                         if aligned:
                             alignment_count += 1
-                            # print(f"  [✓] Candle {i}: Mag7 aligned ({direction}, {alignment_value:.1f}% stocks aligned)")
-                        else:
-                            if i % 100 == 0:  # Log every 100th candle to avoid spam
-                                print(f"  [✗] Candle {i}: No Mag7 alignment")
+                            
                         
                         if not aligned:
                             analysis_record['skip_reason'] = f'No Mag7 alignment (aligned={alignment_value:.1f}%, threshold={self.trading_config.get("mag7_threshold", 60)}%)'
@@ -532,8 +535,8 @@ class BacktestEngine:
                                             analysis_record['trade_direction'] = entry_signal
                                             trade_count += 1
                                             
-                                            # Log the trade entry
-                                            print(f"  [💰] TRADE ENTERED at candle {i}: {direction.upper()} @ ${df.iloc[i]['close']:.2f}")
+                                            # Log the trade entry to logger only, not console
+                                            self.logger.info(f"TRADE ENTERED at candle {i}: {direction.upper()} @ ${df.iloc[i]['close']:.2f}")
                                             
                                             # Simulate trades for each trailing method
                                             for method in trailing_methods:
@@ -641,12 +644,12 @@ class BacktestEngine:
                     print(f"    - Compression: {sample.get('compression_detected', False)}")
                     print(f"    - Skip reason: {sample.get('skip_reason', 'N/A')}")
                 
-                # Check if alignment data is valid
-                for symbol_name, data_df in alignment_data.items():
-                    if isinstance(data_df, pd.DataFrame) and not data_df.empty:
-                        print(f"  - {symbol_name}: {len(data_df)} candles, date range: {data_df.iloc[0]['timestamp']} to {data_df.iloc[-1]['timestamp']}")
-                    else:
-                        print(f"  - {symbol_name}: No data!")
+                # # Check if alignment data is valid
+                # for symbol_name, data_df in sector_data.items():
+                #     if isinstance(data_df, pd.DataFrame) and not data_df.empty:
+                #         print(f"  - {symbol_name}: {len(data_df)} candles, date range: {data_df.iloc[0]['timestamp']} to {data_df.iloc[-1]['timestamp']}")
+                #     else:
+                #         print(f"  - {symbol_name}: No data!")
             
             # Determine best trailing method
             best_profit_factor = 0
@@ -1192,13 +1195,14 @@ class BacktestEngine:
             current_price = df.iloc[idx]['close']
             avg_5 = df.iloc[idx-5:idx]['close'].mean()
             
+            # Get price change threshold from config
+            price_change_threshold = self.trading_config.get("sector_price_change_threshold", 0.2) / 100
+            
             # Determine sector status based on current vs average
-            if current_price > avg_5 * 1.002:  # 0.2% above average
+            if current_price > avg_5 * (1 + price_change_threshold):
                 sector_status[sector] = "bullish"
-            elif current_price < avg_5 * 0.998:  # 0.2% below average
+            elif current_price < avg_5 * (1 - price_change_threshold):
                 sector_status[sector] = "bearish"
-            else:
-                sector_status[sector] = "neutral"
         
         # Check XLK alignment with other sectors
         xlk_status = sector_status.get("XLK", "neutral")
@@ -1278,8 +1282,10 @@ class BacktestEngine:
         bullish_pct = (bullish_count / total_stocks) * 100
         bearish_pct = (bearish_count / total_stocks) * 100
         
-        self.logger.info(f"Mag7 alignment at candle {idx}: {bullish_count} bullish ({bullish_pct:.1f}%), "
-                        f"{bearish_count} bearish ({bearish_pct:.1f}%)")
+        # Only log every 100th candle to reduce spam
+        if idx % 100 == 0:
+            self.logger.info(f"Mag7 alignment at candle {idx}: {bullish_count} bullish ({bullish_pct:.1f}%), "
+                            f"{bearish_count} bearish ({bearish_pct:.1f}%)")
         
         # Check alignment
         if bullish_pct >= threshold:
@@ -1356,14 +1362,10 @@ class BacktestEngine:
         else:
             volume_squeeze = False
         
-        # Need 2 out of 3 for compression
+        # Get compression threshold count from config
+        required_compression_count = self.trading_config.get("compression_threshold_count", 2)
         compression_count = sum([bb_compression, dc_compression, volume_squeeze])
-        # BUT if threshold is very low (like 0%), be more lenient
-        threshold = self.trading_config.get("sector_weight_threshold", 43)
-        if threshold < 10:  # Very low threshold, be more lenient
-            compression_detected = compression_count >= 1
-        else:
-            compression_detected = compression_count >= 2
+        compression_detected = compression_count >= required_compression_count
         
         if not compression_detected:
             return False, "neutral"
@@ -1601,14 +1603,17 @@ class BacktestEngine:
             str: "bullish", "bearish", or None for no signal
         """
         try:
-            # Check for Heiken Ashi pattern - HA bottom with no lower wick
+            # Check for Heiken Ashi pattern
             ha_open = float(ha_candle["open"])
             ha_close = float(ha_candle["close"])
             ha_high = float(ha_candle["high"])
             ha_low = float(ha_candle["low"])
             
+            # Get wick tolerance from config
+            wick_tolerance_pct = self.trading_config.get("ha_wick_tolerance", 0.1)
+            wick_tolerance = (ha_high - ha_low) * wick_tolerance_pct
+            
             # Bullish signal - Small or no lower wick = strong bullish candle
-            wick_tolerance = (ha_high - ha_low) * 0.1  # 10% of candle range
             if abs(ha_open - ha_low) < wick_tolerance and ha_close > ha_open:
                 return "bullish"
                 
@@ -1817,8 +1822,8 @@ class BacktestEngine:
                     else:
                         current_profit_pct = ((entry_price - current_price) / entry_price) * 100
                     
-                    # Only exit on HA reversal if we have a minimum profit or are at a loss
-                    min_profit_before_exit = 0.5  # 0.5% minimum profit before allowing HA exit
+                    # Get minimum profit threshold from config
+                    min_profit_before_exit = self.trading_config.get("ha_exit_min_profit", 0.5)
                     
                     if (direction == "bullish" and ha_open > ha_close) or (direction == "bearish" and ha_open < ha_close):
                         # Only exit if we have decent profit or are losing money

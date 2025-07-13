@@ -1,0 +1,16 @@
+2025-07-14 01:02:05,000 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:06,122 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:07,327 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:08,542 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:09,721 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:10,815 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:12,148 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:12,182 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-07-14 01:02:15,380 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:16,651 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:17,984 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:19,229 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:20,441 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:21,651 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:22,862 - TradeStationDataFetcher - ERROR - API request failed: 400 {"Error":"BadRequest","Message":"lastdate cannot be a future date."}
+2025-07-14 01:02:22,894 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
