@@ -436,7 +436,7 @@ class BacktestEngine:
                         
                         if aligned:
                             alignment_count += 1
-                            print(f"  [✓] Candle {i}: Mag7 aligned ({direction}, {alignment_value:.1f}% stocks aligned)")
+                            # print(f"  [✓] Candle {i}: Mag7 aligned ({direction}, {alignment_value:.1f}% stocks aligned)")
                         else:
                             if i % 100 == 0:  # Log every 100th candle to avoid spam
                                 print(f"  [✗] Candle {i}: No Mag7 alignment")

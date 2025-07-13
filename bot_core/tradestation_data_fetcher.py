@@ -396,6 +396,10 @@ class TradeStationDataFetcher:
             for bar in bars:
                 timestamp = pd.to_datetime(bar['TimeStamp'])
                 
+                # Make timestamp timezone-naive to match start_date and end_date
+                if timestamp.tzinfo is not None:
+                    timestamp = timestamp.tz_localize(None)
+                
                 # Filter by date range
                 if start_date <= timestamp <= end_date + timedelta(days=1):
                     df_data.append({
