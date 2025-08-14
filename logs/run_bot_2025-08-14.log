@@ -24,3 +24,9 @@ Traceback (most recent call last):
   File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\jigsaw_flow_ui.py", line 4359, in get_mongodb_widget
     return self.mongodb_widgetimport
 AttributeError: 'JigsawFlowApp' object has no attribute 'mongodb_widgetimport'
+2025-08-14 05:57:40,488 - Code.bot_core.tradestation_api - ERROR - Access forbidden for account 5WY52585 - check account permissions
+2025-08-14 05:57:42,328 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-14 05:57:42,341 - PositionManager - INFO - Position collections initialized
+2025-08-14 05:57:42,345 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-14 05:57:42,348 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-14 05:57:43,906 - Code.bot_core.tradestation_api - ERROR - Access forbidden for account 5WY52585 - check account permissions

@@ -467,12 +467,23 @@ class TradeStationAPI:
             if not account_number:
                 accounts_response = self.safe_request("GET", "/v3/brokerage/accounts")
                 if accounts_response.status_code == 200:
-                    accounts = accounts_response.json().get("Accounts", [])
+                    accounts_data = accounts_response.json()
+                    accounts = accounts_data.get("Accounts", [])
                     if accounts:
-                        account_number = accounts[0]["AccountID"]
+                        # Find the first active account
+                        for account in accounts:
+                            if account.get("Status") == "Active":
+                                account_number = account["AccountID"]
+                                break
+                        if not account_number and accounts:
+                            account_number = accounts[0]["AccountID"]
                     else:
                         logger.error("No accounts found")
                         return self._empty_balance()
+                elif accounts_response.status_code == 403:
+                    logger.error("Access forbidden - check if account has proper permissions")
+                    print("[!] Access forbidden - your account may not have trading permissions enabled")
+                    return self._empty_balance()
                 else:
                     logger.error(f"Failed to fetch accounts: {accounts_response.status_code}")
                     return self._empty_balance()
@@ -482,11 +493,20 @@ class TradeStationAPI:
             response = self.safe_request("GET", endpoint)
             
             if response.status_code == 200:
-                balance = response.json()
+                balances_data = response.json()
                 
-                cash_balance = float(balance.get("CashBalance", 0.0))
-                buying_power = float(balance.get("BuyingPower", 0.0))
-                equity = float(balance.get("Equity", 0.0))
+                # Handle both single balance and array of balances
+                if isinstance(balances_data, dict):
+                    balance = balances_data
+                elif isinstance(balances_data, list) and len(balances_data) > 0:
+                    balance = balances_data[0]
+                else:
+                    balance = {}
+                
+                # TradeStation uses different field names
+                cash_balance = float(balance.get("CashBalance", balance.get("Cash", 0.0)))
+                buying_power = float(balance.get("BuyingPower", balance.get("DayTradingBuyingPower", 0.0)))
+                equity = float(balance.get("Equity", balance.get("MarketValue", 0.0)))
                 
                 logger.info(f"Balance fetched for account {account_number}")
                 print(f"[✓] Balance fetched for account {account_number}")
@@ -499,8 +519,18 @@ class TradeStationAPI:
                     "net_liquidating_value": equity,
                     "updated_at": datetime.now().isoformat()
                 }
+            elif response.status_code == 403:
+                logger.error(f"Access forbidden for account {account_number} - check account permissions")
+                print(f"[!] Cannot access balance for account {account_number}")
+                print("[!] This may be due to:")
+                print("    - Account not having trading permissions")
+                print("    - Account being a paper/demo account without balance access")
+                print("    - Incorrect account type for API access")
+                return self._empty_balance()
             else:
                 logger.error(f"Failed to fetch account balance: {response.status_code}")
+                if response.text:
+                    logger.error(f"Response: {response.text}")
                 return self._empty_balance()
                 
         except Exception as e:

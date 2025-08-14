@@ -4356,6 +4356,6 @@ class JigsawFlowApp(QMainWindow):
         
     def get_mongodb_widget(self):
         """Get MongoDB manager widget"""
-        return self.mongodb_widgetimport
+        return self.mongodb_widget
         """Get MongoDB manager widget"""
         return self.mongodb_widget
