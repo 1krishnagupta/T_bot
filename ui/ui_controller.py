@@ -13,8 +13,8 @@ from PyQt5.QtWidgets import QMessageBox, QApplication
 # Add the parent directory to the path for imports
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# Import your API and UI
-from Code.bot_core.tastytrade_api import TastyTradeAPI
+# Import your API and UI - CHANGED FROM TASTYTRADE TO TRADESTATION
+from Code.bot_core.tradestation_api import TradeStationAPI
 from Code.ui.jigsaw_flow_ui import JigsawFlowApp
 from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
 from Code.bot_core.instrument_fetcher import InstrumentFetcher
@@ -23,7 +23,7 @@ from Code.bot_core.candle_data_client import CandleDataClient
 from Code.bot_core.order_manager import OrderManager
 from Code.bot_core.jigsaw_strategy import JigsawStrategy
 from Code.bot_core.backtest_engine import BacktestEngine
-from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
+from Code.bot_core.tradestation_data_fetcher import TradeStationDataFetcher
 from Code.bot_core.backtest_runner import ProfessionalBacktestRunner
 
 # Setup logging
@@ -77,8 +77,6 @@ def save_config(config, path):
         logger.error(f"Failed to save config to {path}: {str(e)}")
         return False
 
-
-# In ui_controller.py, in the __init__ or start_trading method:
 
 def initialize_trading_with_recovery(self):
     """Initialize trading with position recovery"""
@@ -147,7 +145,8 @@ class LoginThread(QThread):
                 self.login_failed.emit("Invalid config: 'broker' section missing")
                 return
                 
-            required_fields = ["username", "password", "account_id"]
+            # For TradeStation, we don't need username/password, just account_id
+            required_fields = ["account_id"]
             for field in required_fields:
                 if field not in config["broker"]:
                     self.login_failed.emit(f"Invalid config: '{field}' missing in broker section")
@@ -156,17 +155,15 @@ class LoginThread(QThread):
             # Update progress
             self.login_progress.emit("Initializing API connection...", 20)
             
-            # Extract credentials
-            username = config["broker"]["username"]
-            password = config["broker"]["password"]
+            # Extract account_id
             account_id = config["broker"]["account_id"]
             
-            # Create API object
-            self.login_progress.emit("Connecting to TastyTrade API...", 40)
-            api = TastyTradeAPI(username, password)
+            # Create API object - TradeStation doesn't need username/password for OAuth
+            self.login_progress.emit("Connecting to TradeStation API...", 40)
+            api = TradeStationAPI()
             
             # Attempt login
-            self.login_progress.emit("Authenticating...", 60)
+            self.login_progress.emit("Authenticating with TradeStation...", 60)
             if api.login():
                 # Fetch account balance
                 self.login_progress.emit("Fetching account information...", 80)
@@ -179,7 +176,7 @@ class LoginThread(QThread):
                 # Return config and API object
                 self.login_successful.emit(config, api)
             else:
-                self.login_failed.emit("Failed to login with provided credentials")
+                self.login_failed.emit("Failed to login with TradeStation OAuth")
                 
         except Exception as e:
             logger.error(f"Login error: {str(e)}")
@@ -1343,6 +1340,7 @@ class UIController(QObject):
         # Setup backtest widget
         backtest_widget = self.app.get_backtest_widget()
         backtest_widget.run_backtest_requested.connect(self.run_backtest)
+        self.backtest_widget = backtest_widget  # Store reference
         
         # Setup MongoDB manager widget
         mongodb_widget = self.app.get_mongodb_widget()
@@ -1503,7 +1501,6 @@ class UIController(QObject):
             logger.error(f"Error saving configuration: {e}")
 
 
-
     def run_backtest(self, params):
         """
         Run a backtest with the given parameters using professional backtest runner
@@ -1595,7 +1592,7 @@ class UIController(QObject):
                     limitations_html += "• 15-minute data: Only last 60 days available<br>"
                 
                 limitations_html += """
-                    <small>For full historical data, use pther brokers API</small>
+                    <small>For full historical data, use TradeStation API</small>
                 </div>
                 """
                 backtest_widget.results_text.append(limitations_html)
@@ -1738,8 +1735,6 @@ class UIController(QObject):
             # Re-enable button
             backtest_widget.run_button.setEnabled(True) 
             backtest_widget.run_button.setText("Run Backtest")
-
-
     
     def _generate_combined_summary(self, all_results, output_file):
         """

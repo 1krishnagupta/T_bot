@@ -1,0 +1,14 @@
+2025-08-13 01:57:45,092 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,093 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,097 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,099 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,101 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,104 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,105 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,106 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,173 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,176 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,178 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,180 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,181 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,183 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown

@@ -18,8 +18,8 @@ from PyQt5.QtWidgets import QApplication
 # Add the current directory to the path for imports
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-# Import our modules
-from Code.bot_core.tastytrade_api import TastyTradeAPI
+# Import our modules - UPDATED FOR TRADESTATION
+from Code.bot_core.tradestation_api import TradeStationAPI
 from Code.bot_core.config_loader import ConfigLoader
 from Code.bot_core.instrument_fetcher import InstrumentFetcher
 from Code.bot_core.mongodb_handler import get_mongodb_handler
@@ -177,24 +177,8 @@ def run_headless(args):
     print("[*] Initializing MongoDB...")
     db = get_mongodb_handler()
     
-    # Get credentials
-    if test_mode:
-        # Use test credentials
-        username = "test_user"
-        password = "test_password"
-        account_id = "TEST123"
-    else:
-        # Get credentials from config
-        username = config["broker"]["username"]
-        password = config["broker"]["password"]
-        account_id = config["broker"]["account_id"]
-        
-        # If credentials are empty, try loading from credentials file
-        if not username or not password or not account_id:
-            username, password, account_id = config_loader.get_credentials()
-
-    # Initialize API
-    api = TastyTradeAPI(username, password)
+    # Initialize API - UPDATED FOR TRADESTATION
+    api = TradeStationAPI()
 
     # Login
     if test_mode or api.login():
@@ -206,10 +190,12 @@ def run_headless(args):
                 "available_trading_funds": 10000.0,
                 "net_liquidating_value": 10000.0
             }
+            account_id = "TEST123"
         else:
-            print("[✓] Logged in. Fetching account balance...")
+            print("[✓] Logged in to TradeStation")
             # Fetch and print balance
-            balances = api.fetch_account_balance(account_id)
+            balances = api.fetch_account_balance()
+            account_id = None  # Will be auto-detected
             
         cash = balances["cash_balance"]
         available = balances["available_trading_funds"]

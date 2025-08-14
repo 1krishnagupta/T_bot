@@ -1,0 +1,87 @@
+2025-08-13 01:56:13,522 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-13 01:56:13,534 - PositionManager - INFO - Position collections initialized
+2025-08-13 01:56:13,542 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-13 01:56:13,549 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-13 01:57:18,834 - MarketDataClient - INFO - WebSocket connection opened
+2025-08-13 01:57:18,932 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-13 01:57:19,574 - MarketDataClient - INFO - Successfully authorized
+2025-08-13 01:57:20,114 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-13 01:57:20,131 - PositionManager - INFO - Position collections initialized
+2025-08-13 01:57:20,136 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-13 01:57:20,141 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-13 01:57:20,143 - MarketDataClient - INFO - Subscribing to market data for sectors: XLK, XLF, XLV, XLY
+2025-08-13 01:57:21,163 - MarketDataClient - INFO - Subscribed to all sectors simultaneously on channel 1
+2025-08-13 01:57:21,164 - JigsawStrategy - INFO - Subscribed to sector ETFs for sector alignment strategy
+2025-08-13 01:57:21,483 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.08
+2025-08-13 01:57:21,484 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral'}
+2025-08-13 01:57:21,485 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:23,927 - MarketDataClient - INFO - Subscribed to 1 symbols on channel 2
+2025-08-13 01:57:24,187 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.09
+2025-08-13 01:57:24,187 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral'}
+2025-08-13 01:57:24,188 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:24,189 - JigsawStrategy - INFO - Sector ALL_SECTORS_UPDATED status updated to  at price 0.00
+2025-08-13 01:57:24,190 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:24,191 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:24,624 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.09
+2025-08-13 01:57:24,624 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:24,624 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:25,276 - JigsawStrategy - INFO - Sector XLK status updated to bearish at price 267.84
+2025-08-13 01:57:25,277 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'bearish', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:25,279 - JigsawStrategy - INFO - XLK is bearish, aligned sectors: []
+2025-08-13 01:57:25,280 - JigsawStrategy - INFO - No other sectors aligned with XLK
+2025-08-13 01:57:25,611 - JigsawStrategy - INFO - Sector XLK status updated to bullish at price 268.00
+2025-08-13 01:57:25,612 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'bullish', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:25,613 - JigsawStrategy - INFO - XLK is bullish, aligned sectors: []
+2025-08-13 01:57:25,613 - JigsawStrategy - INFO - No other sectors aligned with XLK
+2025-08-13 01:57:26,251 - MarketDataClient - INFO - Subscribed to 1 symbols on channel 3
+2025-08-13 01:57:27,932 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.08
+2025-08-13 01:57:27,933 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:27,935 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:27,937 - JigsawStrategy - INFO - Sector ALL_SECTORS_UPDATED status updated to  at price 0.00
+2025-08-13 01:57:27,938 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:27,940 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:28,016 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.08
+2025-08-13 01:57:28,018 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:28,019 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:28,109 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.08
+2025-08-13 01:57:28,111 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:28,114 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:28,580 - MarketDataClient - INFO - Subscribed to 1 symbols on channel 4
+2025-08-13 01:57:31,013 - MarketDataClient - INFO - Subscribed to 1 symbols on channel 5
+2025-08-13 01:57:31,015 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Sector Alignment confirmation
+2025-08-13 01:57:31,017 - MarketDataClient - INFO - Subscribing to market data for sectors: XLK, XLF, XLV, XLY
+2025-08-13 01:57:32,061 - MarketDataClient - INFO - Subscribed to all sectors simultaneously on channel 6
+2025-08-13 01:57:37,481 - MarketDataClient - INFO - Subscribed to 4 symbols on channel 7
+2025-08-13 01:57:39,825 - JigsawStrategy - INFO - Sector XLK status updated to neutral at price 268.09
+2025-08-13 01:57:39,826 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:39,827 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:39,828 - JigsawStrategy - INFO - Sector ALL_SECTORS_UPDATED status updated to  at price 0.00
+2025-08-13 01:57:39,829 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:39,830 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-13 01:57:39,909 - JigsawStrategy - INFO - Sector XLK status updated to bearish at price 267.84
+2025-08-13 01:57:39,910 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'bearish', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:39,911 - JigsawStrategy - INFO - XLK is bearish, aligned sectors: []
+2025-08-13 01:57:39,911 - JigsawStrategy - INFO - No other sectors aligned with XLK
+2025-08-13 01:57:40,096 - JigsawStrategy - INFO - Sector XLK status updated to bullish at price 268.00
+2025-08-13 01:57:40,102 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'bullish', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:40,103 - JigsawStrategy - INFO - XLK is bullish, aligned sectors: []
+2025-08-13 01:57:40,104 - JigsawStrategy - INFO - No other sectors aligned with XLK
+2025-08-13 01:57:44,536 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 16:27:44)
+2025-08-13 01:57:44,639 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'bullish', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral', 'ALL_SECTORS_UPDATED': ''}
+2025-08-13 01:57:44,677 - JigsawStrategy - INFO - XLK is bullish, aligned sectors: []
+2025-08-13 01:57:44,684 - JigsawStrategy - INFO - No other sectors aligned with XLK
+2025-08-13 01:57:45,092 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,093 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,097 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,099 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,101 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,104 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,105 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,106 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,173 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,176 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,178 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,180 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,181 - websocket - ERROR - error from callback <function MarketDataClient.connect.<locals>.on_message at 0x000001448D44E790>: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,183 - MarketDataClient - ERROR - WebSocket error: cannot schedule new futures after shutdown
+2025-08-13 01:57:45,235 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 16:27:45)

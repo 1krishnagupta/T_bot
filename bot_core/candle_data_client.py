@@ -8,7 +8,6 @@ import time
 import json
 import logging
 from typing import Dict, List, Optional, Callable, Tuple, Any, Union
-from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
 from Code.bot_core.tradestation_data_fetcher import TradeStationDataFetcher
 from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
 
@@ -415,7 +414,6 @@ class CandleDataClient:
                     print("    - TradeStation: API key required (extensive history)")
                     raise ConnectionError(error_msg)
                 else:
-                    from Code.bot_core.tastytrade_data_fetcher import TastyTradeDataFetcher
                     data_fetcher = TastyTradeDataFetcher(api=api)
             except Exception as e:
                 error_msg = f"[!] Error initializing TastyTrade: {str(e)}"

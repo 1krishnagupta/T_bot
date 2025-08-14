@@ -1,4 +1,3 @@
-import sys
 import os
 from datetime import datetime
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, 
@@ -175,8 +174,8 @@ class LoginWidget(QWidget):
         welcome_label.setStyleSheet("color: #333; margin-top: 20px;")
         card_layout.addWidget(welcome_label)
         
-        # Status message with styling
-        self.status_label = QLabel("Credentials will be loaded from config/credentials.txt")
+        # Status message with styling - UPDATED TEXT FOR TRADESTATION
+        self.status_label = QLabel("Credentials will be loaded from config")
         self.status_label.setAlignment(Qt.AlignCenter)
         self.status_label.setStyleSheet("""
             QLabel {
@@ -3847,7 +3846,6 @@ class BacktestWidget(QWidget):
                 <div style='background-color: #34495e; color: white; padding: 8px; border-radius: 5px; margin-top: 5px;'>
                     <b>Data Source:</b> {self.data_source.currentText()} - 
                     {"Professional-grade historical data" if self.data_source.currentText() == "TradeStation" else 
-                    "Live market data API" if self.data_source.currentText() == "TastyTrade" else 
                     "Free limited data"}
                 </div>
             """
@@ -4239,6 +4237,7 @@ class BacktestWidget(QWidget):
         # Ensure the UI updates
         QApplication.processEvents()
 
+
 class JigsawFlowApp(QMainWindow):
     """Main application window with enhanced styling"""
     def __init__(self):
@@ -4356,5 +4355,7 @@ class JigsawFlowApp(QMainWindow):
         return self.backtest_widget
         
     def get_mongodb_widget(self):
+        """Get MongoDB manager widget"""
+        return self.mongodb_widgetimport
         """Get MongoDB manager widget"""
         return self.mongodb_widget

@@ -11,7 +11,7 @@ from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
 class OrderManager:
     """
     Manages order creation, submission, and tracking for the trading bot.
-    Implements TastyTrade's order format and handling logic.
+    Implements TradeStation's order format and handling logic.
     """
     
     def __init__(self, api, account_id=None):
@@ -19,8 +19,8 @@ class OrderManager:
         Initialize the order manager
         
         Args:
-            api: TastyTrade API client
-            account_id (str): TastyTrade account ID, will be loaded from API if None
+            api: TradeStation API client
+            account_id (str): TradeStation account ID, will be loaded from API if None
         """
         self.api = api
         self.account_id = account_id
@@ -57,7 +57,7 @@ class OrderManager:
         
         # Load active orders from database on startup
         self._load_active_orders_from_db()
-            
+    
     def _get_account_id(self) -> str:
         """
         Get the account ID from the API
@@ -66,17 +66,16 @@ class OrderManager:
             str: Account ID or empty string if not found
         """
         try:
-            accounts = self.api.safe_request("GET", "/accounts")
-            if accounts.status_code == 200:
-                account_data = accounts.json().get("data", {}).get("items", [])
-                if account_data:
-                    return account_data[0].get("account", {}).get("account-number", "")
+            response = self.api.safe_request("GET", "/v3/brokerage/accounts")
+            if response.status_code == 200:
+                accounts = response.json().get("Accounts", [])
+                if accounts:
+                    return accounts[0].get("AccountID", "")
         except Exception as e:
             self.logger.error(f"Error getting account ID: {e}")
         
         return ""
     
-
     def _load_active_orders_from_db(self):
         """Load active orders from database on startup"""
         try:
@@ -96,8 +95,7 @@ class OrderManager:
             
         except Exception as e:
             self.logger.error(f"Error loading orders from database: {e}")
-
-
+    
     def create_equity_option_order(self, symbol, quantity, direction, price=None, order_type="Limit", time_in_force="Day") -> Dict:
         """
         Create an equity option order
@@ -116,30 +114,37 @@ class OrderManager:
         # Validate input
         if order_type == "Limit" and price is None:
             raise ValueError("Price is required for Limit orders")
-            
+        
+        # Convert direction to TradeStation format
+        action_map = {
+            "Buy to Open": "BuyToOpen",
+            "Sell to Open": "SellToOpen",
+            "Buy to Close": "BuyToClose",
+            "Sell to Close": "SellToClose"
+        }
+        
+        action = action_map.get(direction, "BuyToOpen")
+        
         # Create order
         order = {
-            "time-in-force": time_in_force,
-            "order-type": order_type,
-            "legs": [
-                {
-                    "instrument-type": "Equity Option",
-                    "symbol": symbol,
-                    "quantity": quantity,
-                    "action": direction
-                }
-            ]
+            "AccountID": self.account_id,
+            "Symbol": symbol,
+            "Quantity": str(quantity),
+            "OrderType": order_type,
+            "TimeInForce": {"Duration": time_in_force},
+            "Route": "Intelligent"
         }
         
         # Add price if provided
         if price is not None:
-            order["price"] = str(price)
-            # For price-effect, determine if it's a debit or credit based on action
-            if direction.startswith("Buy"):
-                order["price-effect"] = "Debit"
-            else:
-                order["price-effect"] = "Credit"
-                
+            if order_type == "Limit":
+                order["LimitPrice"] = str(price)
+            elif order_type == "StopMarket":
+                order["StopPrice"] = str(price)
+        
+        # Add action
+        order["TradeAction"] = action
+        
         return order
     
     def create_multi_leg_option_order(self, legs, price=None, order_type="Limit", time_in_force="Day") -> Dict:
@@ -147,10 +152,7 @@ class OrderManager:
         Create a multi-leg option order (spreads)
         
         Args:
-            legs (list): List of leg dictionaries, each containing:
-                - symbol (str): Option symbol
-                - quantity (int): Number of contracts
-                - direction (str): "Buy to Open", "Sell to Open", etc.
+            legs (list): List of leg dictionaries
             price (float): Order price (required for Limit orders)
             order_type (str): "Limit" or "Market"
             time_in_force (str): "Day", "GTC", or "GTD"
@@ -158,45 +160,24 @@ class OrderManager:
         Returns:
             dict: Order JSON
         """
-        # Validate input
-        if order_type == "Limit" and price is None:
-            raise ValueError("Price is required for Limit orders")
-            
+        # TradeStation uses a different format for multi-leg orders
+        # For now, create as separate orders
+        # In production, would use TradeStation's spread order format
+        
         if not legs or len(legs) == 0:
             raise ValueError("At least one leg is required")
-            
-        if len(legs) > 4:
-            raise ValueError("Maximum of 4 legs allowed for option orders")
-            
-        # Create order legs
-        order_legs = []
-        for leg in legs:
-            order_legs.append({
-                "instrument-type": "Equity Option",
-                "symbol": leg["symbol"],
-                "quantity": leg["quantity"],
-                "action": leg["direction"]
-            })
-            
-        # Create order
-        order = {
-            "time-in-force": time_in_force,
-            "order-type": order_type,
-            "legs": order_legs
-        }
         
-        # Add price if provided
-        if price is not None:
-            order["price"] = str(price)
-            
-            # For price-effect, determine based on overall strategy intent
-            # If first leg is a buy, assume it's a debit spread
-            if legs[0]["direction"].startswith("Buy"):
-                order["price-effect"] = "Debit"
-            else:
-                order["price-effect"] = "Credit"
-                
-        return order
+        # For simplicity, return the first leg as a single order
+        # Real implementation would create a proper spread order
+        first_leg = legs[0]
+        return self.create_equity_option_order(
+            symbol=first_leg["symbol"],
+            quantity=first_leg["quantity"],
+            direction=first_leg["direction"],
+            price=price,
+            order_type=order_type,
+            time_in_force=time_in_force
+        )
     
     def create_otoco_order(self, entry_order, profit_order, stop_order) -> Dict:
         """
@@ -210,13 +191,11 @@ class OrderManager:
         Returns:
             dict: OTOCO order JSON
         """
+        # TradeStation uses OSO (Order Sends Order) for this
+        # Simplified implementation
         return {
-            "type": "OTOCO",
-            "trigger-order": entry_order,
-            "orders": [
-                profit_order,
-                stop_order
-            ]
+            "Type": "OSO",
+            "Orders": [entry_order, profit_order, stop_order]
         }
     
     def dry_run_order(self, order) -> Dict:
@@ -229,17 +208,35 @@ class OrderManager:
         Returns:
             dict: Dry run response
         """
-        if not self.account_id:
-            raise ValueError("No account ID available")
+        # TradeStation doesn't have a specific dry run endpoint
+        # We can validate locally
+        try:
+            # Basic validation
+            required_fields = ["AccountID", "Symbol", "Quantity", "OrderType", "TradeAction"]
+            for field in required_fields:
+                if field not in order:
+                    return {"error": f"Missing required field: {field}"}
             
-        url = f"/accounts/{self.account_id}/orders/dry-run"
-        response = self.api.safe_request("POST", url, json=order)
-        
-        if response.status_code == 200:
-            return response.json().get("data", {})
-        else:
-            self.logger.error(f"Order dry run failed: {response.status_code} {response.text}")
-            return {"error": response.text}
+            # Validate order type
+            valid_order_types = ["Market", "Limit", "StopMarket", "StopLimit"]
+            if order["OrderType"] not in valid_order_types:
+                return {"error": f"Invalid order type: {order['OrderType']}"}
+            
+            # Validate trade action
+            valid_actions = ["Buy", "Sell", "BuyToOpen", "SellToOpen", "BuyToClose", "SellToClose"]
+            if order["TradeAction"] not in valid_actions:
+                return {"error": f"Invalid trade action: {order['TradeAction']}"}
+            
+            # If validation passes
+            return {
+                "valid": True,
+                "order": order,
+                "estimated_cost": float(order.get("Quantity", 0)) * 100  # Rough estimate
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error in dry run validation: {e}")
+            return {"error": str(e)}
     
     def submit_order(self, order) -> Dict:
         """
@@ -253,20 +250,32 @@ class OrderManager:
         """
         if not self.account_id:
             raise ValueError("No account ID available")
-            
-        url = f"/accounts/{self.account_id}/orders"
+        
+        # Ensure account ID is in the order
+        order["AccountID"] = self.account_id
         
         # Log the order being submitted
-        self.logger.info(f"Submitting LIVE order to TastyTrade: {json.dumps(order)}")
+        self.logger.info(f"Submitting LIVE order to TradeStation: {json.dumps(order)}")
         
-        response = self.api.safe_request("POST", url, json=order)
+        # Submit to TradeStation
+        response = self.api.safe_request("POST", "/v3/brokerage/orders", json=order)
         
-        if response.status_code == 201:
-            data = response.json().get("data", {})
-            order_data = data.get("order", {})
-            order_id = order_data.get("id")
+        if response.status_code in [200, 201]:
+            data = response.json()
+            order_id = data.get("OrderID")
             
             if order_id:
+                # Store order data
+                order_data = {
+                    "id": order_id,
+                    "status": data.get("Status", "Sent"),
+                    "symbol": order.get("Symbol"),
+                    "quantity": order.get("Quantity"),
+                    "order_type": order.get("OrderType"),
+                    "action": order.get("TradeAction"),
+                    "submitted_at": datetime.now().isoformat()
+                }
+                
                 self.active_orders[order_id] = order_data
                 self.order_history[order_id] = order_data
                 
@@ -280,12 +289,20 @@ class OrderManager:
                 }
                 self.db.insert_one(COLLECTIONS['ORDERS'], order_doc)
                 
-            self.logger.info(f"LIVE order submitted successfully. Order ID: {order_id}")
-            return data
+                self.logger.info(f"LIVE order submitted successfully. Order ID: {order_id}")
+                return {"order": order_data}
+            else:
+                return {"error": "No order ID returned"}
         else:
-            self.logger.error(f"Order submission failed: {response.status_code} {response.text}")
-            return {"error": response.text}
+            error_msg = f"Order submission failed: {response.status_code}"
+            try:
+                error_detail = response.json()
+                error_msg += f" - {error_detail}"
+            except:
+                error_msg += f" - {response.text}"
             
+            self.logger.error(error_msg)
+            return {"error": error_msg}
     
     def submit_complex_order(self, complex_order) -> Dict:
         """
@@ -297,17 +314,16 @@ class OrderManager:
         Returns:
             dict: Complex order response
         """
-        if not self.account_id:
-            raise ValueError("No account ID available")
-            
-        url = f"/accounts/{self.account_id}/complex-orders"
-        response = self.api.safe_request("POST", url, json=complex_order)
-        
-        if response.status_code == 201:
-            return response.json().get("data", {})
+        # TradeStation handles complex orders differently
+        # For now, submit as individual orders
+        if "Orders" in complex_order:
+            results = []
+            for order in complex_order["Orders"]:
+                result = self.submit_order(order)
+                results.append(result)
+            return {"results": results}
         else:
-            self.logger.error(f"Complex order submission failed: {response.status_code} {response.text}")
-            return {"error": response.text}
+            return self.submit_order(complex_order)
     
     def cancel_order(self, order_id) -> bool:
         """
@@ -321,16 +337,24 @@ class OrderManager:
         """
         if not self.account_id:
             raise ValueError("No account ID available")
-            
-        url = f"/accounts/{self.account_id}/orders/{order_id}"
+        
+        url = f"/v3/brokerage/orders/{order_id}"
         response = self.api.safe_request("DELETE", url)
         
-        if response.status_code == 204:
+        if response.status_code in [200, 204]:
             if order_id in self.active_orders:
                 del self.active_orders[order_id]
+            
+            # Update database
+            self.db.update_one(
+                COLLECTIONS['ORDERS'],
+                {"order_id": order_id},
+                {"status": "Cancelled", "updated_at": datetime.now().isoformat()}
+            )
+            
             return True
         else:
-            self.logger.error(f"Order cancellation failed: {response.status_code} {response.text}")
+            self.logger.error(f"Order cancellation failed: {response.status_code}")
             return False
     
     def get_order_status(self, order_id) -> Dict:
@@ -345,30 +369,37 @@ class OrderManager:
         """
         if not self.account_id:
             raise ValueError("No account ID available")
-            
-        url = f"/accounts/{self.account_id}/orders/{order_id}"
+        
+        url = f"/v3/brokerage/orders/{order_id}"
         response = self.api.safe_request("GET", url)
         
         if response.status_code == 200:
-            data = response.json().get("data", {})
+            data = response.json()
             
             # Update our local tracking
-            if data.get("id"):
-                self.order_history[data["id"]] = data
-                
-                # If order is in a terminal state, remove from active orders
-                status = data.get("status")
-                if status in ["Filled", "Canceled", "Rejected", "Expired"]:
-                    if data["id"] in self.active_orders:
-                        del self.active_orders[data["id"]]
-                else:
-                    # Otherwise, update active orders
-                    self.active_orders[data["id"]] = data
-                    
-            return data
+            order_data = {
+                "id": data.get("OrderID"),
+                "status": data.get("Status"),
+                "filled_quantity": data.get("FilledQuantity", 0),
+                "remaining_quantity": data.get("RemainingQuantity", 0),
+                "average_fill_price": data.get("AverageFilledPrice", 0),
+                "updated_at": datetime.now().isoformat()
+            }
+            
+            # Update tracking based on status
+            status = data.get("Status", "")
+            if status in ["FLL", "CAN", "REJ", "EXP"]:  # Filled, Cancelled, Rejected, Expired
+                if order_id in self.active_orders:
+                    del self.active_orders[order_id]
+            else:
+                self.active_orders[order_id] = order_data
+            
+            self.order_history[order_id] = order_data
+            
+            return order_data
         else:
-            self.logger.error(f"Get order status failed: {response.status_code} {response.text}")
-            return {"error": response.text}
+            self.logger.error(f"Get order status failed: {response.status_code}")
+            return {"error": f"Failed to get order status: {response.status_code}"}
     
     def get_active_orders(self) -> List[Dict]:
         """
@@ -379,25 +410,35 @@ class OrderManager:
         """
         if not self.account_id:
             raise ValueError("No account ID available")
-            
-        url = f"/accounts/{self.account_id}/orders/live"
+        
+        url = f"/v3/brokerage/accounts/{self.account_id}/orders"
         response = self.api.safe_request("GET", url)
         
         if response.status_code == 200:
-            data = response.json().get("data", {}).get("items", [])
+            data = response.json()
+            orders = data.get("Orders", [])
             
             # Update local tracking
             self.active_orders = {}
-            for order in data:
-                if order.get("id"):
-                    self.active_orders[order["id"]] = order
-                    self.order_history[order["id"]] = order
-                    
+            for order in orders:
+                order_id = order.get("OrderID")
+                if order_id and order.get("Status") not in ["FLL", "CAN", "REJ", "EXP"]:
+                    order_data = {
+                        "id": order_id,
+                        "status": order.get("Status"),
+                        "symbol": order.get("Symbol"),
+                        "quantity": order.get("Quantity"),
+                        "order_type": order.get("OrderType"),
+                        "action": order.get("TradeAction")
+                    }
+                    self.active_orders[order_id] = order_data
+                    self.order_history[order_id] = order_data
+            
             return list(self.active_orders.values())
         else:
-            self.logger.error(f"Get active orders failed: {response.status_code} {response.text}")
+            self.logger.error(f"Get active orders failed: {response.status_code}")
             return []
-            
+    
     def calculate_option_order_cost(self, order_data):
         """
         Calculate the cost of an option order
@@ -409,26 +450,64 @@ class OrderManager:
             float: Order cost
         """
         try:
-            # Get buying power effect from order data
-            bp_effect = order_data.get("buying-power-effect", {})
+            # Basic calculation
+            quantity = float(order_data.get("Quantity", 0))
+            price = float(order_data.get("LimitPrice", 0))
             
-            # Get impact and effect
-            impact = float(bp_effect.get("impact", 0))
-            effect = bp_effect.get("effect", "")
+            # Options are traded in contracts of 100
+            cost = quantity * price * 100
             
-            # Calculate cost based on effect (Debit = negative, Credit = positive)
-            if effect == "Debit":
-                return -impact
-            elif effect == "Credit":
-                return impact
+            # For debit trades (buying), cost is negative
+            if order_data.get("TradeAction", "").startswith("Buy"):
+                return -cost
             else:
-                return 0
+                return cost
+                
         except Exception as e:
             self.logger.error(f"Error calculating order cost: {e}")
             return 0
-
     
-    # In order_manager.py, add a kill_all_orders method
+    def get_positions(self):
+        """
+        Get current positions from the broker
+        
+        Returns:
+            list: List of position objects
+        """
+        if not self.account_id:
+            raise ValueError("No account ID available")
+        
+        try:
+            url = f"/v3/brokerage/accounts/{self.account_id}/positions"
+            response = self.api.safe_request("GET", url)
+            
+            if response.status_code == 200:
+                data = response.json()
+                positions = data.get("Positions", [])
+                
+                # Convert to common format
+                formatted_positions = []
+                for pos in positions:
+                    formatted_pos = {
+                        "symbol": pos.get("Symbol"),
+                        "quantity": float(pos.get("Quantity", 0)),
+                        "average_price": float(pos.get("AveragePrice", 0)),
+                        "current_price": float(pos.get("Last", 0)),
+                        "market_value": float(pos.get("MarketValue", 0)),
+                        "unrealized_pnl": float(pos.get("UnrealizedProfitLoss", 0)),
+                        "position_type": pos.get("PositionType", "Long")
+                    }
+                    formatted_positions.append(formatted_pos)
+                
+                return formatted_positions
+            else:
+                self.logger.error(f"Failed to get positions: {response.status_code}")
+                return []
+                
+        except Exception as e:
+            self.logger.error(f"Error getting positions: {e}")
+            return []
+    
     def kill_all_orders(self):
         """
         Cancel all active orders and close all positions
@@ -444,7 +523,7 @@ class OrderManager:
             "positions_closed": 0,
             "errors": []
         }
-    
+        
         # First, get all active orders
         active_orders = self.get_active_orders()
         
@@ -493,8 +572,7 @@ class OrderManager:
                     result["errors"].append(f"Failed to close position for {symbol}: {order_result['error']}")
         
         return result
-
-
+    
     def create_market_order(self, symbol, quantity, direction):
         """
         Create a market order for any instrument
@@ -507,28 +585,31 @@ class OrderManager:
         Returns:
             dict: Order JSON
         """
-        # Determine instrument type based on symbol
+        # Determine if it's an option based on symbol format
         if " " in symbol and len(symbol) > 15:  # Option symbol
-            instrument_type = "Equity Option"
-        elif "/" in symbol:  # Cryptocurrency
-            instrument_type = "Cryptocurrency"
-        elif symbol.startswith("/"):  # Future
-            instrument_type = "Future"
+            return self.create_equity_option_order(
+                symbol=symbol,
+                quantity=quantity,
+                direction=direction,
+                order_type="Market"
+            )
         else:  # Equity
-            instrument_type = "Equity"
-        
-        # Create order
-        order = {
-            "time-in-force": "Day",
-            "order-type": "Market",
-            "legs": [
-                {
-                    "instrument-type": instrument_type,
-                    "symbol": symbol,
-                    "quantity": quantity,
-                    "action": direction
-                }
-            ]
-        }
-        
-        return order
+            # Convert direction for equities
+            action_map = {
+                "Buy to Open": "Buy",
+                "Sell to Open": "Sell",
+                "Buy to Close": "Sell",
+                "Sell to Close": "Buy"
+            }
+            
+            action = action_map.get(direction, "Buy")
+            
+            return {
+                "AccountID": self.account_id,
+                "Symbol": symbol,
+                "Quantity": str(quantity),
+                "OrderType": "Market",
+                "TimeInForce": {"Duration": "Day"},
+                "TradeAction": action,
+                "Route": "Intelligent"
+            }

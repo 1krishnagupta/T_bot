@@ -1,0 +1,18 @@
+2025-08-14 05:44:03,693 - Code.bot_core.tradestation_api - ERROR - Failed to fetch account balance: 403
+2025-08-14 05:44:18,406 - Code.bot_core.tradestation_api - ERROR - Failed to fetch account balance: 403
+2025-08-14 05:44:18,433 - UIController - CRITICAL - Uncaught exception: AttributeError: 'JigsawFlowApp' object has no attribute 'mongodb_widgetimport'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 1346, in handle_login_success
+    mongodb_widget = self.app.get_mongodb_widget()
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\jigsaw_flow_ui.py", line 4359, in get_mongodb_widget
+    return self.mongodb_widgetimport
+AttributeError: 'JigsawFlowApp' object has no attribute 'mongodb_widgetimport'
+2025-08-14 05:48:00,163 - Code.bot_core.tradestation_api - ERROR - Failed to fetch account balance: 403
+2025-08-14 05:48:03,844 - Code.bot_core.tradestation_api - ERROR - Failed to fetch account balance: 403
+2025-08-14 05:48:03,864 - UIController - CRITICAL - Uncaught exception: AttributeError: 'JigsawFlowApp' object has no attribute 'mongodb_widgetimport'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 1346, in handle_login_success
+    mongodb_widget = self.app.get_mongodb_widget()
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\jigsaw_flow_ui.py", line 4359, in get_mongodb_widget
+    return self.mongodb_widgetimport
+AttributeError: 'JigsawFlowApp' object has no attribute 'mongodb_widgetimport'

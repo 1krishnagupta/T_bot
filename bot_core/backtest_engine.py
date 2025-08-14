@@ -73,7 +73,119 @@ class BacktestEngine:
     
     
 
-    
+    def _calculate_option_price_delta_based(self, stock_price, strike_price=None, option_type="call", dte=7, iv=0.25):
+        """
+        Calculate option price using simplified Black-Scholes approximation
+        for 0.60 delta options as specified in documentation
+        
+        Args:
+            stock_price: Current stock price
+            strike_price: Strike price (if None, calculates 0.60 delta strike)
+            option_type: "call" or "put"
+            dte: Days to expiration
+            iv: Implied volatility
+            
+        Returns:
+            tuple: (option_price, strike_price, delta)
+        """
+        import math
+        from scipy.stats import norm
+        
+        # Risk-free rate assumption
+        r = 0.05
+        
+        # If no strike provided, calculate 0.60 delta strike
+        if strike_price is None:
+            # For 0.60 delta call, strike is slightly OTM
+            # For 0.60 delta put, strike is slightly ITM
+            if option_type == "call":
+                # Approximate 0.60 delta call strike
+                strike_price = stock_price * (1 + 0.01)  # Slightly OTM
+            else:
+                # Approximate 0.60 delta put strike  
+                strike_price = stock_price * (1 - 0.01)  # Slightly ITM
+        
+        # Time to expiration in years
+        T = dte / 365.0
+        
+        # Calculate d1 and d2
+        d1 = (math.log(stock_price / strike_price) + (r + 0.5 * iv ** 2) * T) / (iv * math.sqrt(T))
+        d2 = d1 - iv * math.sqrt(T)
+        
+        # Calculate option price and delta
+        if option_type == "call":
+            delta = norm.cdf(d1)
+            option_price = (stock_price * norm.cdf(d1) - 
+                        strike_price * math.exp(-r * T) * norm.cdf(d2))
+        else:  # put
+            delta = norm.cdf(d1) - 1
+            option_price = (strike_price * math.exp(-r * T) * norm.cdf(-d2) - 
+                        stock_price * norm.cdf(-d1))
+        
+        # Ensure we're close to 0.60 delta by adjusting strike if needed
+        target_delta = 0.60 if option_type == "call" else -0.60
+        
+        # If delta is not close to target, adjust strike
+        if abs(abs(delta) - 0.60) > 0.05:
+            # Use approximation to get closer to 0.60 delta
+            if option_type == "call":
+                strike_price = stock_price * math.exp(-norm.ppf(0.60) * iv * math.sqrt(T))
+            else:
+                strike_price = stock_price * math.exp(-norm.ppf(0.40) * iv * math.sqrt(T))
+            
+            # Recalculate with new strike
+            d1 = (math.log(stock_price / strike_price) + (r + 0.5 * iv ** 2) * T) / (iv * math.sqrt(T))
+            d2 = d1 - iv * math.sqrt(T)
+            
+            if option_type == "call":
+                delta = norm.cdf(d1)
+                option_price = (stock_price * norm.cdf(d1) - 
+                            strike_price * math.exp(-r * T) * norm.cdf(d2))
+            else:
+                delta = norm.cdf(d1) - 1
+                option_price = (strike_price * math.exp(-r * T) * norm.cdf(-d2) - 
+                            stock_price * norm.cdf(-d1))
+        
+        return option_price, strike_price, delta
+
+
+    def _simulate_option_price_movement(self, initial_stock_price, current_stock_price, initial_option_price, initial_delta, option_type="call"):
+        """
+        Simulate option price movement based on delta and gamma
+        As specified: "Simulated option pricing using delta + price movement"
+        
+        Args:
+            initial_stock_price: Stock price at entry
+            current_stock_price: Current stock price
+            initial_option_price: Option price at entry
+            initial_delta: Delta at entry (should be ~0.60)
+            option_type: "call" or "put"
+            
+        Returns:
+            float: Estimated current option price
+        """
+        # Calculate stock price change
+        stock_change = current_stock_price - initial_stock_price
+        
+        # Use delta to estimate option price change
+        # Delta tells us how much the option price changes for $1 move in stock
+        option_price_change = stock_change * abs(initial_delta)
+        
+        # Add gamma effect (delta changes as stock moves)
+        # Approximate gamma as 0.02 for ATM options
+        gamma = 0.02
+        gamma_adjustment = 0.5 * gamma * (stock_change ** 2)
+        
+        # Calculate new option price
+        if option_type == "call":
+            new_option_price = initial_option_price + option_price_change + gamma_adjustment
+        else:  # put
+            new_option_price = initial_option_price - option_price_change + gamma_adjustment
+        
+        # Option price cannot be negative
+        return max(new_option_price, 0.01)
+
+
     def run_backtest_for_ticker(self, symbol, period, start_date, end_date, data_source="YFinance"):
         """
         Run backtest for a single ticker and period with detailed analysis
@@ -83,7 +195,7 @@ class BacktestEngine:
             period (int): Candle period in minutes
             start_date (str): Start date in ISO format
             end_date (str): End date in ISO format
-                
+                    
         Returns:
             dict: Backtest results
         """
@@ -101,7 +213,7 @@ class BacktestEngine:
             if self.config and 'trading_config' in self.config:
                 self.trading_config = self.config['trading_config']
                 
-                # Check which strategy is being used - DEFINE strategy_name HERE
+                # Check which strategy is being used
                 use_mag7 = self.trading_config.get('use_mag7_confirmation', False)
                 strategy_name = "Magnificent 7 (Mag7)" if use_mag7 else "Sector Alignment"
 
@@ -349,7 +461,7 @@ class BacktestEngine:
             analysis_data = []
 
             # Initial equity
-            initial_equity = 10
+            initial_equity = 10000
             current_equity = initial_equity
 
             # Initialize best_method and all_method_stats
@@ -540,19 +652,38 @@ class BacktestEngine:
                                             
                                             # Simulate trades for each trailing method
                                             for method in trailing_methods:
-                                                # Simulate trade
+                                                # Simulate trade with OPTION PRICING
                                                 exit_idx, exit_price, exit_reason = self._simulate_trade_with_method(
                                                     df, ha_df, i, direction, method
                                                 )
                                                 
-                                                # Calculate P&L
-                                                entry_price = float(df.iloc[i]['close'])
-                                                if direction == "bullish":
-                                                    pnl_pct = ((exit_price - entry_price) / entry_price) * 100
-                                                else:
-                                                    pnl_pct = ((entry_price - exit_price) / entry_price) * 100
+                                                # Calculate option entry price
+                                                entry_stock_price = float(df.iloc[i]['close'])
+                                                option_type = "call" if direction == "bullish" else "put"
                                                 
-                                                pnl_dollars = (pnl_pct / 100) * current_equity
+                                                # Simple option price approximation (improved from 0.006)
+                                                # ATM option ≈ 1.5% of stock price for weekly options
+                                                entry_option_price = entry_stock_price * 0.015
+                                                strike_price = entry_stock_price  # ATM for simplicity
+                                                delta = 0.60  # Target delta
+                                                
+                                                # Calculate exit option price based on stock movement
+                                                exit_stock_price = float(df.iloc[exit_idx]['close'])
+                                                stock_change = exit_stock_price - entry_stock_price
+                                                
+                                                # Option price change = delta * stock change
+                                                option_price_change = delta * stock_change
+                                                
+                                                if direction == "bullish":
+                                                    exit_option_price = max(entry_option_price + option_price_change, 0.01)
+                                                else:
+                                                    # For puts, price increases when stock goes down
+                                                    exit_option_price = max(entry_option_price - option_price_change, 0.01)
+                                                
+                                                # Calculate OPTION P&L
+                                                contracts = self.trading_config.get("contracts_per_trade", 1)
+                                                option_pnl = (exit_option_price - entry_option_price) * contracts * 100
+                                                option_pnl_pct = ((exit_option_price - entry_option_price) / entry_option_price) * 100
                                                 
                                                 # Create trade record
                                                 trade = {
@@ -561,27 +692,33 @@ class BacktestEngine:
                                                     "direction": direction,
                                                     "entry_idx": i,
                                                     "entry_time": str(df.iloc[i]['timestamp']),
-                                                    "entry_price": entry_price,
+                                                    "entry_stock_price": entry_stock_price,
+                                                    "entry_option_price": entry_option_price,
+                                                    "strike_price": strike_price,
+                                                    "delta": delta,
                                                     "exit_idx": exit_idx,
                                                     "exit_time": str(df.iloc[exit_idx]['timestamp']) if exit_idx < len(df) else str(df.iloc[-1]['timestamp']),
-                                                    "exit_price": exit_price,
+                                                    "exit_stock_price": exit_stock_price,
+                                                    "exit_option_price": exit_option_price,
                                                     "exit_reason": exit_reason,
-                                                    "pnl_pct": round(pnl_pct, 2),
-                                                    "pnl_dollars": round(pnl_dollars, 2),
-                                                    "contract_price": entry_price * 0.006  # Approximate 0.60 delta option price
+                                                    "option_pnl": round(option_pnl, 2),
+                                                    "option_pnl_pct": round(option_pnl_pct, 2),
+                                                    "pnl_dollars": round(option_pnl, 2),  # Add this field
+                                                    "pnl_pct": round(option_pnl_pct, 2),  # Add this field
+                                                    "contracts": contracts
                                                 }
                                                 
                                                 # Update method results
                                                 method_results[method]["trades"].append(trade)
-                                                if pnl_pct > 0:
+                                                if option_pnl > 0:
                                                     method_results[method]["win_count"] += 1
-                                                    method_results[method]["total_profit"] += pnl_dollars
+                                                    method_results[method]["total_profit"] += option_pnl
                                                 else:
                                                     method_results[method]["loss_count"] += 1
-                                                    method_results[method]["total_loss"] += abs(pnl_dollars)
+                                                    method_results[method]["total_loss"] += abs(option_pnl)
                                                 
                                                 # Update equity curve
-                                                new_equity = method_results[method]["equity_curve"][-1] + pnl_dollars
+                                                new_equity = method_results[method]["equity_curve"][-1] + option_pnl
                                                 method_results[method]["equity_curve"].append(new_equity)
                                             
                                             # Store the best trade for overall tracking
@@ -590,13 +727,13 @@ class BacktestEngine:
                                             for method in trailing_methods:
                                                 if method_results[method]["trades"]:
                                                     last_trade = method_results[method]["trades"][-1]
-                                                    if last_trade["pnl_dollars"] > best_pnl:
-                                                        best_pnl = last_trade["pnl_dollars"]
+                                                    if last_trade.get("pnl_dollars", last_trade.get("option_pnl", 0)) > best_pnl:
+                                                        best_pnl = last_trade.get("pnl_dollars", last_trade.get("option_pnl", 0))
                                                         best_trade = last_trade
                                             
                                             if best_trade:
                                                 trades.append(best_trade)
-                                                current_equity += best_trade["pnl_dollars"]
+                                                current_equity += best_trade.get("pnl_dollars", best_trade.get("option_pnl", 0))
                 else:
                     analysis_record['skip_reason'] = 'Warmup period' if i < warmup else 'End of data'
                                 
@@ -643,16 +780,12 @@ class BacktestEngine:
                     print(f"    - Alignment detected: {sample.get('alignment_detected', False)}")
                     print(f"    - Compression: {sample.get('compression_detected', False)}")
                     print(f"    - Skip reason: {sample.get('skip_reason', 'N/A')}")
-                
-                # # Check if alignment data is valid
-                # for symbol_name, data_df in sector_data.items():
-                #     if isinstance(data_df, pd.DataFrame) and not data_df.empty:
-                #         print(f"  - {symbol_name}: {len(data_df)} candles, date range: {data_df.iloc[0]['timestamp']} to {data_df.iloc[-1]['timestamp']}")
-                #     else:
-                #         print(f"  - {symbol_name}: No data!")
             
             # Determine best trailing method
             best_profit_factor = 0
+            best_method = None
+            all_method_stats = {}
+            
             for method, results in method_results.items():
                 if results["win_count"] > 0 or results["loss_count"] > 0:
                     win_rate = (results["win_count"] / (results["win_count"] + results["loss_count"])) * 100
@@ -800,7 +933,8 @@ class BacktestEngine:
             import traceback
             traceback.print_exc()
             return self._get_empty_result(error=str(e))
-        
+    
+    
 
     def _print_config_table(self, strategy_name, use_mag7):
         """Print configuration parameters in a formatted table"""
@@ -914,7 +1048,7 @@ class BacktestEngine:
             
     def _save_analysis_to_csv(self, analysis_data, filename):
         """
-        Save detailed analysis data to CSV with configuration parameters
+        Save detailed analysis data to CSV with configuration parameters and option-specific data
         
         Args:
             analysis_data (list): List of analysis records
@@ -948,6 +1082,7 @@ class BacktestEngine:
                 'stop_loss_method': self.trading_config.get("stop_loss_method", "ATR Multiple"),
                 'atr_multiple': self.trading_config.get("atr_multiple", 1.5),
                 'fixed_stop_percentage': self.trading_config.get("fixed_stop_percentage", 1.0),
+                'option_stop_loss_percentage': self.trading_config.get("option_stop_loss_percentage", 30.0),
                 'trailing_stop_method': self.trading_config.get("trailing_stop_method", "Heiken Ashi Candle Trail"),
                 'contracts_per_trade': self.trading_config.get("contracts_per_trade", 1),
                 'no_trade_window_minutes': self.trading_config.get("no_trade_window_minutes", 3),
@@ -977,7 +1112,7 @@ class BacktestEngine:
                     'xly_weight': self.trading_config.get("sector_weights", {}).get("XLY", 11),
                 })
             
-            # Create enhanced analysis records with config parameters
+            # Create enhanced analysis records with config parameters and option data
             enhanced_records = []
             for i, record in enumerate(analysis_data):
                 if i == 0:  # Debug first record
@@ -1014,6 +1149,37 @@ class BacktestEngine:
                     if 'sector_weight' in record:
                         enhanced_record['sector_alignment'] = f"{record['sector_weight']}% vs {config_params['sector_weight_threshold']}%"
                         enhanced_record['sector_aligned'] = 'YES' if record.get('sector_aligned', False) else 'NO'
+                
+                # Add OPTION-SPECIFIC data for trade entries
+                if record.get('trade_entered', False):
+                    stock_price = float(record.get('close', 100))
+                    direction = record.get('trade_direction', record.get('entry_signal', 'bullish'))
+                    
+                    # Calculate estimated option metrics
+                    # For 0.60 delta options, typical premium is 1.5-2% of stock price
+                    option_type = 'call' if direction == 'bullish' else 'put'
+                    
+                    # Estimate strike price for 0.60 delta
+                    if option_type == 'call':
+                        # 0.60 delta call is slightly OTM
+                        strike_price = stock_price * 1.01  # 1% OTM
+                    else:
+                        # 0.60 delta put is slightly ITM  
+                        strike_price = stock_price * 0.99  # 1% ITM
+                    
+                    # Estimate option price (simplified Black-Scholes approximation)
+                    # For 0.60 delta with 7 DTE, roughly 1.5% of stock price
+                    option_price = stock_price * 0.015
+                    
+                    # Add option-specific fields
+                    enhanced_record['option_type'] = option_type
+                    enhanced_record['estimated_strike'] = round(strike_price, 2)
+                    enhanced_record['estimated_option_price'] = round(option_price, 2)
+                    enhanced_record['estimated_delta'] = 0.60
+                    enhanced_record['contracts'] = config_params['contracts_per_trade']
+                    enhanced_record['option_stop_loss'] = round(option_price * (1 - config_params['option_stop_loss_percentage'] / 100), 2)
+                    enhanced_record['max_option_risk'] = round(option_price * config_params['contracts_per_trade'] * 100, 2)
+                    enhanced_record['breakeven_stock_move'] = round((option_price / stock_price) * 100, 2)
                 
                 # Add all original record fields
                 for key, value in record.items():
@@ -1060,9 +1226,14 @@ class BacktestEngine:
                             'trend_aligned', 'entry_signal', 'trade_entered', 'trade_direction',
                             'skip_reason', 'equity']
             
+            # Option-specific columns
+            option_columns = ['option_type', 'estimated_strike', 'estimated_option_price', 
+                            'estimated_delta', 'contracts', 'option_stop_loss', 
+                            'max_option_risk', 'breakeven_stock_move']
+            
             # Combine all columns in order
             ordered_keys = config_keys + comparison_keys
-            for col_list in [core_columns, strategy_columns, signal_columns]:
+            for col_list in [core_columns, strategy_columns, signal_columns, option_columns]:
                 for col in col_list:
                     if col in all_keys and col not in ordered_keys:
                         ordered_keys.append(col)
@@ -1099,7 +1270,7 @@ class BacktestEngine:
             
     def _save_trades_to_csv(self, trades, filename):
         """
-        Save trade data to CSV
+        Save trade data to CSV with option-specific fields
         
         Args:
             trades (list): List of trade records
@@ -1107,17 +1278,54 @@ class BacktestEngine:
         """
         if not trades:
             return
-            
-        # Identify all keys in trades
-        all_keys = set()
+        
+        import csv
+        
+        # Define the columns we want in specific order for option trades
+        fieldnames = [
+            'symbol',
+            'direction',
+            'method',
+            'entry_time',
+            'exit_time',
+            'entry_stock_price',
+            'exit_stock_price',
+            'stock_change_pct',
+            'entry_option_price',
+            'exit_option_price',
+            'strike_price',
+            'delta',
+            'option_pnl',
+            'option_pnl_pct',
+            'contracts',
+            'total_pnl',
+            'exit_reason'
+        ]
+        
+        # Process trades to add calculated fields
+        processed_trades = []
         for trade in trades:
-            all_keys.update(trade.keys())
+            processed_trade = trade.copy()
+            
+            # Calculate stock change percentage
+            if 'entry_stock_price' in trade and 'exit_stock_price' in trade:
+                stock_change = ((trade['exit_stock_price'] - trade['entry_stock_price']) / 
+                            trade['entry_stock_price']) * 100
+                processed_trade['stock_change_pct'] = round(stock_change, 2)
+            
+            # Calculate total P&L
+            if 'option_pnl' in trade and 'contracts' in trade:
+                processed_trade['total_pnl'] = trade['option_pnl']  # Already includes contracts
+            
+            processed_trades.append(processed_trade)
         
         # Write to CSV
         with open(filename, 'w', newline='') as f:
-            writer = csv.DictWriter(f, fieldnames=sorted(list(all_keys)))
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction='ignore')
             writer.writeheader()
-            writer.writerows(trades)
+            writer.writerows(processed_trades)
+        
+        self.logger.info(f"Saved {len(processed_trades)} option trades to {filename}")
     
     def _get_empty_result(self, error=None):
         """Return empty result with optional error"""
@@ -1646,9 +1854,10 @@ class BacktestEngine:
         
         return current_volume > (avg_volume * threshold)
     
+    
     def _simulate_trade_with_method(self, data, ha_data, start_idx, direction, method):
         """
-        Simulate a trade with a given trailing stop method
+        Simulate a trade with a given trailing stop method using OPTION pricing
         
         Args:
             data (DataFrame): Price data
@@ -1662,206 +1871,281 @@ class BacktestEngine:
         """
         try:
             max_bars = min(30, len(data) - start_idx)  # Maximum 30 bars or until end of data
+            
+            # Get entry stock price
+            entry_stock_price = float(data.iloc[start_idx]['close'])
+            
+            # Calculate initial option price using delta-based model
+            # For 0.60 delta options as specified in documentation
+            option_type = "call" if direction == "bullish" else "put"
+            
+            # Simple approximation for 0.60 delta option pricing
+            # Option price ≈ Stock Price × IV × sqrt(DTE/365) × Delta_adjustment
+            dte = 7  # Assume 7 days to expiration
+            iv = 0.25  # Assume 25% implied volatility
+            time_factor = (dte / 365) ** 0.5
+            
+            # Base option price calculation
+            base_price = entry_stock_price * iv * time_factor * 0.4  # 0.4 is approximation factor
+            
+            # Adjust for 0.60 delta (slightly OTM)
+            delta = 0.60
+            entry_option_price = base_price * 0.8  # Slightly OTM adjustment
+            
+            # Ensure minimum option price
+            entry_option_price = max(entry_option_price, 0.10)
+            
+            # Calculate strike price for record keeping
+            if option_type == "call":
+                strike_price = entry_stock_price * 1.01  # Slightly OTM call
+            else:
+                strike_price = entry_stock_price * 0.99  # Slightly OTM put
+            
+            self.logger.info(f"Option entry: Stock=${entry_stock_price:.2f}, "
+                            f"Strike=${strike_price:.2f}, "
+                            f"Option=${entry_option_price:.2f}, "
+                            f"Delta={delta:.2f}")
+            
+            # Set initial stop price based on method
             stop_price = None
             reason = "Max bars reached"
             
-            # Set initial stop price based on method
             if "Heiken Ashi" in method:
-                # Use prior candle low/high as initial stop
-                if direction == "bullish":
-                    stop_price = float(data.iloc[start_idx-1]['low'])
-                else:
-                    stop_price = float(data.iloc[start_idx-1]['high'])
-            
+                # For options, use a percentage-based stop initially
+                stop_price = entry_option_price * 0.7  # 30% stop loss
+                
             elif "EMA" in method:
-                # Use EMA as stop
-                if 'ema9' in data.columns:
-                    if direction == "bullish":
-                        stop_price = float(data.iloc[start_idx]['ema9'])
-                    else:
-                        stop_price = float(data.iloc[start_idx]['ema9'])
-                else:
-                    # Calculate EMA9 on the fly
-                    ema = data['close'].iloc[:start_idx+1].ewm(span=9, adjust=False).mean()
-                    stop_price = float(ema.iloc[-1])
-                    
+                # EMA-based stop for options
+                stop_price = entry_option_price * 0.7  # Start with 30% stop
+                
             elif "ATR" in method:
-                # Use ATR-based stop
+                # ATR-based stop adapted for options
                 if 'atr' in data.columns:
-                    atr = float(data.iloc[start_idx]['atr'])
+                    stock_atr = float(data.iloc[start_idx]['atr'])
                 else:
-                    atr = self._calculate_atr(data, start_idx)
-                    
-                if direction == "bullish":
-                    stop_price = float(data.iloc[start_idx]['close']) - (atr * 1.5)
-                else:
-                    stop_price = float(data.iloc[start_idx]['close']) + (atr * 1.5)
-                    
+                    stock_atr = self._calculate_atr(data.iloc[:start_idx+1])
+                
+                # Convert stock ATR to option ATR using delta
+                option_atr = stock_atr * delta
+                atr_multiple = self.trading_config.get("atr_multiple", 1.5)
+                stop_price = entry_option_price - (option_atr * atr_multiple)
+                stop_price = max(stop_price, entry_option_price * 0.5)  # At least 50% stop
+                
             elif "% Price" in method:
-                # Use percentage of price
-                if direction == "bullish":
-                    stop_price = float(data.iloc[start_idx]['close']) * 0.985  # 1.5% below
-                else:
-                    stop_price = float(data.iloc[start_idx]['close']) * 1.015  # 1.5% above
-                    
-            else:  # Fixed Tick
-                # Use fixed amount
-                if direction == "bullish":
-                    stop_price = float(data.iloc[start_idx]['close']) - 1.0  # $1 below
-                else:
-                    stop_price = float(data.iloc[start_idx]['close']) + 1.0  # $1 above
-                    
-            # Simulate the trade
-            entry_price = float(data.iloc[start_idx]['close'])
-            max_profit = 0
-            min_holding_bars = 3  # Minimum 3 bars (15 minutes for 5m candles)
+                # Percentage-based trailing stop for options
+                trail_pct = self.trading_config.get("option_trail_percentage", 25.0)
+                stop_price = entry_option_price * (1 - trail_pct / 100)
+                
+            else:  # Fixed Tick/Point
+                # Fixed dollar stop for options
+                stop_amount = self.trading_config.get("option_fixed_stop", 0.50)
+                stop_price = entry_option_price - stop_amount
+                stop_price = max(stop_price, 0.05)  # Minimum 5 cents
             
+            # Track maximum option price for trailing stops
+            max_option_price = entry_option_price
+            
+            # Minimum holding period
+            min_holding_bars = self.trading_config.get("min_bars_held", 3)
+            
+            # Simulate the trade bar by bar
             for i in range(start_idx + 1, min(start_idx + max_bars, len(data))):
                 # Calculate bars held
                 bars_held = i - start_idx
+                
                 # Skip exit checks if minimum holding period not met
                 if bars_held < min_holding_bars:
                     continue
+                    
                 if i >= len(data):
                     break
-                    
-                # Current price
-                current_price = float(data.iloc[i]['close'])
-                current_low = float(data.iloc[i]['low'])
-                current_high = float(data.iloc[i]['high'])
+                
+                # Get current stock price
+                current_stock_price = float(data.iloc[i]['close'])
+                
+                # Calculate stock price change
+                stock_change = current_stock_price - entry_stock_price
+                stock_change_pct = (stock_change / entry_stock_price) * 100
+                
+                # Simulate option price movement using delta
+                # Option price change = Stock price change × Delta
+                option_price_change = stock_change * delta
+                
+                # Add gamma effect (delta changes as stock moves)
+                # Approximate gamma as 0.02 for near-the-money options
+                gamma = 0.02
+                gamma_adjustment = 0.5 * gamma * (stock_change ** 2)
+                
+                # Calculate current option price
+                if option_type == "call":
+                    current_option_price = entry_option_price + option_price_change + gamma_adjustment
+                else:  # put
+                    # Puts move opposite to stock
+                    current_option_price = entry_option_price - option_price_change + gamma_adjustment
+                
+                # Add time decay (theta)
+                # Approximate daily theta as 2% of option value for 7 DTE
+                theta_decay = entry_option_price * 0.02 * (bars_held / 78)  # 78 bars per day for 5m
+                current_option_price -= theta_decay
+                
+                # Option price cannot be negative
+                current_option_price = max(current_option_price, 0.01)
                 
                 # Check for stop hit
-                if direction == "bullish" and current_low <= stop_price:
+                if current_option_price <= stop_price:
                     return i, stop_price, "Stop loss hit"
-                elif direction == "bearish" and current_high >= stop_price:
-                    return i, stop_price, "Stop loss hit"
+                
+                # Update maximum price and trail stop if applicable
+                if current_option_price > max_option_price:
+                    max_option_price = current_option_price
                     
-                # Calculate current profit
-                if direction == "bullish":
-                    current_profit = current_price - entry_price
-                else:
-                    current_profit = entry_price - current_price
-                    
-                # Update max profit
-                if current_profit > max_profit:
-                    max_profit = current_profit
-                    
-                    # Trail the stop if using trailing stop
+                    # Update trailing stop based on method
                     if "Heiken Ashi" in method:
-                        # Update stop to prior candle low/high
-                        if direction == "bullish":
-                            new_stop = float(data.iloc[i-1]['low'])
-                            if new_stop > stop_price:
-                                stop_price = new_stop
-                        else:
-                            new_stop = float(data.iloc[i-1]['high'])
-                            if new_stop < stop_price:
-                                stop_price = new_stop
-                                
+                        # Trail stop to prior bar low for longs
+                        if direction == "bullish" and i > start_idx + 1:
+                            # Use percentage trail for options
+                            new_stop = max_option_price * 0.75  # Trail at 25% below high
+                            stop_price = max(stop_price, new_stop)
+                        elif direction == "bearish" and i > start_idx + 1:
+                            new_stop = max_option_price * 0.75
+                            stop_price = max(stop_price, new_stop)
+                            
                     elif "EMA" in method:
-                        # Update stop to current EMA
-                        if 'ema9' in data.columns:
-                            ema_value = float(data.iloc[i]['ema9'])
-                        else:
-                            ema = data['close'].iloc[:i+1].ewm(span=9, adjust=False).mean()
-                            ema_value = float(ema.iloc[-1])
-                            
-                        if direction == "bullish":
-                            if ema_value > stop_price:
-                                stop_price = ema_value
-                        else:
-                            if ema_value < stop_price:
-                                stop_price = ema_value
-                                
+                        # Trail based on EMA but for options
+                        new_stop = max_option_price * 0.8  # 20% trail
+                        stop_price = max(stop_price, new_stop)
+                        
                     elif "ATR" in method:
-                        # Update stop based on ATR
+                        # Update ATR-based stop
                         if 'atr' in data.columns:
-                            atr = float(data.iloc[i]['atr'])
+                            current_stock_atr = float(data.iloc[i]['atr'])
                         else:
-                            atr = self._calculate_atr(data, i)
-                            
-                        if direction == "bullish":
-                            new_stop = current_price - (atr * 1.5)
-                            if new_stop > stop_price:
-                                stop_price = new_stop
-                        else:
-                            new_stop = current_price + (atr * 1.5)
-                            if new_stop < stop_price:
-                                stop_price = new_stop
-                                
+                            current_stock_atr = self._calculate_atr(data.iloc[:i+1])
+                        
+                        option_atr = current_stock_atr * delta
+                        new_stop = max_option_price - (option_atr * 1.5)
+                        stop_price = max(stop_price, new_stop)
+                        
                     elif "% Price" in method:
-                        # Update stop based on percentage
-                        if direction == "bullish":
-                            new_stop = current_price * 0.985  # 1.5% below
-                            if new_stop > stop_price:
-                                stop_price = new_stop
-                        else:
-                            new_stop = current_price * 1.015  # 1.5% above
-                            if new_stop < stop_price:
-                                stop_price = new_stop
-                                
+                        # Percentage-based trail
+                        trail_pct = 0.25  # 25% trail for options
+                        new_stop = max_option_price * (1 - trail_pct)
+                        stop_price = max(stop_price, new_stop)
+                        
                     else:  # Fixed Tick
-                        # Update stop based on fixed amount
-                        if direction == "bullish":
-                            new_stop = current_price - 1.0
-                            if new_stop > stop_price:
-                                stop_price = new_stop
-                        else:
-                            new_stop = current_price + 1.0
-                            if new_stop < stop_price:
-                                stop_price = new_stop
+                        # Fixed amount trail
+                        trail_amount = 0.50  # 50 cents
+                        new_stop = max_option_price - trail_amount
+                        stop_price = max(stop_price, new_stop)
+                
+                # Calculate current profit percentage on the OPTION
+                current_option_pnl_pct = ((current_option_price - entry_option_price) / entry_option_price) * 100
                 
                 # Check for Heiken Ashi reversal signal
                 if i < len(ha_data):
                     ha_open = float(ha_data.iloc[i]["open"])
                     ha_close = float(ha_data.iloc[i]["close"])
+                    ha_high = float(ha_data.iloc[i]["high"])
+                    ha_low = float(ha_data.iloc[i]["low"])
                     
-                    # Calculate current profit percentage
-                    if direction == "bullish":
-                        current_profit_pct = ((current_price - entry_price) / entry_price) * 100
-                    else:
-                        current_profit_pct = ((entry_price - current_price) / entry_price) * 100
+                    # Get minimum profit threshold for HA exit
+                    min_profit_before_exit = self.trading_config.get("ha_exit_min_profit", 10.0)  # 10% for options
                     
-                    # Get minimum profit threshold from config
-                    min_profit_before_exit = self.trading_config.get("ha_exit_min_profit", 0.5)
-                    
-                    if (direction == "bullish" and ha_open > ha_close) or (direction == "bearish" and ha_open < ha_close):
-                        # Only exit if we have decent profit or are losing money
-                        if current_profit_pct >= min_profit_before_exit or current_profit_pct < -0.1:
-                            return i, current_price, "Heiken Ashi reversal"
-                        
+                    # Check for reversal
+                    if direction == "bullish" and ha_open > ha_close:
+                        # Bearish reversal - check if we should exit
+                        if current_option_pnl_pct >= min_profit_before_exit:
+                            return i, current_option_price, "Heiken Ashi reversal with profit"
+                        elif current_option_pnl_pct < -10:  # Cut losses if down 10%
+                            return i, current_option_price, "Heiken Ashi reversal - cut loss"
+                            
+                    elif direction == "bearish" and ha_open < ha_close:
+                        # Bullish reversal
+                        if current_option_pnl_pct >= min_profit_before_exit:
+                            return i, current_option_price, "Heiken Ashi reversal with profit"
+                        elif current_option_pnl_pct < -10:
+                            return i, current_option_price, "Heiken Ashi reversal - cut loss"
+                
                 # Check for opposing Stochastic crossover
                 if 'stoch_k' in data.columns and 'stoch_d' in data.columns:
                     k = data.iloc[i]['stoch_k']
                     d = data.iloc[i]['stoch_d']
                     prev_k = data.iloc[i-1]['stoch_k'] if i > start_idx + 1 else k
+                    prev_d = data.iloc[i-1]['stoch_d'] if i > start_idx + 1 else d
                     
-                    # Only exit if stochastic is strongly overbought/oversold and crossing
-                    if direction == "bullish" and k > 85 and prev_k > d and k < d:
-                        return i, current_price, "Stochastic overbought and crossing down"
-                    elif direction == "bearish" and k < 15 and prev_k < d and k > d:
-                        return i, current_price, "Stochastic oversold and crossing up"
-                        
+                    # Get exit thresholds
+                    stoch_exit_overbought = self.trading_config.get("stoch_exit_overbought", 80)
+                    stoch_exit_oversold = self.trading_config.get("stoch_exit_oversold", 20)
+                    
+                    # Exit on stochastic extremes with crossover
+                    if direction == "bullish" and k > stoch_exit_overbought and prev_k > prev_d and k < d:
+                        if current_option_pnl_pct > 0:  # Only exit if profitable
+                            return i, current_option_price, "Stochastic overbought and crossing down"
+                    elif direction == "bearish" and k < stoch_exit_oversold and prev_k < prev_d and k > d:
+                        if current_option_pnl_pct > 0:
+                            return i, current_option_price, "Stochastic oversold and crossing up"
+                
                 # Check for VWAP or EMA crossover against trade
                 if 'vwap' in data.columns and 'ema15' in data.columns:
                     vwap = data.iloc[i]['vwap']
                     ema = data.iloc[i]['ema15']
                     
                     if pd.notna(vwap) and pd.notna(ema):
-                        if direction == "bullish" and current_price < min(vwap, ema):
-                            return i, current_price, "Price crossed below VWAP and EMA"
-                        elif direction == "bearish" and current_price > max(vwap, ema):
-                            return i, current_price, "Price crossed above VWAP and EMA"
+                        if direction == "bullish" and current_stock_price < min(vwap, ema):
+                            # Stock crossed below VWAP and EMA
+                            if current_option_pnl_pct > -5:  # Exit if not too deep in loss
+                                return i, current_option_price, "Price crossed below VWAP and EMA"
+                        elif direction == "bearish" and current_stock_price > max(vwap, ema):
+                            if current_option_pnl_pct > -5:
+                                return i, current_option_price, "Price crossed above VWAP and EMA"
             
-            # If we reach this point, we've hit max bars
+            # If we reach max bars, exit at current price
             if start_idx + max_bars < len(data):
-                return start_idx + max_bars - 1, float(data.iloc[start_idx + max_bars - 1]['close']), reason
+                final_stock_price = float(data.iloc[start_idx + max_bars - 1]['close'])
+                
+                # Calculate final option price
+                final_stock_change = final_stock_price - entry_stock_price
+                final_option_change = final_stock_change * delta
+                gamma_final = 0.5 * gamma * (final_stock_change ** 2)
+                
+                if option_type == "call":
+                    final_option_price = entry_option_price + final_option_change + gamma_final
+                else:
+                    final_option_price = entry_option_price - final_option_change + gamma_final
+                
+                # Apply time decay
+                theta_total = entry_option_price * 0.02 * (max_bars / 78)
+                final_option_price -= theta_total
+                final_option_price = max(final_option_price, 0.01)
+                
+                return start_idx + max_bars - 1, final_option_price, reason
             else:
-                return len(data) - 1, float(data.iloc[-1]['close']), reason
+                # End of data reached
+                final_stock_price = float(data.iloc[-1]['close'])
+                final_stock_change = final_stock_price - entry_stock_price
+                final_option_change = final_stock_change * delta
+                gamma_final = 0.5 * gamma * (final_stock_change ** 2)
+                
+                if option_type == "call":
+                    final_option_price = entry_option_price + final_option_change + gamma_final
+                else:
+                    final_option_price = entry_option_price - final_option_change + gamma_final
+                
+                bars_to_end = len(data) - start_idx - 1
+                theta_total = entry_option_price * 0.02 * (bars_to_end / 78)
+                final_option_price -= theta_total
+                final_option_price = max(final_option_price, 0.01)
+                
+                return len(data) - 1, final_option_price, reason
                 
         except Exception as e:
             self.logger.error(f"Error simulating trade: {e}")
-            return start_idx + 1, float(data.iloc[start_idx]['close']), f"Error: {str(e)}"
+            import traceback
+            traceback.print_exc()
+            # Return a loss scenario on error
+            return start_idx + 1, entry_option_price * 0.5, f"Error: {str(e)}"
+    
+
             
     def _calculate_max_drawdown(self, equity_curve):
         """
@@ -1887,16 +2171,12 @@ class BacktestEngine:
 
     def generate_summary_output(self, results, output_file):
         """
-        Generate summary output file with backtest results
-        
-        Args:
-            results (dict): Backtest results by ticker
-            output_file (str): Output file path
+        Generate summary output file with option trading results
         """
         with open(output_file, 'w', newline='') as f:
             writer = csv.writer(f)
             
-            # Header row
+            # Updated header row for options
             writer.writerow([
                 'Symbol_Period', 
                 'Win Rate', 
@@ -1905,14 +2185,37 @@ class BacktestEngine:
                 'Total Trades',
                 'Winning Trades',
                 'Losing Trades',
-                'Gross Profit',
-                'Gross Loss',
+                'Gross Profit ($)',
+                'Gross Loss ($)',
+                'Avg Win ($)',
+                'Avg Loss ($)',
                 'Final Equity',
+                'ROI %',
+                'Avg Option Price',
                 'Optimal Trailing Method'
             ])
             
             # Write results for each ticker/period
             for symbol_period, result in results.items():
+                # Calculate additional metrics
+                avg_win = (result.get('Gross Profit', 0) / result.get('Winning Trades', 1) 
+                        if result.get('Winning Trades', 0) > 0 else 0)
+                avg_loss = (result.get('Gross Loss', 0) / result.get('Losing Trades', 1) 
+                        if result.get('Losing Trades', 0) > 0 else 0)
+                
+                initial_equity = 10000
+                roi = ((result.get('Final Equity', initial_equity) - initial_equity) / 
+                    initial_equity) * 100
+                
+                # Estimate average option price from trades
+                trades = result.get('Trades', [])
+                avg_option_price = 0
+                if trades:
+                    option_prices = [t.get('entry_option_price', 0) for t in trades 
+                                if 'entry_option_price' in t]
+                    if option_prices:
+                        avg_option_price = sum(option_prices) / len(option_prices)
+                
                 writer.writerow([
                     symbol_period,
                     result.get('Win Rate', 0),
@@ -1923,9 +2226,13 @@ class BacktestEngine:
                     result.get('Losing Trades', 0),
                     result.get('Gross Profit', 0),
                     result.get('Gross Loss', 0),
-                    result.get('Final Equity', 10000),
+                    round(avg_win, 2),
+                    round(avg_loss, 2),
+                    result.get('Final Equity', initial_equity),
+                    round(roi, 2),
+                    round(avg_option_price, 2),
                     result.get('Optimal Trailing Method', 'Unknown')
                 ])
-                
-        print(f"[✓] Summary results saved to {output_file}")
+        
+        print(f"[✓] Option trading summary results saved to {output_file}")
         return output_file
