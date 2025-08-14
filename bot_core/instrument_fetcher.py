@@ -113,6 +113,7 @@ class InstrumentFetcher:
             self.logger.error(f"Error fetching equity {symbol}: {e}")
             return None
     
+
     def fetch_nested_option_chains(self, underlying_symbol):
         """
         Fetch nested option chains (expirations and strikes) for a symbol
@@ -124,39 +125,109 @@ class InstrumentFetcher:
             dict: Nested option chain data with expirations and strikes
         """
         try:
-            response = self.api.safe_request("GET", f"/v3/marketdata/options/chains/{underlying_symbol}")
-            if response.status_code == 200:
-                data = response.json()
+            # First, try to get option expirations
+            exp_response = self.api.safe_request("GET", f"/v3/marketdata/options/expirations/{underlying_symbol}")
+            
+            if exp_response.status_code == 200:
+                exp_data = exp_response.json()
+                expirations_list = exp_data.get("Expirations", [])
                 
-                # Convert TradeStation format to nested format
-                expirations = {}
-                option_chains = data.get("OptionChains", [])
+                if not expirations_list:
+                    print(f"[!] No option expirations found for {underlying_symbol}")
+                    return None
                 
-                for chain in option_chains:
-                    exp_date = chain.get("Expiration")
-                    if exp_date not in expirations:
-                        expirations[exp_date] = {"expiration-date": exp_date, "strikes": []}
+                # For TradeStation, we need to fetch strikes for each expiration
+                expirations = []
+                
+                # Limit to first 3 expirations to avoid too many API calls
+                for exp_date in expirations_list[:3]:
+                    # Fetch strikes for this expiration
+                    strikes_response = self.api.safe_request(
+                        "GET", 
+                        f"/v3/marketdata/options/strikes/{underlying_symbol}",
+                        params={"expiration": exp_date}
+                    )
                     
-                    # Add strikes for this expiration
-                    for option in chain.get("Options", []):
-                        strike = option.get("StrikePrice")
-                        strike_data = {
-                            "strike-price": strike,
-                            "call": option.get("Call", {}).get("Symbol"),
-                            "put": option.get("Put", {}).get("Symbol")
-                        }
-                        expirations[exp_date]["strikes"].append(strike_data)
+                    if strikes_response.status_code == 200:
+                        strikes_data = strikes_response.json()
+                        strike_prices = strikes_data.get("Strikes", [])
+                        
+                        # Build strikes list
+                        strikes = []
+                        for strike in strike_prices:
+                            # TradeStation option symbol format
+                            # Format: SYMBOL YYMMDD C/P STRIKE (multiplied by 1000)
+                            exp_formatted = exp_date.replace("-", "")[2:]  # YYMMDD format
+                            strike_int = int(strike * 1000)
+                            
+                            call_symbol = f"{underlying_symbol} {exp_formatted}C{strike_int:08d}"
+                            put_symbol = f"{underlying_symbol} {exp_formatted}P{strike_int:08d}"
+                            
+                            strikes.append({
+                                "strike-price": strike,
+                                "call": call_symbol,
+                                "put": put_symbol
+                            })
+                        
+                        expirations.append({
+                            "expiration-date": exp_date,
+                            "strikes": strikes
+                        })
+                    
+                    # Small delay to avoid rate limiting
+                    time.sleep(0.1)
                 
                 result = {
                     "underlying-symbol": underlying_symbol,
-                    "expirations": list(expirations.values())
+                    "expirations": expirations
                 }
                 
-                print(f"[✓] Fetched nested option chain for {underlying_symbol} with {len(expirations)} expirations")
+                print(f"[✓] Fetched option chain for {underlying_symbol} with {len(expirations)} expirations")
                 return result
+                
+            elif exp_response.status_code == 404:
+                # Try alternative endpoint or format
+                print(f"[!] Option chain endpoint not found for {underlying_symbol}, trying alternative...")
+                
+                # Try the chains endpoint directly
+                response = self.api.safe_request("GET", f"/v3/marketdata/options/chains/{underlying_symbol}")
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    
+                    # Convert TradeStation format to nested format
+                    expirations = {}
+                    option_chains = data.get("OptionChains", [])
+                    
+                    for chain in option_chains:
+                        exp_date = chain.get("Expiration")
+                        if exp_date not in expirations:
+                            expirations[exp_date] = {"expiration-date": exp_date, "strikes": []}
+                        
+                        # Add strikes for this expiration
+                        for option in chain.get("Options", []):
+                            strike = option.get("StrikePrice")
+                            strike_data = {
+                                "strike-price": strike,
+                                "call": option.get("Call", {}).get("Symbol"),
+                                "put": option.get("Put", {}).get("Symbol")
+                            }
+                            expirations[exp_date]["strikes"].append(strike_data)
+                    
+                    result = {
+                        "underlying-symbol": underlying_symbol,
+                        "expirations": list(expirations.values())
+                    }
+                    
+                    print(f"[✓] Fetched option chain for {underlying_symbol} with {len(expirations)} expirations")
+                    return result
+                else:
+                    print(f"[✗] Failed to fetch option chain for {underlying_symbol}: {response.status_code}")
+                    return None
             else:
-                print(f"[✗] Failed to fetch nested option chain for {underlying_symbol}: {response.status_code}")
+                print(f"[✗] Failed to fetch option expirations for {underlying_symbol}: {exp_response.status_code}")
                 return None
+                
         except Exception as e:
             self.logger.error(f"Error fetching nested option chain for {underlying_symbol}: {e}")
             return None

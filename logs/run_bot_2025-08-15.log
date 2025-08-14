@@ -1,0 +1,12 @@
+2025-08-15 03:45:01,114 - Code.bot_core.tradestation_api - ERROR - Access forbidden for account 5WY52585 - check account permissions
+2025-08-15 03:45:02,954 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-15 03:45:02,963 - PositionManager - INFO - Position collections initialized
+2025-08-15 03:45:02,965 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-15 03:45:02,968 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-15 03:45:04,795 - Code.bot_core.tradestation_api - ERROR - Access forbidden for account 5WY52585 - check account permissions
+2025-08-15 03:45:07,772 - MarketDataClient - INFO - Detected TradeStation streaming endpoint
+2025-08-15 03:45:07,787 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
+2025-08-15 03:45:07,787 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
+2025-08-15 03:45:07,787 - MarketDataClient - INFO - WebSocket connection closed: None - None
+2025-08-15 03:45:17,817 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
+2025-08-15 03:45:17,819 - CandleBuilder - INFO - Stopped candle builder

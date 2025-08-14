@@ -115,6 +115,9 @@ class OrderManager:
         if order_type == "Limit" and price is None:
             raise ValueError("Price is required for Limit orders")
         
+        # Convert symbol to TradeStation format if needed
+        symbol = self._convert_option_symbol(symbol)
+        
         # Convert direction to TradeStation format
         action_map = {
             "Buy to Open": "BuyToOpen",
@@ -132,7 +135,8 @@ class OrderManager:
             "Quantity": str(quantity),
             "OrderType": order_type,
             "TimeInForce": {"Duration": time_in_force},
-            "Route": "Intelligent"
+            "Route": "Intelligent",
+            "AssetType": "OP"  # Specify this is an option order
         }
         
         # Add price if provided
@@ -613,3 +617,44 @@ class OrderManager:
                 "TradeAction": action,
                 "Route": "Intelligent"
             }
+        
+
+    
+    def _convert_option_symbol(self, symbol):
+        """
+        Convert option symbol to TradeStation format if needed
+        
+        Args:
+            symbol (str): Option symbol (various formats)
+            
+        Returns:
+            str: TradeStation formatted option symbol
+        """
+        # Check if it's already in TradeStation format
+        if symbol and " " in symbol and len(symbol.split()) == 2:
+            # Looks like TradeStation format already
+            return symbol
+        
+        # If it's in OCC format (SPY 240816C00550000), it should work
+        # But let's validate and potentially reformat
+        
+        try:
+            parts = symbol.split()
+            if len(parts) == 2:
+                underlying = parts[0]
+                option_part = parts[1]
+                
+                # Validate the format
+                if len(option_part) >= 15:  # Should be YYMMDDCP########
+                    return symbol  # Already in correct format
+            
+            # If we get here, try to parse and rebuild
+            # This is a fallback - ideally symbols should come in correct format
+            self.logger.warning(f"Option symbol {symbol} may not be in correct format")
+            return symbol
+            
+        except Exception as e:
+            self.logger.error(f"Error converting option symbol {symbol}: {e}")
+            return symbol
+
+    

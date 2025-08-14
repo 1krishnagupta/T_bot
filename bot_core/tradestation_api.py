@@ -563,6 +563,8 @@ class TradeStationAPI:
             "level": "live"  # or "delayed" based on account
         }
     
+    # Fix for bot_core/tradestation_api.py - get_market_quotes method
+
     def get_market_quotes(self, symbols: List[str], instrument_type: str = "equity") -> List[Dict]:
         """
         Fetch current market quotes for multiple instruments.
@@ -592,18 +594,27 @@ class TradeStationAPI:
                 # Convert to TastyTrade-like format for compatibility
                 formatted_quotes = []
                 for quote in quotes:
+                    # Convert string values to float, handling None and invalid values
+                    def safe_float(value, default=0.0):
+                        if value is None:
+                            return default
+                        try:
+                            return float(value)
+                        except (ValueError, TypeError):
+                            return default
+                    
                     formatted_quote = {
                         "symbol": quote.get("Symbol"),
-                        "bid": quote.get("Bid", 0),
-                        "ask": quote.get("Ask", 0),
-                        "last": quote.get("Last", 0),
-                        "bidSize": quote.get("BidSize", 0),
-                        "askSize": quote.get("AskSize", 0),
-                        "volume": quote.get("Volume", 0),
-                        "high": quote.get("High", 0),
-                        "low": quote.get("Low", 0),
-                        "open": quote.get("Open", 0),
-                        "close": quote.get("PreviousClose", 0)
+                        "bid": safe_float(quote.get("Bid")),
+                        "ask": safe_float(quote.get("Ask")),
+                        "last": safe_float(quote.get("Last")),
+                        "bidSize": safe_float(quote.get("BidSize")),
+                        "askSize": safe_float(quote.get("AskSize")),
+                        "volume": safe_float(quote.get("Volume")),
+                        "high": safe_float(quote.get("High")),
+                        "low": safe_float(quote.get("Low")),
+                        "open": safe_float(quote.get("Open")),
+                        "close": safe_float(quote.get("PreviousClose"))
                     }
                     formatted_quotes.append(formatted_quote)
                 
