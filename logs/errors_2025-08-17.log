@@ -1,0 +1,3 @@
+2025-08-17 15:58:45,117 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
+2025-08-17 15:58:45,133 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
+2025-08-17 15:58:55,059 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout

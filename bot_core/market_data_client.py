@@ -150,98 +150,93 @@ class MarketDataClient:
             self.logger.error(f"Error saving greek to database: {e}")
 
     def connect(self):
-        """
-        Connect to DXLink websocket and initialize the connection
-        
-        Returns:
-            bool: True if connection was successful, False otherwise
-        """
+        """Connect to TradeStation WebSocket"""
         if not self.token or not self.dxlink_url:
-            self.logger.error("Missing token or URL for DXLink connection")
+            self.logger.error("Missing token or URL for connection")
             return False
         
-        # For TradeStation, we need to use their streaming endpoint
-        if "tradestation" in self.dxlink_url:
-            # TradeStation streaming requires different setup
-            self.logger.info("Detected TradeStation streaming endpoint")
-            
-            # TradeStation uses a different WebSocket URL format
-            # The token should be passed as a query parameter
-            ws_url = f"{self.dxlink_url}?oauth_token={self.token}"
-            
-            # Define websocket callbacks
-            def on_message(ws, message):
-                # Process messages in thread pool to prevent blocking
-                self.thread_pool.submit(self._handle_message, message)
-                
-            def on_error(ws, error):
-                self.logger.error(f"WebSocket error: {error}")
-                
-            def on_close(ws, close_status_code, close_msg):
-                self.logger.info(f"WebSocket connection closed: {close_status_code} - {close_msg}")
-                self.running = False
-                
-            def on_open(ws):
-                self.logger.info("WebSocket connection opened")
-                self.running = True
-                
-                # For TradeStation, we might not need the SETUP message
-                # Just set the flag
-                self.logger.info("TradeStation WebSocket ready")
-            
-            try:
-                # Create websocket connection
-                websocket.enableTrace(False)
-                self.ws = websocket.WebSocketApp(
-                    ws_url,
-                    on_open=on_open,
-                    on_message=on_message,
-                    on_error=on_error,
-                    on_close=on_close,
-                    header={
-                        "Authorization": f"Bearer {self.token}"
-                    }
-                )
-                
-                # Start websocket in a separate thread
-                self.ws_thread = threading.Thread(target=self.ws.run_forever, 
-                                                kwargs={'ping_interval': 30, 
-                                                        'ping_timeout': 10})
-                self.ws_thread.daemon = True
-                self.ws_thread.start()
-                
-                # Wait for connection to establish
-                timeout = 10
-                start_time = time.time()
-                while not self.running and time.time() - start_time < timeout:
-                    time.sleep(0.1)
-                    
-                if not self.running:
-                    self.logger.error("Failed to establish TradeStation WebSocket connection within timeout")
-                    return False
-                
-                # For TradeStation, we might not need keepalive
-                self.logger.info("TradeStation streaming connection established")
-                
-                # Start candle builder if enabled
-                if self.build_candles and self.candle_builder:
-                    self.candle_builder.start()
-                    
-                    # Register candle callbacks
-                    if self.on_candle:
-                        self.candle_builder.register_callbacks(
-                            on_completed=self.on_candle,
-                            on_updated=self.on_candle
-                        )
-                
-                return True
-                
-            except Exception as e:
-                self.logger.error(f"Error establishing TradeStation WebSocket connection: {e}")
-                return False
+        # TradeStation doesn't use DXLink - it has its own format
+        ws_url = f"wss://stream.tradestation.com/v3/marketdata/stream"
         
-        else:
-            print("TradeStation Websocket connect not Established ❌")
+        def on_message(ws, message):
+            self._handle_tradestation_message(message)
+        
+        def on_error(ws, error):
+            self.logger.error(f"WebSocket error: {error}")
+        
+        def on_close(ws, close_status_code, close_msg):
+            self.logger.info(f"WebSocket closed: {close_status_code}")
+            self.running = False
+        
+        def on_open(ws):
+            self.logger.info("WebSocket opened")
+            self.running = True
+            # Subscribe to symbols after connection
+            self._subscribe_to_symbols()
+                
+            
+        try:
+            self.ws = websocket.WebSocketApp(
+                ws_url,
+                on_open=on_open,
+                on_message=on_message,
+                on_error=on_error,
+                on_close=on_close,
+                header={
+                    "Authorization": f"Bearer {self.token}"
+                }
+            )
+            
+            self.ws_thread = threading.Thread(target=self.ws.run_forever)
+            self.ws_thread.daemon = True
+            self.ws_thread.start()
+                
+            # Wait for connection to establish
+            timeout = 10
+            start_time = time.time()
+            while not self.running and time.time() - start_time < timeout:
+                time.sleep(0.1)
+                
+            if not self.running:
+                self.logger.error("Failed to establish TradeStation WebSocket connection within timeout")
+                return False
+            
+            # For TradeStation, we might not need keepalive
+            self.logger.info("TradeStation streaming connection established")
+            
+            # Start candle builder if enabled
+            if self.build_candles and self.candle_builder:
+                self.candle_builder.start()
+                
+                # Register candle callbacks
+                if self.on_candle:
+                    self.candle_builder.register_callbacks(
+                        on_completed=self.on_candle,
+                        on_updated=self.on_candle
+                    )
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error establishing TradeStation WebSocket connection: {e}")
+            return False
+        
+
+    def _handle_tradestation_message(self, message):
+        """Handle TradeStation format messages"""
+        try:
+            data = json.loads(message)
+            # TradeStation sends different format than DXLink
+            # Parse based on TradeStation's actual format
+            if "Quotes" in data:
+                for quote in data["Quotes"]:
+                    self._process_tradestation_quote(quote)
+            elif "Bars" in data:
+                for bar in data["Bars"]:
+                    self._process_tradestation_bar(bar)
+        except Exception as e:
+            self.logger.error(f"Error handling message: {e}")
+        
 
         
     def disconnect(self):

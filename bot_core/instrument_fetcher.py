@@ -82,37 +82,56 @@ class InstrumentFetcher:
         return self.fetch_equities(is_etf=False, is_index=False)
     
     def fetch_equity(self, symbol):
-        """
-        Fetch a single equity object for a given symbol
-        
-        Args:
-            symbol (str): Equity symbol (e.g., "SPY", "AAPL")
-            
-        Returns:
-            dict: Equity data or None if not found
-        """
+        """Fetch symbol info using correct endpoint"""
         try:
-            response = self.api.safe_request("GET", f"/v3/marketdata/symbols/{symbol}")
+            # Use symbol lookup endpoint from swagger
+            response = self.api.safe_request("GET", f"/v2/data/symbol/{symbol}")
             if response.status_code == 200:
                 data = response.json()
-                print(f"[✓] Fetched equity data for {symbol}")
-                
-                # Convert to common format
                 return {
-                    "symbol": data.get("Symbol", symbol),
-                    "name": data.get("Name", symbol),
+                    "symbol": data.get("Name", symbol),
+                    "name": data.get("Name"),
                     "description": data.get("Description", ""),
                     "exchange": data.get("Exchange", ""),
-                    "type": data.get("SecurityType", "Stock"),
-                    "streamer-symbol": symbol  # TradeStation uses same symbol for streaming
+                    "type": data.get("Category", "Stock"),
+                    "currency": data.get("Currency", "USD"),
+                    "country": data.get("Country", "US")
                 }
-            else:
-                print(f"[✗] Failed to fetch equity {symbol}: {response.status_code}")
-                return None
+            return None
         except Exception as e:
             self.logger.error(f"Error fetching equity {symbol}: {e}")
             return None
     
+
+    def search_symbols(self, criteria):
+        """Search symbols using correct endpoint"""
+        try:
+            # Use symbol search endpoint from swagger
+            endpoint = f"/v2/data/symbols/search/{criteria}"
+            response = self.api.safe_request("GET", endpoint)
+            
+            if response.status_code == 200:
+                symbols = response.json()
+                return symbols
+            return []
+        except Exception as e:
+            self.logger.error(f"Error searching symbols: {e}")
+            return []
+
+
+    def fetch_option_expirations(self, symbol):
+        """Get option expirations - TradeStation doesn't have this in swagger"""
+        # TradeStation doesn't provide a separate expirations endpoint
+        # You need to get the full option chain and extract expirations
+        try:
+            # This would need to be implemented based on available endpoints
+            # TradeStation may require using their desktop API for options
+            self.logger.warning("Option chains not available in TradeStation REST API")
+            return []
+        except Exception as e:
+            self.logger.error(f"Error fetching expirations: {e}")
+            return []
+
 
     def fetch_nested_option_chains(self, underlying_symbol):
         """

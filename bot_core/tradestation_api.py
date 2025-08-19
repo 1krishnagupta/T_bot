@@ -29,27 +29,28 @@ class TradeStationAPI:
     def __init__(self, username: Optional[str] = None, password: Optional[str] = None):
         """
         Initialize the TradeStation API client.
-        
-        Args:
-            username: Not used for TradeStation (kept for compatibility)
-            password: Not used for TradeStation (kept for compatibility)
         """
-        # TradeStation OAuth credentials
-        self.CLIENT_ID = "6ZhZile2KIwtU2xwdNGBYdNpPmRynB5J"
-        self.CLIENT_SECRET = "tY4dNJuhFst_XeqMmB95pF2_EriSqxc-ruQdnNILc4L5_vm9M0Iixwf9FUGw-WbQ"
-        
         # API endpoints
         self.base_url = "https://api.tradestation.com"
-        self.auth_url = "https://signin.tradestation.com"
+        self.auth_url = "https://signin.tradestation.com"  # Correct auth URL
+        
+        # Initialize credentials
+        self.username = username
+        self.password = password
+        self.CLIENT_ID = None
+        self.CLIENT_SECRET = None
+        
+        # Load credentials from file
+        self._load_credentials()
         
         # Authentication tokens
         self.refresh_token = None
         self.access_token = None
-        self.session_token = None  # For compatibility
-        self.remember_token = None  # For compatibility
+        self.session_token = None
+        self.remember_token = None
         self.token_expiry = None
         self.last_login_time = None
-        self.session_lifetime_seconds = 60 * 60 * 8  # 8 hours
+        self.session_lifetime_seconds = 60 * 60 * 8
         
         # For OAuth callback
         self.auth_code = None
@@ -58,7 +59,7 @@ class TradeStationAPI:
         # File to store tokens
         self.token_file = os.path.join(os.path.dirname(__file__), '.tradestation_tokens.json')
         
-        # Statistics for compatibility
+        # Statistics
         self.login_attempts = 0
         self.login_success = 0
         self.login_failures = 0
@@ -69,7 +70,64 @@ class TradeStationAPI:
         # Load saved tokens
         self._load_tokens()
         
-        logger.info(f"TradeStationAPI initialized")
+        logger.info(f"TradeStationAPI initialized with client_id: {self.CLIENT_ID[:10]}...")
+
+
+    def _load_credentials(self):
+        """Load credentials from credentials.txt file"""
+        try:
+            # Try multiple paths to find credentials.txt
+            possible_paths = [
+                os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'credentials.txt'),
+                os.path.join(os.path.dirname(__file__), '..', 'config', 'credentials.txt'),
+                os.path.join(os.path.dirname(__file__), 'credentials.txt'),
+                'credentials.txt'
+            ]
+            
+            cred_path = None
+            for path in possible_paths:
+                if os.path.exists(path):
+                    cred_path = path
+                    break
+            
+            if not cred_path:
+                logger.error("credentials.txt not found in any expected location")
+                print("[!] ERROR: credentials.txt not found!")
+                print("[!] Please create credentials.txt with your TradeStation API details")
+                raise FileNotFoundError("credentials.txt not found")
+            
+            with open(cred_path, 'r') as f:
+                import yaml
+                creds = yaml.safe_load(f)
+                
+            broker = creds.get('broker', {})
+            
+            # Load username/password if not provided
+            if not self.username:
+                self.username = broker.get('username', '')
+            if not self.password:
+                self.password = broker.get('password', '')
+            
+            # Load API credentials (REQUIRED)
+            self.CLIENT_ID = broker.get('api_key', '')
+            self.CLIENT_SECRET = broker.get('api_secret', '')
+            
+            if not self.CLIENT_ID or not self.CLIENT_SECRET:
+                logger.error("API credentials missing in credentials.txt")
+                print("[!] ERROR: API key/secret missing in credentials.txt!")
+                print("[!] You need to add:")
+                print("    api_key: 'your_tradestation_api_key'")
+                print("    api_secret: 'your_tradestation_api_secret'")
+                raise ValueError("API credentials missing")
+            
+            logger.info(f"Loaded credentials from {cred_path}")
+            print(f"[✓] Loaded credentials from {cred_path}")
+            
+        except Exception as e:
+            logger.error(f"Error loading credentials: {e}")
+            raise
+
+
     
     def _load_tokens(self):
         """Load tokens from file if they exist"""
@@ -99,6 +157,21 @@ class TradeStationAPI:
             logger.info("Saved tokens to file")
         except Exception as e:
             logger.error(f"Error saving tokens: {e}")
+
+    def get_account_ids(self):
+        """Get all account IDs for the user"""
+        if not self.userid:
+            return []
+        
+        endpoint = f"/v2/users/{self.userid}/accounts"
+        response = self.safe_request("GET", endpoint)
+        
+        if response.status_code == 200:
+            accounts = response.json()
+            account_ids = [acc.get("Key") for acc in accounts]
+            print(f"Available accounts: {account_ids}")
+            return account_ids
+        return []
     
     def login(self) -> bool:
         """
@@ -167,17 +240,21 @@ class TradeStationAPI:
     
     def _get_authorization_code(self):
         """Get authorization code through OAuth flow"""
-        # Build authorization URL
+        # Build authorization URL with actual client ID
         auth_params = {
             'response_type': 'code',
-            'client_id': self.CLIENT_ID,
+            'client_id': self.CLIENT_ID,  # Use actual client ID
             'audience': 'https://api.tradestation.com',
             'redirect_uri': 'http://localhost:3000',
-            'scope': 'openid MarketData profile ReadAccount Trade offline_access Matrix OptionSpreads'
+            'scope': 'openid profile MarketData ReadAccount Trade offline_access Matrix OptionSpreads'
         }
         
+        # Correct URL format - only one /authorize
         auth_url = f"{self.auth_url}/authorize?{urllib.parse.urlencode(auth_params)}"
         
+        print("\n" + "="*80)
+        print("TRADESTATION AUTHENTICATION REQUIRED")
+        print("="*80)
         print("\nPlease login to TradeStation to authorize this application.")
         print("\nOpening browser to:")
         print(auth_url)
@@ -200,7 +277,6 @@ class TradeStationAPI:
         self.callback_received.wait(timeout=300)  # 5 minute timeout
         
         if not self.auth_code:
-            # If server didn't catch it, ask user to paste
             print("\nIf you see a 'This site can't be reached' error, that's normal!")
             print("Please copy the ENTIRE URL from your browser and paste it here:")
             callback_url = input().strip()
@@ -213,6 +289,7 @@ class TradeStationAPI:
         
         return self.auth_code
     
+
     def _run_callback_server(self):
         """Run a simple HTTP server to catch OAuth callback"""
         parent = self
@@ -243,10 +320,10 @@ class TradeStationAPI:
             server.handle_request()  # Handle one request then stop
         except:
             pass
-    
+
     def _exchange_code_for_tokens(self, auth_code):
         """Exchange authorization code for access and refresh tokens"""
-        url = f"{self.auth_url}/oauth/token"
+        url = f"{self.auth_url}/oauth/token"  # Correct token endpoint
         
         payload = {
             'grant_type': 'authorization_code',
@@ -264,32 +341,41 @@ class TradeStationAPI:
         
         if response.status_code == 200:
             data = response.json()
-            self.refresh_token = data['refresh_token']
-            self.access_token = data['access_token']
-            expires_in = data.get('expires_in', 1200)  # 20 minutes default
+            self.refresh_token = data.get('refresh_token')
+            self.access_token = data.get('access_token')
+            expires_in = data.get('expires_in', 1200)
             self.token_expiry = datetime.now() + timedelta(seconds=expires_in - 60)
             
             # Save tokens
             self._save_tokens()
             
             logger.info("Successfully obtained tokens")
+            print("[✓] Successfully authenticated with TradeStation")
             return True
         else:
             logger.error(f"Failed to exchange code for tokens: {response.status_code} {response.text}")
+            print(f"[✗] Authentication failed: {response.status_code}")
+            try:
+                error_data = response.json()
+                print(f"[✗] Error: {error_data}")
+            except:
+                print(f"[✗] Response: {response.text}")
             return False
+        
     
     def _refresh_access_token(self):
-        """Refresh access token using refresh token"""
+        """Refresh access token - FIXED VERSION"""
         if not self.refresh_token:
             return False
         
-        url = f"{self.auth_url}/oauth/token"
+        url = f"{self.base_url}/v2/security/authorize"
         
         payload = {
             'grant_type': 'refresh_token',
             'client_id': self.CLIENT_ID,
             'client_secret': self.CLIENT_SECRET,
-            'refresh_token': self.refresh_token
+            'refresh_token': self.refresh_token,
+            'response_type': 'token'
         }
         
         headers = {
@@ -300,17 +386,11 @@ class TradeStationAPI:
         
         if response.status_code == 200:
             data = response.json()
-            self.access_token = data['access_token']
+            self.access_token = data.get('access_token')
             expires_in = data.get('expires_in', 1200)
             self.token_expiry = datetime.now() + timedelta(seconds=expires_in - 60)
             
-            # Update refresh token if provided
-            if 'refresh_token' in data:
-                self.refresh_token = data['refresh_token']
-            
-            # Save tokens
-            self._save_tokens()
-            
+            self._save_tokens()            
             logger.info("Successfully refreshed access token")
             return True
         else:
@@ -453,88 +533,48 @@ class TradeStationAPI:
         raise last_error if last_error else Exception("All request attempts failed")
     
     def fetch_account_balance(self, account_number: str = None) -> Dict[str, float]:
-        """
-        Fetch account balance information.
-        
-        Args:
-            account_number: TradeStation account number (will auto-detect if not provided)
-            
-        Returns:
-            dict: Dictionary with balance information
-        """
+        """Fixed version using correct endpoint"""
         try:
-            # If no account number provided, get accounts list first
-            if not account_number:
-                accounts_response = self.safe_request("GET", "/v3/brokerage/accounts")
-                if accounts_response.status_code == 200:
-                    accounts_data = accounts_response.json()
-                    accounts = accounts_data.get("Accounts", [])
-                    if accounts:
-                        # Find the first active account
-                        for account in accounts:
-                            if account.get("Status") == "Active":
-                                account_number = account["AccountID"]
-                                break
-                        if not account_number and accounts:
-                            account_number = accounts[0]["AccountID"]
-                    else:
-                        logger.error("No accounts found")
-                        return self._empty_balance()
-                elif accounts_response.status_code == 403:
-                    logger.error("Access forbidden - check if account has proper permissions")
-                    print("[!] Access forbidden - your account may not have trading permissions enabled")
-                    return self._empty_balance()
-                else:
-                    logger.error(f"Failed to fetch accounts: {accounts_response.status_code}")
-                    return self._empty_balance()
+            # Get user ID first if not available
+            if not hasattr(self, 'userid') or not self.userid:
+                # Need to get user info
+                return self._empty_balance()
             
-            # Fetch account balances
-            endpoint = f"/v3/brokerage/accounts/{account_number}/balances"
+            # Get accounts for user
+            endpoint = f"/v2/users/{self.userid}/accounts"
             response = self.safe_request("GET", endpoint)
             
-            if response.status_code == 200:
-                balances_data = response.json()
-                
-                # Handle both single balance and array of balances
-                if isinstance(balances_data, dict):
-                    balance = balances_data
-                elif isinstance(balances_data, list) and len(balances_data) > 0:
-                    balance = balances_data[0]
-                else:
-                    balance = {}
-                
-                # TradeStation uses different field names
-                cash_balance = float(balance.get("CashBalance", balance.get("Cash", 0.0)))
-                buying_power = float(balance.get("BuyingPower", balance.get("DayTradingBuyingPower", 0.0)))
-                equity = float(balance.get("Equity", balance.get("MarketValue", 0.0)))
-                
-                logger.info(f"Balance fetched for account {account_number}")
-                print(f"[✓] Balance fetched for account {account_number}")
-                print(f"Cash Balance: ${cash_balance:,.2f}")
-                print(f"Buying Power: ${buying_power:,.2f}")
-                
-                return {
-                    "cash_balance": cash_balance,
-                    "available_trading_funds": buying_power,
-                    "net_liquidating_value": equity,
-                    "updated_at": datetime.now().isoformat()
-                }
-            elif response.status_code == 403:
-                logger.error(f"Access forbidden for account {account_number} - check account permissions")
-                print(f"[!] Cannot access balance for account {account_number}")
-                print("[!] This may be due to:")
-                print("    - Account not having trading permissions")
-                print("    - Account being a paper/demo account without balance access")
-                print("    - Incorrect account type for API access")
+            if response.status_code != 200:
                 return self._empty_balance()
-            else:
-                logger.error(f"Failed to fetch account balance: {response.status_code}")
-                if response.text:
-                    logger.error(f"Response: {response.text}")
+            
+            accounts = response.json()
+            if not accounts:
                 return self._empty_balance()
-                
+            
+            # Use first account or specified one
+            if not account_number:
+                account_number = accounts[0].get("Key")
+            
+            # Get balance for account
+            balance_endpoint = f"/v2/accounts/{account_number}/balances"
+            balance_response = self.safe_request("GET", balance_endpoint)
+            
+            if balance_response.status_code == 200:
+                balances = balance_response.json()
+                if balances:
+                    balance = balances[0] if isinstance(balances, list) else balances
+                    
+                    return {
+                        "cash_balance": float(balance.get("RealTimeAccountBalance", 0)),
+                        "available_trading_funds": float(balance.get("RealTimeBuyingPower", 0)),
+                        "net_liquidating_value": float(balance.get("RealTimeEquity", 0)),
+                        "updated_at": datetime.now().isoformat()
+                    }
+            
+            return self._empty_balance()
+            
         except Exception as e:
-            logger.error(f"Error fetching account balance: {e}")
+            self.logger.error(f"Error fetching balance: {e}")
             return self._empty_balance()
     
     def _empty_balance(self):
@@ -563,69 +603,49 @@ class TradeStationAPI:
             "level": "live"  # or "delayed" based on account
         }
     
-    # Fix for bot_core/tradestation_api.py - get_market_quotes method
 
     def get_market_quotes(self, symbols: List[str], instrument_type: str = "equity") -> List[Dict]:
-        """
-        Fetch current market quotes for multiple instruments.
-        
-        Args:
-            symbols: List of symbols to fetch quotes for
-            instrument_type: Type of instrument
-            
-        Returns:
-            list: List of quote data for each symbol
-        """
+        """Fixed version using correct endpoint"""
         if not symbols:
-            logger.error("No symbols provided for market quotes")
             return []
         
         try:
-            # TradeStation API expects comma-separated symbols
-            symbols_str = ",".join(symbols)
+            # TradeStation quote endpoint from swagger
+            endpoint = f"/v2/data/quote/{','.join(symbols)}"
             
-            endpoint = f"/v3/marketdata/quotes/{symbols_str}"
-            response = self.safe_request("GET", endpoint)
+            # Add APIVersion parameter as required
+            params = {'APIVersion': '20160101'}
+            
+            response = self.safe_request("GET", endpoint, params=params)
             
             if response.status_code == 200:
-                quotes_data = response.json()
-                quotes = quotes_data.get("Quotes", [])
+                quotes = response.json()
                 
-                # Convert to TastyTrade-like format for compatibility
+                # Convert to standardized format
                 formatted_quotes = []
                 for quote in quotes:
-                    # Convert string values to float, handling None and invalid values
-                    def safe_float(value, default=0.0):
-                        if value is None:
-                            return default
-                        try:
-                            return float(value)
-                        except (ValueError, TypeError):
-                            return default
-                    
                     formatted_quote = {
                         "symbol": quote.get("Symbol"),
-                        "bid": safe_float(quote.get("Bid")),
-                        "ask": safe_float(quote.get("Ask")),
-                        "last": safe_float(quote.get("Last")),
-                        "bidSize": safe_float(quote.get("BidSize")),
-                        "askSize": safe_float(quote.get("AskSize")),
-                        "volume": safe_float(quote.get("Volume")),
-                        "high": safe_float(quote.get("High")),
-                        "low": safe_float(quote.get("Low")),
-                        "open": safe_float(quote.get("Open")),
-                        "close": safe_float(quote.get("PreviousClose"))
+                        "bid": float(quote.get("Bid", 0)),
+                        "ask": float(quote.get("Ask", 0)),
+                        "last": float(quote.get("Last", 0)),
+                        "bidSize": float(quote.get("BidSize", 0)),
+                        "askSize": float(quote.get("AskSize", 0)),
+                        "volume": float(quote.get("Volume", 0)),
+                        "high": float(quote.get("High", 0)),
+                        "low": float(quote.get("Low", 0)),
+                        "open": float(quote.get("Open", 0)),
+                        "close": float(quote.get("Close", 0))
                     }
                     formatted_quotes.append(formatted_quote)
                 
-                logger.info(f"Fetched {len(formatted_quotes)} quotes")
                 return formatted_quotes
             else:
-                logger.error(f"Failed to fetch market quotes: {response.status_code}")
+                self.logger.error(f"Failed to fetch quotes: {response.status_code}")
                 return []
                 
         except Exception as e:
-            logger.error(f"Error fetching market quotes: {e}")
+            self.logger.error(f"Error fetching quotes: {e}")
             return []
     
     def get_equity_details(self, symbol: str) -> Dict:

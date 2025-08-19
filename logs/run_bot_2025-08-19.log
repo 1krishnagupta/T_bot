@@ -1,0 +1,29 @@
+2025-08-19 23:41:10,025 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-19 23:42:19,288 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-19 23:42:19,302 - PositionManager - INFO - Position collections initialized
+2025-08-19 23:42:19,310 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-19 23:42:19,348 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-19 23:42:37,225 - BacktestRun_20250819_234237 - INFO - ================================================================================
+2025-08-19 23:42:37,228 - BacktestRun_20250819_234237 - INFO - BACKTEST RUN ID: 20250819_234237
+2025-08-19 23:42:37,229 - BacktestRun_20250819_234237 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-08-01', 'end_date': '2025-08-19', 'data_source': 'TradeStation'}
+2025-08-19 23:42:37,230 - BacktestRun_20250819_234237 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-19 23:42:37,231 - BacktestRun_20250819_234237 - INFO - ================================================================================
+2025-08-19 23:42:37,432 - CandleDataClient - INFO - Fetching 18 days of 1m data from 2025-08-01 to 2025-08-19
+2025-08-19 23:42:37,507 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,515 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,521 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,529 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,534 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,562 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-19 23:42:37,645 - CandleDataClient - INFO - Fetching 18 days of 1m data from 2025-08-01 to 2025-08-19
+2025-08-19 23:42:37,673 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,684 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,696 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,705 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,715 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-19 23:42:37,735 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-19 23:44:26,133 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
+2025-08-19 23:44:26,135 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
+2025-08-19 23:44:26,135 - MarketDataClient - INFO - WebSocket closed: None
+2025-08-19 23:44:36,091 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
+2025-08-19 23:44:36,092 - CandleBuilder - INFO - Stopped candle builder

@@ -128,117 +128,93 @@ class TradeStationDataFetcher:
         """
         return self._calculate_bars_needed(start_date, end_date, timeframe)
     
-    def fetch_bars(self, symbol, start_date, end_date, timeframe='5Min'):
-        """
-        Fetch historical bars from TradeStation
-        
-        Args:
-            symbol: Stock symbol (e.g., 'SPY')
-            start_date: Start date (datetime or string)
-            end_date: End date (datetime or string)
-            timeframe: Bar timeframe ('1Min', '5Min', '15Min', '1Hour', '1Day')
-            
-        Returns:
-            pd.DataFrame: DataFrame with OHLCV data
-        """
+    def fetch_bars(self, symbol, start_date, end_date, timeframe='5m'):
+        """Fixed version using streaming barchart endpoint"""
         try:
             if not self.api:
-                self.logger.error("No TradeStation API instance available")
                 return pd.DataFrame()
             
             # Ensure logged in
-            if not self.api.access_token or not self.api.check_and_refresh_session():
-                self.logger.info("Not logged in, attempting login...")
+            if not self.api.check_and_refresh_session():
                 if not self.api.login():
-                    self.logger.error("Failed to login to TradeStation")
                     return pd.DataFrame()
             
             # Convert dates
             if isinstance(start_date, str):
                 start_date = datetime.strptime(start_date, "%Y-%m-%d")
-            elif isinstance(start_date, date) and not isinstance(start_date, datetime):
-                start_date = datetime.combine(start_date, datetime.min.time())
-                
             if isinstance(end_date, str):
                 end_date = datetime.strptime(end_date, "%Y-%m-%d")
-            elif isinstance(end_date, date) and not isinstance(end_date, datetime):
-                end_date = datetime.combine(end_date, datetime.min.time())
             
-            # Get timeframe parameters
+            # Format dates for TradeStation
+            start_str = start_date.strftime("%m-%d-%Y")
+            end_str = end_date.strftime("%m-%d-%Y")
+            
+            # Get interval and unit
             tf_params = self._get_period_and_type(timeframe)
+            interval = tf_params['interval']
+            unit = tf_params['unit']
             
-            # Calculate bars needed
-            bars_needed = self._calculate_bars_needed(start_date, end_date, timeframe)
-            bars_needed = min(bars_needed, 57600)  # TradeStation limit
+            # Use streaming endpoint from swagger
+            endpoint = f"/v2/stream/barchart/{symbol}/{interval}/{unit}/{start_str}/{end_str}"
             
-            self.logger.info(f"Fetching {symbol} {timeframe} data from {start_date} to {end_date}")
+            # This is a streaming endpoint, need to handle differently
+            headers = self.api.get_auth_headers()
+            headers['Accept'] = 'application/vnd.tradestation.streams+json'
             
-            # Build request parameters
-            params = {
-                'symbol': symbol,
-                'interval': tf_params['interval'],
-                'unit': tf_params['unit'],
-                'barsback': bars_needed,
-                'lastdate': end_date.strftime('%Y-%m-%d'),
-                'sessiontemplate': 'Default'
-            }
+            url = f"{self.api.base_url}{endpoint}"
             
-            # Make API request
-            endpoint = f"/v3/marketdata/barcharts/{symbol}"
-            response = self.api.safe_request("GET", endpoint, params=params)
+            # Make streaming request
+            response = requests.get(url, headers=headers, stream=True)
             
             if response.status_code != 200:
                 self.logger.error(f"Failed to fetch data: {response.status_code}")
                 return pd.DataFrame()
             
-            data = response.json()
-            bars = data.get('Bars', [])
-            
-            if not bars:
-                self.logger.warning(f"No data returned for {symbol}")
-                return pd.DataFrame()
-            
-            # Convert to DataFrame
+            # Parse streaming response
             df_data = []
-            for bar in bars:
-                timestamp = pd.to_datetime(bar['TimeStamp'])
-                
-                # Make timestamp timezone-naive
-                if timestamp.tzinfo is not None:
-                    timestamp = timestamp.tz_localize(None)
-                
-                # Filter by date range
-                if start_date <= timestamp <= end_date + timedelta(days=1):
-                    df_data.append({
-                        'timestamp': timestamp,
-                        'open': float(bar['Open']),
-                        'high': float(bar['High']),
-                        'low': float(bar['Low']),
-                        'close': float(bar['Close']),
-                        'volume': float(bar.get('TotalVolume', 0))
-                    })
+            for line in response.iter_lines():
+                if line:
+                    try:
+                        # Skip END marker
+                        if line.decode('utf-8').strip() == 'END':
+                            break
+                        
+                        data = json.loads(line)
+                        
+                        # Parse timestamp
+                        ts_str = data.get('TimeStamp', '')
+                        if '/Date(' in ts_str:
+                            # Extract milliseconds from /Date(1234567890000)/
+                            ms = int(ts_str.replace('/Date(', '').replace(')/', ''))
+                            timestamp = datetime.fromtimestamp(ms / 1000)
+                        else:
+                            timestamp = pd.to_datetime(data.get('TimeStamp'))
+                        
+                        df_data.append({
+                            'timestamp': timestamp,
+                            'open': float(data.get('Open', 0)),
+                            'high': float(data.get('High', 0)),
+                            'low': float(data.get('Low', 0)),
+                            'close': float(data.get('Close', 0)),
+                            'volume': float(data.get('TotalVolume', 0))
+                        })
+                    except Exception as e:
+                        self.logger.debug(f"Error parsing line: {e}")
+                        continue
             
             if not df_data:
-                self.logger.warning(f"No data in requested date range for {symbol}")
                 return pd.DataFrame()
             
             df = pd.DataFrame(df_data)
             df.set_index('timestamp', inplace=True)
-            
-            # Remove duplicates
-            df = df[~df.index.duplicated(keep='first')]
-            
-            # Sort by timestamp
             df.sort_index(inplace=True)
             
-            self.logger.info(f"Successfully fetched {len(df)} bars for {symbol}")
             return df
             
         except Exception as e:
             self.logger.error(f"Error fetching bars: {e}")
-            import traceback
-            traceback.print_exc()
             return pd.DataFrame()
+        
     
     def test_connection(self):
         """Test if the API credentials are valid"""

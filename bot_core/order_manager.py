@@ -243,70 +243,57 @@ class OrderManager:
             return {"error": str(e)}
     
     def submit_order(self, order) -> Dict:
-        """
-        Submit an order for execution
-        
-        Args:
-            order (dict): Order JSON
-            
-        Returns:
-            dict: Order response
-        """
+        """Fixed version using correct endpoint and format"""
         if not self.account_id:
             raise ValueError("No account ID available")
         
-        # Ensure account ID is in the order
-        order["AccountID"] = self.account_id
+        # Convert to TradeStation format
+        ts_order = {
+            "AccountKey": self.account_id,
+            "AssetType": order.get("AssetType", "EQ"),
+            "Symbol": order.get("Symbol"),
+            "Quantity": str(order.get("Quantity")),
+            "OrderType": order.get("OrderType", "Market"),
+            "Duration": order.get("TimeInForce", {}).get("Duration", "DAY"),
+            "Route": order.get("Route", "Intelligent"),
+            "TradeAction": order.get("TradeAction", "BUY")
+        }
         
-        # Log the order being submitted
-        self.logger.info(f"Submitting LIVE order to TradeStation: {json.dumps(order)}")
+        # Add price fields if needed
+        if order.get("OrderType") == "Limit":
+            ts_order["LimitPrice"] = str(order.get("LimitPrice"))
+        elif order.get("OrderType") == "StopMarket":
+            ts_order["StopPrice"] = str(order.get("StopPrice"))
         
-        # Submit to TradeStation
-        response = self.api.safe_request("POST", "/v3/brokerage/orders", json=order)
+        # Use correct endpoint
+        response = self.api.safe_request("POST", "/v2/orders", json=ts_order)
         
         if response.status_code in [200, 201]:
             data = response.json()
             order_id = data.get("OrderID")
             
             if order_id:
-                # Store order data
                 order_data = {
                     "id": order_id,
-                    "status": data.get("Status", "Sent"),
+                    "status": data.get("OrderStatus"),
+                    "message": data.get("Message"),
                     "symbol": order.get("Symbol"),
                     "quantity": order.get("Quantity"),
-                    "order_type": order.get("OrderType"),
-                    "action": order.get("TradeAction"),
                     "submitted_at": datetime.now().isoformat()
                 }
                 
                 self.active_orders[order_id] = order_data
-                self.order_history[order_id] = order_data
                 
                 # Save to database
-                order_doc = {
-                    "order_id": order_id,
-                    "order_data": order_data,
-                    "status": "Open",
-                    "created_at": datetime.now().isoformat(),
-                    "updated_at": datetime.now().isoformat()
-                }
-                self.db.insert_one(COLLECTIONS['ORDERS'], order_doc)
+                self._save_order_to_db(order_data)
                 
-                self.logger.info(f"LIVE order submitted successfully. Order ID: {order_id}")
                 return {"order": order_data}
             else:
-                return {"error": "No order ID returned"}
+                return {"error": data.get("Message", "No order ID returned")}
         else:
-            error_msg = f"Order submission failed: {response.status_code}"
-            try:
-                error_detail = response.json()
-                error_msg += f" - {error_detail}"
-            except:
-                error_msg += f" - {response.text}"
-            
-            self.logger.error(error_msg)
-            return {"error": error_msg}
+            return {"error": f"Order submission failed: {response.status_code}"}
+        
+
     
     def submit_complex_order(self, complex_order) -> Dict:
         """
@@ -404,44 +391,37 @@ class OrderManager:
         else:
             self.logger.error(f"Get order status failed: {response.status_code}")
             return {"error": f"Failed to get order status: {response.status_code}"}
-    
+        
+
+
     def get_active_orders(self) -> List[Dict]:
-        """
-        Get all active orders
-        
-        Returns:
-            list: List of active order objects
-        """
+        """Fixed version using correct endpoint"""
         if not self.account_id:
-            raise ValueError("No account ID available")
+            return []
         
-        url = f"/v3/brokerage/accounts/{self.account_id}/orders"
-        response = self.api.safe_request("GET", url)
+        endpoint = f"/v2/accounts/{self.account_id}/orders"
+        response = self.api.safe_request("GET", endpoint)
         
         if response.status_code == 200:
-            data = response.json()
-            orders = data.get("Orders", [])
+            orders = response.json()
             
-            # Update local tracking
-            self.active_orders = {}
+            active_orders = []
             for order in orders:
-                order_id = order.get("OrderID")
-                if order_id and order.get("Status") not in ["FLL", "CAN", "REJ", "EXP"]:
-                    order_data = {
-                        "id": order_id,
+                if order.get("Status") not in ["FLL", "CAN", "REJ", "EXP"]:
+                    active_orders.append({
+                        "id": order.get("OrderID"),
                         "status": order.get("Status"),
                         "symbol": order.get("Symbol"),
                         "quantity": order.get("Quantity"),
                         "order_type": order.get("OrderType"),
-                        "action": order.get("TradeAction")
-                    }
-                    self.active_orders[order_id] = order_data
-                    self.order_history[order_id] = order_data
+                        "action": order.get("Type")
+                    })
             
-            return list(self.active_orders.values())
+            return active_orders
         else:
             self.logger.error(f"Get active orders failed: {response.status_code}")
             return []
+    
     
     def calculate_option_order_cost(self, order_data):
         """
