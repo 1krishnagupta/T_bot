@@ -10,6 +10,7 @@ import os
 from typing import Dict, List, Optional, Callable, Any, Tuple
 import asyncio
 import concurrent.futures
+import requests
 
 from Code.bot_core.candle_builder import CandleBuilder
 from Code.bot_core.mongodb_handler import get_mongodb_handler, COLLECTIONS
@@ -216,110 +217,6 @@ class MarketDataClient:
         
         self.logger.info("TradeStation market data client disconnected")
             
-    def _send_setup(self):
-        """Send SETUP message to initialize connection"""
-        setup_msg = {
-            "type": "SETUP",
-            "channel": 0,
-            "version": "0.1-DXF-JS/0.3.0",
-            "keepaliveTimeout": 60,
-            "acceptKeepaliveTimeout": 60
-        }
-        self._send_message(setup_msg)
-        
-    def _authorize(self):
-        """Send AUTH message with token"""
-        auth_msg = {
-            "type": "AUTH",
-            "channel": 0,
-            "token": self.token
-        }
-        self._send_message(auth_msg)
-        
-    def _create_channel(self, service="FEED"):
-        """
-        Create a new channel for subscriptions
-        
-        Args:
-            service (str): Service to use for the channel
-            
-        Returns:
-            int: Channel ID
-        """
-        channel_id = self.channel_counter
-        self.channel_counter += 1
-        
-        channel_msg = {
-            "type": "CHANNEL_REQUEST",
-            "channel": channel_id,
-            "service": service,
-            "parameters": {"contract": "AUTO"}
-        }
-        self._send_message(channel_msg)
-        
-        return channel_id
-        
-    def _setup_feed(self, channel_id):
-        """
-        Setup feed configuration for a channel
-        
-        Args:
-            channel_id (int): Channel ID to setup
-        """
-        feed_setup_msg = {
-            "type": "FEED_SETUP",
-            "channel": channel_id,
-            "acceptAggregationPeriod": 0.1,
-            "acceptDataFormat": "COMPACT",
-            "acceptEventFields": {
-                "Trade": ["eventType", "eventSymbol", "price", "dayVolume", "size", "time", "exchangeCode", "dayId"],
-                "TradeETH": ["eventType", "eventSymbol", "price", "dayVolume", "size", "time", "exchangeCode", "dayId"],
-                "Quote": ["eventType", "eventSymbol", "bidPrice", "askPrice", "bidSize", "askSize", "time", "bidExchangeCode", "askExchangeCode"],
-                "Greeks": ["eventType", "eventSymbol", "volatility", "delta", "gamma", "theta", "rho", "vega"],
-                "Profile": ["eventType", "eventSymbol", "description", "shortSaleRestriction", "tradingStatus"],
-                "Summary": ["eventType", "eventSymbol", "openInterest", "dayOpenPrice", "dayHighPrice", "dayLowPrice", "prevDayClosePrice"],
-                "Candle": ["eventType", "eventSymbol", "time", "sequence", "count", "open", "high", "low", "close", "volume", "vwap"]
-            }
-        }
-        self._send_message(feed_setup_msg)
-        
-    def request_sector_updates(self):
-        """
-        Manually request updates for all sector ETFs to ensure continuous data
-        """
-        try:
-            # Find the sector channel
-            sector_channel_id = None
-            for channel_id, channel_info in self.channels.items():
-                if channel_info.get("is_sector", False):
-                    sector_channel_id = channel_id
-                    break
-                    
-            if not sector_channel_id:
-                return  # No sector channel found
-                
-            # Request updates for all sectors
-            sectors = ["XLK", "XLF", "XLV", "XLY"]
-            requests = []
-            
-            for sector in sectors:
-                requests.append({
-                    "type": "Quote",
-                    "symbol": sector
-                })
-                
-            # Send request message
-            if requests:
-                request_msg = {
-                    "type": "FEED_REQUEST",
-                    "channel": sector_channel_id,
-                    "requests": requests
-                }
-                self._send_message(request_msg)
-                
-        except Exception as e:
-            self.logger.error(f"Error requesting sector updates: {e}")
-
     def subscribe_to_sector_etfs(self):
         """Subscribe to market data for sector ETFs"""
         sectors = self._get_sector_etfs()
@@ -331,68 +228,6 @@ class MarketDataClient:
         if mag7_stocks is None:
             mag7_stocks = self._get_mag7_stocks()
 
-    def _start_sector_polling(self, channel_id, sectors):
-        """
-        Start a background thread to poll for sector updates continuously
-        
-        Args:
-            channel_id (int): Channel ID for sector data
-            sectors (list): List of sector symbols
-        """
-        def poll_sectors():
-            if not self.running:
-                return
-                
-            try:
-                # Request quotes for all sectors
-                for sector in sectors:
-                    quote_request = {
-                        "type": "FEED_REQUEST",
-                        "channel": channel_id,
-                        "requests": [{
-                            "type": "Quote",
-                            "symbol": sector
-                        }]
-                    }
-                    self._send_message(quote_request)
-                    time.sleep(0.1)  # Small delay between requests
-                    
-                # Schedule next poll after 2 seconds
-                if self.running:
-                    threading.Timer(2.0, poll_sectors).start()
-                    
-            except Exception as e:
-                self.logger.error(f"Error in sector polling: {e}")
-                
-        # Start polling thread
-        threading.Thread(target=poll_sectors, daemon=True).start()
-
-    def _schedule_sector_updates(self, channel_id):
-        """
-        Schedule periodic updates to ensure we're getting data for all sectors
-        """
-        def check_sectors():
-            if not self.running:
-                return
-                
-            sectors = ["XLK", "XLF", "XLV", "XLY"]
-            for sector in sectors:
-                # Request a quote update for this sector
-                quote_msg = {
-                    "type": "FEED_REQUEST",
-                    "channel": channel_id,
-                    "requests": [{
-                        "type": "Quote",
-                        "symbol": sector
-                    }]
-                }
-                self._send_message(quote_msg)
-                
-            # Schedule next check
-            threading.Timer(0.5, check_sectors).start()
-        
-        # Start the initial check
-        check_sectors()
 
     def determine_sector_status(self, sector, price):
         """
@@ -743,373 +578,7 @@ class MarketDataClient:
             return int(period[:-1]), "Daily"
         else:
             return 5, "Minute"  # Default
-        
-    def _send_message(self, message):
-        """
-        Send a message to the websocket
-        
-        Args:
-            message (dict): Message to send
-        """
-        if not self.ws:
-            self.logger.error("WebSocket not initialized")
-            return
-            
-        try:
-            self.ws.send(json.dumps(message))
-            self.logger.debug(f"Sent: {message}")
-        except Exception as e:
-            self.logger.error(f"Error sending message: {e}")
-            
-    def _handle_message(self, message):
-        """
-        Handle incoming messages from the websocket
-        
-        Args:
-            message (str): Message received from the websocket
-        """
-        try:
-            data = json.loads(message)
-            msg_type = data.get("type")
-            
-            self.logger.debug(f"Received: {msg_type}")
-            
-            if msg_type == "AUTH_STATE":
-                state = data.get("state")
-                if state == "UNAUTHORIZED":
-                    self._authorize()
-                elif state == "AUTHORIZED":
-                    self.logger.info("Successfully authorized")
-                    
-            elif msg_type == "FEED_DATA":
-                self._handle_feed_data(data)
-                
-        except Exception as e:
-            self.logger.error(f"Error handling message: {e}")
-            
-    def _handle_feed_data(self, data):
-        """
-        Handle feed data messages
-        
-        Args:
-            data (dict): Feed data message
-        """
-        channel = data.get("channel")
-        feed_data = data.get("data", [])
-        
-        if not feed_data or len(feed_data) < 2:
-            return
-            
-        event_type = feed_data[0]
-        event_data = feed_data[1]
-        
-        # Get current timestamp (ISO format)
-        timestamp = datetime.now().isoformat()
-        
-        if event_type == "Quote":
-            # Print data structure for the first Quote
-            if self.first_quote and len(event_data) >= 6:
-                self.first_quote = False
-                self.logger.debug("Quote data structure: " + json.dumps({
-                    "eventType": event_data[0] if len(event_data) > 0 else None,
-                    "symbol": event_data[1] if len(event_data) > 1 else None,
-                    "bidPrice": event_data[2] if len(event_data) > 2 else None,
-                    "askPrice": event_data[3] if len(event_data) > 3 else None,
-                    "bidSize": event_data[4] if len(event_data) > 4 else None,
-                    "askSize": event_data[5] if len(event_data) > 5 else None,
-                    "time": event_data[6] if len(event_data) > 6 else None,
-                }))
-                
-            # Parse quote data and call callback
-            if len(event_data) >= 6:
-                # Format: ["Quote", symbol, bidPrice, askPrice, bidSize, askSize, time]
-                symbol = event_data[1]
-                
-                # Ensure all price values are floats, not strings
-                try:
-                    bid_price = float(event_data[2]) if event_data[2] and event_data[2] != "NaN" else 0.0
-                    ask_price = float(event_data[3]) if event_data[3] and event_data[3] != "NaN" else 0.0
-                    bid_size = float(event_data[4]) if event_data[4] and event_data[4] != "NaN" else 0.0
-                    ask_size = float(event_data[5]) if event_data[5] and event_data[5] != "NaN" else 0.0
-                except (ValueError, TypeError) as e:
-                    self.logger.error(f"Error converting quote values for {symbol}: {e}")
-                    bid_price = 0.0
-                    ask_price = 0.0
-                    bid_size = 0.0
-                    ask_size = 0.0
-                
-                quote = {
-                    "symbol": symbol,
-                    "bid": bid_price,
-                    "ask": ask_price,
-                    "bid_size": bid_size,
-                    "ask_size": ask_size,
-                    "timestamp": timestamp
-                }
-                
-                # Add exchange time if available
-                if len(event_data) > 6:
-                    quote["exchange_time"] = event_data[6]
-                    
-                # Save to database
-                self._save_quote_to_db(quote)
-                
-                # Check if this is a sector ETF and update if so
-                channel_info = self.channels.get(channel, {})
-                if channel_info.get("is_sector", False) and symbol in ["XLK", "XLF", "XLV", "XLY"]:
-                    # Calculate mid price
-                    if bid_price > 0 and ask_price > 0:
-                        price = (bid_price + ask_price) / 2
-                    elif bid_price > 0:
-                        price = bid_price
-                    elif ask_price > 0:
-                        price = ask_price
-                    else:
-                        price = 0.0
                         
-                    # Only process if we have a valid price
-                    if price > 0:
-                        # Store price
-                        self.sector_prices[symbol] = price
-                        
-                        # Calculate price change
-                        prev_price = getattr(self, '_prev_sector_prices', {}).get(symbol, price)
-                        if not hasattr(self, '_prev_sector_prices'):
-                            self._prev_sector_prices = {}
-                            
-                        change_pct = ((price - prev_price) / prev_price) * 100 if prev_price > 0 else 0
-                        
-                        # Determine status based on price movement
-                        status = "neutral"
-                        if abs(change_pct) > 0.05:  # 0.05% threshold
-                            status = "bullish" if change_pct > 0 else "bearish"
-                        
-                        self._prev_sector_prices[symbol] = price
-                        
-                        # Call sector update callback immediately
-                        if self.on_sector_update:
-                            self.on_sector_update(symbol, status, price)
-                    
-                    # Check if we've received updates for all sectors
-                    # If all sectors updated or 2 seconds passed since first sector update
-                    all_updated = not self.sector_updates_pending
-                    time_for_all_updates = hasattr(self, '_sector_update_start_time') and \
-                        (time.time() - self._sector_update_start_time) > 2.0
-                        
-                    if (all_updated or time_for_all_updates) and self.on_sector_update:
-                        # Call with a special signal that all sectors are updated
-                        self.on_sector_update("ALL_SECTORS_UPDATED", "", 0)
-                        # Reset for next batch of updates
-                        self.sector_updates_pending = set(["XLK", "XLF", "XLV", "XLY"])
-                        if hasattr(self, '_sector_update_start_time'):
-                            delattr(self, '_sector_update_start_time')
-                    elif not hasattr(self, '_sector_update_start_time') and self.sector_updates_pending:
-                        # Start the timer for sector updates
-                        self._sector_update_start_time = time.time()
-                
-
-                # Check if this is a Mag7 stock and we have a callback
-                mag7_stocks = self._get_mag7_stocks()
-                if symbol in mag7_stocks and self.on_mag7_update:  # Use self.on_mag7_update instead of hasattr
-                    # Calculate mid price
-                    if bid_price > 0 and ask_price > 0:
-                        price = (bid_price + ask_price) / 2
-                    elif bid_price > 0:
-                        price = bid_price
-                    elif ask_price > 0:
-                        price = ask_price
-                    else:
-                        price = 0.0
-                    
-                    if price > 0:
-                        self.on_mag7_update(symbol, price)
-
-
-                # Call user callback
-                if self.on_quote:
-                    self.on_quote(quote)
-                    
-        elif event_type == "Trade":
-            # Print data structure for the first Trade
-            if self.first_trade and len(event_data) >= 5:
-                self.first_trade = False
-                self.logger.debug("Trade data structure: " + json.dumps({
-                    "eventType": event_data[0] if len(event_data) > 0 else None,
-                    "symbol": event_data[1] if len(event_data) > 1 else None,
-                    "price": event_data[2] if len(event_data) > 2 else None,
-                    "dayVolume": event_data[3] if len(event_data) > 3 else None,
-                    "size": event_data[4] if len(event_data) > 4 else None,
-                    "time": event_data[5] if len(event_data) > 5 else None,
-                }))
-                
-            # Parse trade data and call callback
-            if len(event_data) >= 5:
-                # Format: ["Trade", symbol, price, dayVolume, size, time]
-                try:
-                    price = float(event_data[2]) if event_data[2] and event_data[2] != "NaN" else 0.0
-                    volume = float(event_data[3]) if event_data[3] and event_data[3] != "NaN" else 0.0
-                    size = float(event_data[4]) if event_data[4] and event_data[4] != "NaN" else 0.0
-                except (ValueError, TypeError) as e:
-                    self.logger.error(f"Error converting trade values: {e}")
-                    price = 0.0
-                    volume = 0.0
-                    size = 0.0
-                
-                trade = {
-                    "symbol": event_data[1],
-                    "price": price,
-                    "volume": volume,
-                    "size": size,
-                    "timestamp": timestamp
-                }
-                
-                # Add exchange time if available
-                if len(event_data) > 5:
-                    trade["exchange_time"] = event_data[5]
-                    
-                # Save to database
-                self._save_trade_to_db(trade)
-                
-                # Call user callback
-                if self.on_trade:
-                    self.on_trade(trade)
-                
-                # Process trade for candle building
-                if self.build_candles and self.candle_builder:
-                    self.candle_builder.process_trade(trade)
-                    
-        elif event_type == "Greeks":
-            # Print data structure for the first Greek
-            if self.first_greek and len(event_data) >= 7:
-                self.first_greek = False
-                self.logger.debug("Greek data structure: " + json.dumps({
-                    "eventType": event_data[0] if len(event_data) > 0 else None,
-                    "symbol": event_data[1] if len(event_data) > 1 else None,
-                    "volatility": event_data[2] if len(event_data) > 2 else None,
-                    "delta": event_data[3] if len(event_data) > 3 else None,
-                    "gamma": event_data[4] if len(event_data) > 4 else None,
-                    "theta": event_data[5] if len(event_data) > 5 else None,
-                    "rho": event_data[6] if len(event_data) > 6 else None,
-                    "vega": event_data[7] if len(event_data) > 7 else None
-                }))
-                
-            # Parse greek data and call callback
-            if len(event_data) >= 7:
-                # Format: ["Greeks", symbol, volatility, delta, gamma, theta, rho, vega]
-                try:
-                    volatility = float(event_data[2]) if event_data[2] and event_data[2] != "NaN" else 0.0
-                    delta = float(event_data[3]) if event_data[3] and event_data[3] != "NaN" else 0.0
-                    gamma = float(event_data[4]) if event_data[4] and event_data[4] != "NaN" else 0.0
-                    theta = float(event_data[5]) if event_data[5] and event_data[5] != "NaN" else 0.0
-                    rho = float(event_data[6]) if event_data[6] and event_data[6] != "NaN" else 0.0
-                except (ValueError, TypeError) as e:
-                    self.logger.error(f"Error converting greek values: {e}")
-                    volatility = 0.0
-                    delta = 0.0
-                    gamma = 0.0
-                    theta = 0.0
-                    rho = 0.0
-                
-                greek = {
-                    "symbol": event_data[1],
-                    "volatility": volatility,
-                    "delta": delta,
-                    "gamma": gamma,
-                    "theta": theta,
-                    "rho": rho,
-                    "timestamp": timestamp
-                }
-                
-                # Add vega if available
-                if len(event_data) > 7:
-                    try:
-                        vega = float(event_data[7]) if event_data[7] and event_data[7] != "NaN" else 0.0
-                        greek["vega"] = vega
-                    except (ValueError, TypeError):
-                        greek["vega"] = 0.0
-                    
-                # Save to database
-                self._save_greek_to_db(greek)
-                
-                # Call user callback
-                if self.on_greek:
-                    self.on_greek(greek)
-                    
-        elif event_type == "Candle":
-            # Print data structure for the first Candle
-            if self.first_candle and len(event_data) >= 10:
-                self.first_candle = False
-                self.logger.debug("Candle data structure: " + json.dumps({
-                    "eventType": event_data[0] if len(event_data) > 0 else None,
-                    "symbol": event_data[1] if len(event_data) > 1 else None,
-                    "time": event_data[2] if len(event_data) > 2 else None,
-                    "sequence": event_data[3] if len(event_data) > 3 else None,
-                    "count": event_data[4] if len(event_data) > 4 else None,
-                    "open": event_data[5] if len(event_data) > 5 else None,
-                    "high": event_data[6] if len(event_data) > 6 else None,
-                    "low": event_data[7] if len(event_data) > 7 else None,
-                    "close": event_data[8] if len(event_data) > 8 else None,
-                    "volume": event_data[9] if len(event_data) > 9 else None,
-                    "vwap": event_data[10] if len(event_data) > 10 else None
-                }))
-                
-            # Parse candle data
-            if len(event_data) >= 10:
-                # Extract period from symbol
-                symbol = event_data[1]
-                period = "unknown"
-                if "{=" in symbol:
-                    parts = symbol.split("{=")
-                    symbol = parts[0]
-                    period = parts[1].rstrip("}")
-                    
-                # Format: ["Candle", symbol, time, sequence, count, open, high, low, close, volume, vwap]
-                try:
-                    time_value = event_data[2]
-                    open_price = float(event_data[5]) if event_data[5] and event_data[5] != "NaN" else 0.0
-                    high_price = float(event_data[6]) if event_data[6] and event_data[6] != "NaN" else 0.0
-                    low_price = float(event_data[7]) if event_data[7] and event_data[7] != "NaN" else 0.0
-                    close_price = float(event_data[8]) if event_data[8] and event_data[8] != "NaN" else 0.0
-                    volume = float(event_data[9]) if event_data[9] and event_data[9] != "NaN" else 0.0
-                except (ValueError, TypeError) as e:
-                    self.logger.error(f"Error converting candle values: {e}")
-                    open_price = 0.0
-                    high_price = 0.0
-                    low_price = 0.0
-                    close_price = 0.0
-                    volume = 0.0
-                
-                candle = {
-                    "symbol": symbol,
-                    "period": period,
-                    "time": time_value,
-                    "open": open_price,
-                    "high": high_price,
-                    "low": low_price,
-                    "close": close_price,
-                    "volume": volume,
-                    "timestamp": timestamp
-                }
-                
-                # Call user callback
-                if self.on_candle:
-                    self.on_candle(candle)
-                    
-    def _keepalive_loop(self):
-        """Send keepalive messages periodically"""
-        while self.running:
-            try:
-                # Send keepalive every 30 seconds
-                time.sleep(30)
-                if self.running:
-                    keepalive_msg = {
-                        "type": "KEEPALIVE",
-                        "channel": 0
-                    }
-                    self._send_message(keepalive_msg)
-            except Exception as e:
-                self.logger.error(f"Error in keepalive loop: {e}")
-                
     def determine_sector_status(self, sector, price):
         """
         Determine sector status based on price movements
@@ -1166,32 +635,568 @@ class MarketDataClient:
             self.logger.error(f"Error getting quotes from database: {e}")
             return []
  
-    def _cleanup_old_data(self):
-        """
-        Clean up old data to free memory
-        """
-        try:
-            # Check if we need to clean up
-            if not hasattr(self, '_last_cleanup_time'):
-                self._last_cleanup_time = time.time()
-                return
+
+    # def _send_setup(self):
+    #     """Send SETUP message to initialize connection"""
+    #     setup_msg = {
+    #         "type": "SETUP",
+    #         "channel": 0,
+    #         "version": "0.1-DXF-JS/0.3.0",
+    #         "keepaliveTimeout": 60,
+    #         "acceptKeepaliveTimeout": 60
+    #     }
+    #     self._send_message(setup_msg)
+        
+    # def _authorize(self):
+    #     """Send AUTH message with token"""
+    #     auth_msg = {
+    #         "type": "AUTH",
+    #         "channel": 0,
+    #         "token": self.token
+    #     }
+    #     self._send_message(auth_msg)
+        
+    # def _create_channel(self, service="FEED"):
+    #     """
+    #     Create a new channel for subscriptions
+        
+    #     Args:
+    #         service (str): Service to use for the channel
+            
+    #     Returns:
+    #         int: Channel ID
+    #     """
+    #     channel_id = self.channel_counter
+    #     self.channel_counter += 1
+        
+    #     channel_msg = {
+    #         "type": "CHANNEL_REQUEST",
+    #         "channel": channel_id,
+    #         "service": service,
+    #         "parameters": {"contract": "AUTO"}
+    #     }
+    #     self._send_message(channel_msg)
+        
+    #     return channel_id
+        
+    # def _setup_feed(self, channel_id):
+    #     """
+    #     Setup feed configuration for a channel
+        
+    #     Args:
+    #         channel_id (int): Channel ID to setup
+    #     """
+    #     feed_setup_msg = {
+    #         "type": "FEED_SETUP",
+    #         "channel": channel_id,
+    #         "acceptAggregationPeriod": 0.1,
+    #         "acceptDataFormat": "COMPACT",
+    #         "acceptEventFields": {
+    #             "Trade": ["eventType", "eventSymbol", "price", "dayVolume", "size", "time", "exchangeCode", "dayId"],
+    #             "TradeETH": ["eventType", "eventSymbol", "price", "dayVolume", "size", "time", "exchangeCode", "dayId"],
+    #             "Quote": ["eventType", "eventSymbol", "bidPrice", "askPrice", "bidSize", "askSize", "time", "bidExchangeCode", "askExchangeCode"],
+    #             "Greeks": ["eventType", "eventSymbol", "volatility", "delta", "gamma", "theta", "rho", "vega"],
+    #             "Profile": ["eventType", "eventSymbol", "description", "shortSaleRestriction", "tradingStatus"],
+    #             "Summary": ["eventType", "eventSymbol", "openInterest", "dayOpenPrice", "dayHighPrice", "dayLowPrice", "prevDayClosePrice"],
+    #             "Candle": ["eventType", "eventSymbol", "time", "sequence", "count", "open", "high", "low", "close", "volume", "vwap"]
+    #         }
+    #     }
+    #     self._send_message(feed_setup_msg)
+        
+    # def request_sector_updates(self):
+    #     """
+    #     Manually request updates for all sector ETFs to ensure continuous data
+    #     """
+    #     try:
+    #         # Find the sector channel
+    #         sector_channel_id = None
+    #         for channel_id, channel_info in self.channels.items():
+    #             if channel_info.get("is_sector", False):
+    #                 sector_channel_id = channel_id
+    #                 break
+                    
+    #         if not sector_channel_id:
+    #             return  # No sector channel found
                 
-            # Only clean up periodically (e.g., every 10 minutes)
-            current_time = time.time()
-            if current_time - self._last_cleanup_time < 600:  # 600 seconds = 10 minutes
-                return
+    #         # Request updates for all sectors
+    #         sectors = ["XLK", "XLF", "XLV", "XLY"]
+    #         requests = []
+            
+    #         for sector in sectors:
+    #             requests.append({
+    #                 "type": "Quote",
+    #                 "symbol": sector
+    #             })
                 
-            self.logger.info("Cleaning up old data to free memory")
+    #         # Send request message
+    #         if requests:
+    #             request_msg = {
+    #                 "type": "FEED_REQUEST",
+    #                 "channel": sector_channel_id,
+    #                 "requests": requests
+    #             }
+    #             self._send_message(request_msg)
+                
+    #     except Exception as e:
+    #         self.logger.error(f"Error requesting sector updates: {e}")
+
+
+    # def _cleanup_old_data(self):
+    #     """
+    #     Clean up old data to free memory
+    #     """
+    #     try:
+    #         # Check if we need to clean up
+    #         if not hasattr(self, '_last_cleanup_time'):
+    #             self._last_cleanup_time = time.time()
+    #             return
+                
+    #         # Only clean up periodically (e.g., every 10 minutes)
+    #         current_time = time.time()
+    #         if current_time - self._last_cleanup_time < 600:  # 600 seconds = 10 minutes
+    #             return
+                
+    #         self.logger.info("Cleaning up old data to free memory")
             
-            # Clean up quotes data
-            if hasattr(self, 'candle_data'):
-                # Only keep the last 1000 candles per key
-                for key in list(self.candle_data.keys()):
-                    if len(self.candle_data[key]) > 1000:
-                        self.candle_data[key] = self.candle_data[key][-1000:]
+    #         # Clean up quotes data
+    #         if hasattr(self, 'candle_data'):
+    #             # Only keep the last 1000 candles per key
+    #             for key in list(self.candle_data.keys()):
+    #                 if len(self.candle_data[key]) > 1000:
+    #                     self.candle_data[key] = self.candle_data[key][-1000:]
             
-            # Update last cleanup time
-            self._last_cleanup_time = current_time
+    #         # Update last cleanup time
+    #         self._last_cleanup_time = current_time
             
-        except Exception as e:
-            self.logger.error(f"Error during data cleanup: {e}")
+    #     except Exception as e:
+    #         self.logger.error(f"Error during data cleanup: {e}")
+
+
+    # def _send_message(self, message):
+    #     """
+    #     Send a message to the websocket
+        
+    #     Args:
+    #         message (dict): Message to send
+    #     """
+    #     if not self.ws:
+    #         self.logger.error("WebSocket not initialized")
+    #         return
+            
+    #     try:
+    #         self.ws.send(json.dumps(message))
+    #         self.logger.debug(f"Sent: {message}")
+    #     except Exception as e:
+    #         self.logger.error(f"Error sending message: {e}")
+            
+    # def _handle_message(self, message):
+    #     """
+    #     Handle incoming messages from the websocket
+        
+    #     Args:
+    #         message (str): Message received from the websocket
+    #     """
+    #     try:
+    #         data = json.loads(message)
+    #         msg_type = data.get("type")
+            
+    #         self.logger.debug(f"Received: {msg_type}")
+            
+    #         if msg_type == "AUTH_STATE":
+    #             state = data.get("state")
+    #             if state == "UNAUTHORIZED":
+    #                 self._authorize()
+    #             elif state == "AUTHORIZED":
+    #                 self.logger.info("Successfully authorized")
+                    
+    #         elif msg_type == "FEED_DATA":
+    #             self._handle_feed_data(data)
+                
+    #     except Exception as e:
+    #         self.logger.error(f"Error handling message: {e}")
+            
+    # def _handle_feed_data(self, data):
+    #     """
+    #     Handle feed data messages
+        
+    #     Args:
+    #         data (dict): Feed data message
+    #     """
+    #     channel = data.get("channel")
+    #     feed_data = data.get("data", [])
+        
+    #     if not feed_data or len(feed_data) < 2:
+    #         return
+            
+    #     event_type = feed_data[0]
+    #     event_data = feed_data[1]
+        
+    #     # Get current timestamp (ISO format)
+    #     timestamp = datetime.now().isoformat()
+        
+    #     if event_type == "Quote":
+    #         # Print data structure for the first Quote
+    #         if self.first_quote and len(event_data) >= 6:
+    #             self.first_quote = False
+    #             self.logger.debug("Quote data structure: " + json.dumps({
+    #                 "eventType": event_data[0] if len(event_data) > 0 else None,
+    #                 "symbol": event_data[1] if len(event_data) > 1 else None,
+    #                 "bidPrice": event_data[2] if len(event_data) > 2 else None,
+    #                 "askPrice": event_data[3] if len(event_data) > 3 else None,
+    #                 "bidSize": event_data[4] if len(event_data) > 4 else None,
+    #                 "askSize": event_data[5] if len(event_data) > 5 else None,
+    #                 "time": event_data[6] if len(event_data) > 6 else None,
+    #             }))
+                
+    #         # Parse quote data and call callback
+    #         if len(event_data) >= 6:
+    #             # Format: ["Quote", symbol, bidPrice, askPrice, bidSize, askSize, time]
+    #             symbol = event_data[1]
+                
+    #             # Ensure all price values are floats, not strings
+    #             try:
+    #                 bid_price = float(event_data[2]) if event_data[2] and event_data[2] != "NaN" else 0.0
+    #                 ask_price = float(event_data[3]) if event_data[3] and event_data[3] != "NaN" else 0.0
+    #                 bid_size = float(event_data[4]) if event_data[4] and event_data[4] != "NaN" else 0.0
+    #                 ask_size = float(event_data[5]) if event_data[5] and event_data[5] != "NaN" else 0.0
+    #             except (ValueError, TypeError) as e:
+    #                 self.logger.error(f"Error converting quote values for {symbol}: {e}")
+    #                 bid_price = 0.0
+    #                 ask_price = 0.0
+    #                 bid_size = 0.0
+    #                 ask_size = 0.0
+                
+    #             quote = {
+    #                 "symbol": symbol,
+    #                 "bid": bid_price,
+    #                 "ask": ask_price,
+    #                 "bid_size": bid_size,
+    #                 "ask_size": ask_size,
+    #                 "timestamp": timestamp
+    #             }
+                
+    #             # Add exchange time if available
+    #             if len(event_data) > 6:
+    #                 quote["exchange_time"] = event_data[6]
+                    
+    #             # Save to database
+    #             self._save_quote_to_db(quote)
+                
+    #             # Check if this is a sector ETF and update if so
+    #             channel_info = self.channels.get(channel, {})
+    #             if channel_info.get("is_sector", False) and symbol in ["XLK", "XLF", "XLV", "XLY"]:
+    #                 # Calculate mid price
+    #                 if bid_price > 0 and ask_price > 0:
+    #                     price = (bid_price + ask_price) / 2
+    #                 elif bid_price > 0:
+    #                     price = bid_price
+    #                 elif ask_price > 0:
+    #                     price = ask_price
+    #                 else:
+    #                     price = 0.0
+                        
+    #                 # Only process if we have a valid price
+    #                 if price > 0:
+    #                     # Store price
+    #                     self.sector_prices[symbol] = price
+                        
+    #                     # Calculate price change
+    #                     prev_price = getattr(self, '_prev_sector_prices', {}).get(symbol, price)
+    #                     if not hasattr(self, '_prev_sector_prices'):
+    #                         self._prev_sector_prices = {}
+                            
+    #                     change_pct = ((price - prev_price) / prev_price) * 100 if prev_price > 0 else 0
+                        
+    #                     # Determine status based on price movement
+    #                     status = "neutral"
+    #                     if abs(change_pct) > 0.05:  # 0.05% threshold
+    #                         status = "bullish" if change_pct > 0 else "bearish"
+                        
+    #                     self._prev_sector_prices[symbol] = price
+                        
+    #                     # Call sector update callback immediately
+    #                     if self.on_sector_update:
+    #                         self.on_sector_update(symbol, status, price)
+                    
+    #                 # Check if we've received updates for all sectors
+    #                 # If all sectors updated or 2 seconds passed since first sector update
+    #                 all_updated = not self.sector_updates_pending
+    #                 time_for_all_updates = hasattr(self, '_sector_update_start_time') and \
+    #                     (time.time() - self._sector_update_start_time) > 2.0
+                        
+    #                 if (all_updated or time_for_all_updates) and self.on_sector_update:
+    #                     # Call with a special signal that all sectors are updated
+    #                     self.on_sector_update("ALL_SECTORS_UPDATED", "", 0)
+    #                     # Reset for next batch of updates
+    #                     self.sector_updates_pending = set(["XLK", "XLF", "XLV", "XLY"])
+    #                     if hasattr(self, '_sector_update_start_time'):
+    #                         delattr(self, '_sector_update_start_time')
+    #                 elif not hasattr(self, '_sector_update_start_time') and self.sector_updates_pending:
+    #                     # Start the timer for sector updates
+    #                     self._sector_update_start_time = time.time()
+                
+
+    #             # Check if this is a Mag7 stock and we have a callback
+    #             mag7_stocks = self._get_mag7_stocks()
+    #             if symbol in mag7_stocks and self.on_mag7_update:  # Use self.on_mag7_update instead of hasattr
+    #                 # Calculate mid price
+    #                 if bid_price > 0 and ask_price > 0:
+    #                     price = (bid_price + ask_price) / 2
+    #                 elif bid_price > 0:
+    #                     price = bid_price
+    #                 elif ask_price > 0:
+    #                     price = ask_price
+    #                 else:
+    #                     price = 0.0
+                    
+    #                 if price > 0:
+    #                     self.on_mag7_update(symbol, price)
+
+
+    #             # Call user callback
+    #             if self.on_quote:
+    #                 self.on_quote(quote)
+                    
+    #     elif event_type == "Trade":
+    #         # Print data structure for the first Trade
+    #         if self.first_trade and len(event_data) >= 5:
+    #             self.first_trade = False
+    #             self.logger.debug("Trade data structure: " + json.dumps({
+    #                 "eventType": event_data[0] if len(event_data) > 0 else None,
+    #                 "symbol": event_data[1] if len(event_data) > 1 else None,
+    #                 "price": event_data[2] if len(event_data) > 2 else None,
+    #                 "dayVolume": event_data[3] if len(event_data) > 3 else None,
+    #                 "size": event_data[4] if len(event_data) > 4 else None,
+    #                 "time": event_data[5] if len(event_data) > 5 else None,
+    #             }))
+                
+    #         # Parse trade data and call callback
+    #         if len(event_data) >= 5:
+    #             # Format: ["Trade", symbol, price, dayVolume, size, time]
+    #             try:
+    #                 price = float(event_data[2]) if event_data[2] and event_data[2] != "NaN" else 0.0
+    #                 volume = float(event_data[3]) if event_data[3] and event_data[3] != "NaN" else 0.0
+    #                 size = float(event_data[4]) if event_data[4] and event_data[4] != "NaN" else 0.0
+    #             except (ValueError, TypeError) as e:
+    #                 self.logger.error(f"Error converting trade values: {e}")
+    #                 price = 0.0
+    #                 volume = 0.0
+    #                 size = 0.0
+                
+    #             trade = {
+    #                 "symbol": event_data[1],
+    #                 "price": price,
+    #                 "volume": volume,
+    #                 "size": size,
+    #                 "timestamp": timestamp
+    #             }
+                
+    #             # Add exchange time if available
+    #             if len(event_data) > 5:
+    #                 trade["exchange_time"] = event_data[5]
+                    
+    #             # Save to database
+    #             self._save_trade_to_db(trade)
+                
+    #             # Call user callback
+    #             if self.on_trade:
+    #                 self.on_trade(trade)
+                
+    #             # Process trade for candle building
+    #             if self.build_candles and self.candle_builder:
+    #                 self.candle_builder.process_trade(trade)
+                    
+    #     elif event_type == "Greeks":
+    #         # Print data structure for the first Greek
+    #         if self.first_greek and len(event_data) >= 7:
+    #             self.first_greek = False
+    #             self.logger.debug("Greek data structure: " + json.dumps({
+    #                 "eventType": event_data[0] if len(event_data) > 0 else None,
+    #                 "symbol": event_data[1] if len(event_data) > 1 else None,
+    #                 "volatility": event_data[2] if len(event_data) > 2 else None,
+    #                 "delta": event_data[3] if len(event_data) > 3 else None,
+    #                 "gamma": event_data[4] if len(event_data) > 4 else None,
+    #                 "theta": event_data[5] if len(event_data) > 5 else None,
+    #                 "rho": event_data[6] if len(event_data) > 6 else None,
+    #                 "vega": event_data[7] if len(event_data) > 7 else None
+    #             }))
+                
+    #         # Parse greek data and call callback
+    #         if len(event_data) >= 7:
+    #             # Format: ["Greeks", symbol, volatility, delta, gamma, theta, rho, vega]
+    #             try:
+    #                 volatility = float(event_data[2]) if event_data[2] and event_data[2] != "NaN" else 0.0
+    #                 delta = float(event_data[3]) if event_data[3] and event_data[3] != "NaN" else 0.0
+    #                 gamma = float(event_data[4]) if event_data[4] and event_data[4] != "NaN" else 0.0
+    #                 theta = float(event_data[5]) if event_data[5] and event_data[5] != "NaN" else 0.0
+    #                 rho = float(event_data[6]) if event_data[6] and event_data[6] != "NaN" else 0.0
+    #             except (ValueError, TypeError) as e:
+    #                 self.logger.error(f"Error converting greek values: {e}")
+    #                 volatility = 0.0
+    #                 delta = 0.0
+    #                 gamma = 0.0
+    #                 theta = 0.0
+    #                 rho = 0.0
+                
+    #             greek = {
+    #                 "symbol": event_data[1],
+    #                 "volatility": volatility,
+    #                 "delta": delta,
+    #                 "gamma": gamma,
+    #                 "theta": theta,
+    #                 "rho": rho,
+    #                 "timestamp": timestamp
+    #             }
+                
+    #             # Add vega if available
+    #             if len(event_data) > 7:
+    #                 try:
+    #                     vega = float(event_data[7]) if event_data[7] and event_data[7] != "NaN" else 0.0
+    #                     greek["vega"] = vega
+    #                 except (ValueError, TypeError):
+    #                     greek["vega"] = 0.0
+                    
+    #             # Save to database
+    #             self._save_greek_to_db(greek)
+                
+    #             # Call user callback
+    #             if self.on_greek:
+    #                 self.on_greek(greek)
+                    
+    #     elif event_type == "Candle":
+    #         # Print data structure for the first Candle
+    #         if self.first_candle and len(event_data) >= 10:
+    #             self.first_candle = False
+    #             self.logger.debug("Candle data structure: " + json.dumps({
+    #                 "eventType": event_data[0] if len(event_data) > 0 else None,
+    #                 "symbol": event_data[1] if len(event_data) > 1 else None,
+    #                 "time": event_data[2] if len(event_data) > 2 else None,
+    #                 "sequence": event_data[3] if len(event_data) > 3 else None,
+    #                 "count": event_data[4] if len(event_data) > 4 else None,
+    #                 "open": event_data[5] if len(event_data) > 5 else None,
+    #                 "high": event_data[6] if len(event_data) > 6 else None,
+    #                 "low": event_data[7] if len(event_data) > 7 else None,
+    #                 "close": event_data[8] if len(event_data) > 8 else None,
+    #                 "volume": event_data[9] if len(event_data) > 9 else None,
+    #                 "vwap": event_data[10] if len(event_data) > 10 else None
+    #             }))
+                
+    #         # Parse candle data
+    #         if len(event_data) >= 10:
+    #             # Extract period from symbol
+    #             symbol = event_data[1]
+    #             period = "unknown"
+    #             if "{=" in symbol:
+    #                 parts = symbol.split("{=")
+    #                 symbol = parts[0]
+    #                 period = parts[1].rstrip("}")
+                    
+    #             # Format: ["Candle", symbol, time, sequence, count, open, high, low, close, volume, vwap]
+    #             try:
+    #                 time_value = event_data[2]
+    #                 open_price = float(event_data[5]) if event_data[5] and event_data[5] != "NaN" else 0.0
+    #                 high_price = float(event_data[6]) if event_data[6] and event_data[6] != "NaN" else 0.0
+    #                 low_price = float(event_data[7]) if event_data[7] and event_data[7] != "NaN" else 0.0
+    #                 close_price = float(event_data[8]) if event_data[8] and event_data[8] != "NaN" else 0.0
+    #                 volume = float(event_data[9]) if event_data[9] and event_data[9] != "NaN" else 0.0
+    #             except (ValueError, TypeError) as e:
+    #                 self.logger.error(f"Error converting candle values: {e}")
+    #                 open_price = 0.0
+    #                 high_price = 0.0
+    #                 low_price = 0.0
+    #                 close_price = 0.0
+    #                 volume = 0.0
+                
+    #             candle = {
+    #                 "symbol": symbol,
+    #                 "period": period,
+    #                 "time": time_value,
+    #                 "open": open_price,
+    #                 "high": high_price,
+    #                 "low": low_price,
+    #                 "close": close_price,
+    #                 "volume": volume,
+    #                 "timestamp": timestamp
+    #             }
+                
+    #             # Call user callback
+    #             if self.on_candle:
+    #                 self.on_candle(candle)
+                    
+    # def _keepalive_loop(self):
+    #     """Send keepalive messages periodically"""
+    #     while self.running:
+    #         try:
+    #             # Send keepalive every 30 seconds
+    #             time.sleep(30)
+    #             if self.running:
+    #                 keepalive_msg = {
+    #                     "type": "KEEPALIVE",
+    #                     "channel": 0
+    #                 }
+    #                 self._send_message(keepalive_msg)
+    #         except Exception as e:
+    #             self.logger.error(f"Error in keepalive loop: {e}")
+
+    # def _start_sector_polling(self, channel_id, sectors):
+    #     """
+    #     Start a background thread to poll for sector updates continuously
+        
+    #     Args:
+    #         channel_id (int): Channel ID for sector data
+    #         sectors (list): List of sector symbols
+    #     """
+    #     def poll_sectors():
+    #         if not self.running:
+    #             return
+                
+    #         try:
+    #             # Request quotes for all sectors
+    #             for sector in sectors:
+    #                 quote_request = {
+    #                     "type": "FEED_REQUEST",
+    #                     "channel": channel_id,
+    #                     "requests": [{
+    #                         "type": "Quote",
+    #                         "symbol": sector
+    #                     }]
+    #                 }
+    #                 self._send_message(quote_request)
+    #                 time.sleep(0.1)  # Small delay between requests
+                    
+    #             # Schedule next poll after 2 seconds
+    #             if self.running:
+    #                 threading.Timer(2.0, poll_sectors).start()
+                    
+    #         except Exception as e:
+    #             self.logger.error(f"Error in sector polling: {e}")
+                
+    #     # Start polling thread
+    #     threading.Thread(target=poll_sectors, daemon=True).start()
+
+    # def _schedule_sector_updates(self, channel_id):
+    #     """
+    #     Schedule periodic updates to ensure we're getting data for all sectors
+    #     """
+    #     def check_sectors():
+    #         if not self.running:
+    #             return
+                
+    #         sectors = ["XLK", "XLF", "XLV", "XLY"]
+    #         for sector in sectors:
+    #             # Request a quote update for this sector
+    #             quote_msg = {
+    #                 "type": "FEED_REQUEST",
+    #                 "channel": channel_id,
+    #                 "requests": [{
+    #                     "type": "Quote",
+    #                     "symbol": sector
+    #                 }]
+    #             }
+    #             self._send_message(quote_msg)
+                
+    #         # Schedule next check
+    #         threading.Timer(0.5, check_sectors).start()
+        
+    #     # Start the initial check
+    #     check_sectors()

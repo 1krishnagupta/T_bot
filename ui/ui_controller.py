@@ -426,7 +426,7 @@ class TradingBotThread(QThread):
                 # Explicitly request sector updates periodically to ensure continuous data
                 if current_time - last_periodic_update > 5:  # Every 5 seconds
                     last_periodic_update = current_time
-                    self.market_data_client.request_sector_updates()
+                    # self.market_data_client.request_sector_updates()
                 
                 # Check for sector alignment from real market data
                 if current_time - last_sector_check > 2:  # Every 2 seconds

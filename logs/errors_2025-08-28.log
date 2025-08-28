@@ -14,3 +14,36 @@
 2025-08-28 05:02:14,324 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
 2025-08-28 05:02:14,325 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
 2025-08-28 05:02:24,314 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
+2025-08-28 05:22:44,458 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 05:23:04,549 - MarketDataClient - ERROR - Error in quote stream: name 'requests' is not defined
+2025-08-28 05:23:09,556 - MarketDataClient - ERROR - Error in quote stream: name 'requests' is not defined
+2025-08-28 05:23:09,618 - MarketDataClient - ERROR - Error requesting sector updates: 'MarketDataClient' object has no attribute 'channels'
+2025-08-28 06:20:49,562 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 06:21:22,504 - TradingBot - ERROR - Error in bot loop: 'MarketDataClient' object has no attribute 'request_sector_updates'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 429, in _initialize_and_run
+    self.market_data_client.request_sector_updates()
+AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updates'
+2025-08-28 06:21:27,529 - TradingBot - ERROR - Error in bot loop: 'MarketDataClient' object has no attribute 'request_sector_updates'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 429, in _initialize_and_run
+    self.market_data_client.request_sector_updates()
+AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updates'
+2025-08-28 06:21:32,561 - TradingBot - ERROR - Error in bot loop: 'MarketDataClient' object has no attribute 'request_sector_updates'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 429, in _initialize_and_run
+    self.market_data_client.request_sector_updates()
+AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updates'
+2025-08-28 06:21:37,590 - TradingBot - ERROR - Error in bot loop: 'MarketDataClient' object has no attribute 'request_sector_updates'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 429, in _initialize_and_run
+    self.market_data_client.request_sector_updates()
+AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updates'
+2025-08-28 06:28:07,238 - MarketDataClient - ERROR - Error requesting sector updates: 'MarketDataClient' object has no attribute 'channels'
+2025-08-28 06:28:12,240 - MarketDataClient - ERROR - Error requesting sector updates: 'MarketDataClient' object has no attribute 'channels'
+2025-08-28 06:30:06,126 - TradingBot - ERROR - Error in bot loop: 'MarketDataClient' object has no attribute 'request_sector_updates'
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\ui\ui_controller.py", line 429, in _initialize_and_run
+    self.market_data_client.request_sector_updates()
+AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updates'
+2025-08-28 06:40:46,250 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
