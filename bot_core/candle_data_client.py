@@ -306,12 +306,6 @@ class CandleDataClient:
                 print(f"    - 30m data: Up to 2 years")
                 print(f"    - 1h data: Up to 3 years")
                 print(f"    - 1d data: Up to 10 years\n")
-            elif data_source == "TastyTrade":
-                print(f"\n[*] Using TastyTrade API")
-                print(f"[*] TastyTrade Data Capabilities:")
-                print(f"    - Requires active API connection")
-                print(f"    - Real-time and historical options data")
-                print(f"    - All timeframes available with account\n")
             elif data_source == "YFinance":
                 print(f"\n[*] Using Yahoo Finance API")
                 print(f"[*] YFinance Data Capabilities:")
@@ -381,7 +375,15 @@ class CandleDataClient:
         if data_source == "TradeStation":
             try:
                 from Code.bot_core.tradestation_data_fetcher import TradeStationDataFetcher
-                tradestation_fetcher = TradeStationDataFetcher()
+                
+                # Pass the API instance if available
+                api_instance = kwargs.get('api')
+                if hasattr(self, 'market_data') and hasattr(self.market_data, 'api'):
+                    api_instance = self.market_data.api
+                
+                tradestation_fetcher = TradeStationDataFetcher(api=api_instance)
+                
+                # Test connection before proceeding
                 if not tradestation_fetcher.test_connection():
                     auth_failed = True
                     error_msg = "[!] TradeStation authentication failed"
@@ -396,29 +398,18 @@ class CandleDataClient:
                     raise ConnectionError(error_msg)
                 else:
                     data_fetcher = tradestation_fetcher
+                    self.logger.info("TradeStation connection successful")
             except Exception as e:
                 error_msg = f"[!] Error initializing TradeStation: {str(e)}"
                 print(error_msg)
+                self.logger.error(error_msg, exc_info=True)
                 raise
+        else:
+            print("[!] Possible reasons:")
+            print("    1. Selected Option is Yfinance")
+            print("    2. API key doesn't have market data permissions")
+            print("\n[!] Suggestion: You can try other data sources:")
                 
-        elif data_source == "TastyTrade":
-            try:
-                # Check if API is available
-                api = kwargs.get('api')
-                if not api:
-                    error_msg = "[!] TastyTrade API not available - requires login"
-                    print(error_msg)
-                    print("\n[!] Suggestion: You can try other data sources:")
-                    print("    - YFinance: Free, no auth required (limited history)")
-                    print("    - TradeStation: API key required (extensive history)")
-                    raise ConnectionError(error_msg)
-                else:
-                    data_fetcher = TastyTradeDataFetcher(api=api)
-            except Exception as e:
-                error_msg = f"[!] Error initializing TastyTrade: {str(e)}"
-                print(error_msg)
-                raise
-        
         # If authentication failed or no fetcher, stop here
         if auth_failed or (data_source != "YFinance" and not data_fetcher):
             error_msg = f"[!] Failed to initialize {data_source} data fetcher"
@@ -459,20 +450,7 @@ class CandleDataClient:
                 if data_source == "TradeStation":
                     print(f"[*] Fetching data for {symbol}...")
                     df = data_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
-                    
-                elif data_source == "TastyTrade":
-                    print(f"[*] Fetching data for {symbol}...")
-                    timeframe_map = {
-                        "1m": "1Min",
-                        "5m": "5Min",
-                        "15m": "15Min",
-                        "30m": "30Min",
-                        "1h": "1Hour",
-                        "1d": "1Day"
-                    }
-                    tt_timeframe = timeframe_map.get(period_str, "5Min")
-                    df = data_fetcher.fetch_bars(symbol, start_date, end_date, tt_timeframe)
-                    
+            
                 elif data_source == "YFinance":
                     print(f"[*] Fetching data for {symbol}...")
                     import yfinance as yf

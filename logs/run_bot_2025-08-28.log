@@ -433,3 +433,339 @@ AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updat
 2025-08-28 06:41:11,184 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
 2025-08-28 06:41:11,510 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:11:11)
 2025-08-28 06:41:12,166 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:11:12)
+2025-08-28 06:41:56,710 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:41:56,723 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:41:56,728 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:41:56,733 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:41:59,379 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 06:41:59,379 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 06:42:00,357 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:42:00,370 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:42:00,373 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:42:00,376 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:42:00,379 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_0_1756343520
+2025-08-28 06:42:00,380 - Mag7Strategy - INFO - Subscribed to market data for AAPL
+2025-08-28 06:42:00,382 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756343520
+2025-08-28 06:42:00,383 - Mag7Strategy - INFO - Subscribed to market data for MSFT
+2025-08-28 06:42:00,384 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756343520
+2025-08-28 06:42:00,384 - Mag7Strategy - INFO - Subscribed to market data for AMZN
+2025-08-28 06:42:00,386 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756343520
+2025-08-28 06:42:00,386 - Mag7Strategy - INFO - Subscribed to market data for NVDA
+2025-08-28 06:42:00,387 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756343520
+2025-08-28 06:42:00,388 - Mag7Strategy - INFO - Subscribed to market data for GOOG
+2025-08-28 06:42:00,389 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_5_1756343520
+2025-08-28 06:42:00,389 - Mag7Strategy - INFO - Subscribed to market data for TSLA
+2025-08-28 06:42:00,390 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_6_1756343520
+2025-08-28 06:42:00,390 - Mag7Strategy - INFO - Subscribed to market data for META
+2025-08-28 06:42:00,391 - Mag7Strategy - INFO - Mag7 strategy initialized successfully
+2025-08-28 06:42:00,392 - JigsawStrategy - INFO - Initialized Mag7 strategy
+2025-08-28 06:42:00,392 - JigsawStrategy - INFO - Subscribed to Mag7 stocks using dedicated method, channel: None
+2025-08-28 06:42:00,393 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_7_1756343520
+2025-08-28 06:42:00,394 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_8_1756343520
+2025-08-28 06:42:00,397 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_9_1756343520
+2025-08-28 06:42:00,398 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_10_1756343520
+2025-08-28 06:42:00,398 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Mag7 confirmation
+2025-08-28 06:42:00,401 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_11_1756343520
+2025-08-28 06:42:00,408 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 06:42:00,409 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_12_1756343520
+2025-08-28 06:42:01,012 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:01)
+2025-08-28 06:42:01,658 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:01)
+2025-08-28 06:42:02,313 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:02)
+2025-08-28 06:42:02,424 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:42:02,424 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:42:02,975 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:02)
+2025-08-28 06:42:03,636 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:03)
+2025-08-28 06:42:04,296 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:04)
+2025-08-28 06:42:04,516 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:42:04,516 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:42:04,956 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:04)
+2025-08-28 06:42:05,607 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:05)
+2025-08-28 06:42:06,260 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:06)
+2025-08-28 06:42:06,585 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:42:06,586 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:42:06,912 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:06)
+2025-08-28 06:42:07,563 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:07)
+2025-08-28 06:42:08,213 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:08)
+2025-08-28 06:42:08,647 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:42:08,648 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:42:08,865 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:08)
+2025-08-28 06:42:09,516 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:09)
+2025-08-28 06:42:10,065 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 06:42:10,066 - MarketDataClient - INFO - TradeStation market data client disconnected
+2025-08-28 06:42:32,087 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 06:42:32,087 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 06:42:33,118 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:42:33,118 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:42:33,135 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:42:33,136 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:42:33,138 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_0_1756343553
+2025-08-28 06:42:33,138 - Mag7Strategy - INFO - Subscribed to market data for AAPL
+2025-08-28 06:42:33,139 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756343553
+2025-08-28 06:42:33,141 - Mag7Strategy - INFO - Subscribed to market data for MSFT
+2025-08-28 06:42:33,141 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756343553
+2025-08-28 06:42:33,142 - Mag7Strategy - INFO - Subscribed to market data for AMZN
+2025-08-28 06:42:33,142 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756343553
+2025-08-28 06:42:33,142 - Mag7Strategy - INFO - Subscribed to market data for NVDA
+2025-08-28 06:42:33,143 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756343553
+2025-08-28 06:42:33,143 - Mag7Strategy - INFO - Subscribed to market data for GOOG
+2025-08-28 06:42:33,143 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_5_1756343553
+2025-08-28 06:42:33,143 - Mag7Strategy - INFO - Subscribed to market data for TSLA
+2025-08-28 06:42:33,144 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_6_1756343553
+2025-08-28 06:42:33,145 - Mag7Strategy - INFO - Subscribed to market data for META
+2025-08-28 06:42:33,145 - Mag7Strategy - INFO - Mag7 strategy initialized successfully
+2025-08-28 06:42:33,145 - JigsawStrategy - INFO - Initialized Mag7 strategy
+2025-08-28 06:42:33,145 - JigsawStrategy - INFO - Subscribed to Mag7 stocks using dedicated method, channel: None
+2025-08-28 06:42:33,145 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_7_1756343553
+2025-08-28 06:42:33,145 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_8_1756343553
+2025-08-28 06:42:33,145 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_9_1756343553
+2025-08-28 06:42:33,145 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_10_1756343553
+2025-08-28 06:42:33,145 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Mag7 confirmation
+2025-08-28 06:42:33,151 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_11_1756343553
+2025-08-28 06:42:33,158 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 06:42:33,159 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_12_1756343553
+2025-08-28 06:42:33,711 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:33)
+2025-08-28 06:42:34,366 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:34)
+2025-08-28 06:42:35,033 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:35)
+2025-08-28 06:42:35,259 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:42:35,259 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:42:35,698 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:35)
+2025-08-28 06:42:36,351 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:36)
+2025-08-28 06:42:37,005 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:37)
+2025-08-28 06:42:37,336 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:42:37,337 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:42:37,662 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:12:37)
+2025-08-28 06:42:38,207 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 06:42:38,207 - MarketDataClient - INFO - TradeStation market data client disconnected
+2025-08-28 06:43:05,913 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 06:43:05,914 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 06:43:07,246 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:43:07,255 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:43:07,258 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:43:07,261 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:43:07,263 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_0_1756343587
+2025-08-28 06:43:07,264 - Mag7Strategy - INFO - Subscribed to market data for AAPL
+2025-08-28 06:43:07,265 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756343587
+2025-08-28 06:43:07,266 - Mag7Strategy - INFO - Subscribed to market data for MSFT
+2025-08-28 06:43:07,267 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756343587
+2025-08-28 06:43:07,268 - Mag7Strategy - INFO - Subscribed to market data for AMZN
+2025-08-28 06:43:07,269 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756343587
+2025-08-28 06:43:07,270 - Mag7Strategy - INFO - Subscribed to market data for NVDA
+2025-08-28 06:43:07,271 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756343587
+2025-08-28 06:43:07,271 - Mag7Strategy - INFO - Subscribed to market data for GOOG
+2025-08-28 06:43:07,272 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_5_1756343587
+2025-08-28 06:43:07,273 - Mag7Strategy - INFO - Subscribed to market data for TSLA
+2025-08-28 06:43:07,274 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_6_1756343587
+2025-08-28 06:43:07,274 - Mag7Strategy - INFO - Subscribed to market data for META
+2025-08-28 06:43:07,275 - Mag7Strategy - INFO - Mag7 strategy initialized successfully
+2025-08-28 06:43:07,275 - JigsawStrategy - INFO - Initialized Mag7 strategy
+2025-08-28 06:43:07,275 - JigsawStrategy - INFO - Subscribed to Mag7 stocks using dedicated method, channel: None
+2025-08-28 06:43:07,276 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_7_1756343587
+2025-08-28 06:43:07,277 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_8_1756343587
+2025-08-28 06:43:07,277 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_9_1756343587
+2025-08-28 06:43:07,278 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_10_1756343587
+2025-08-28 06:43:07,278 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Mag7 confirmation
+2025-08-28 06:43:07,286 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 06:43:07,287 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_11_1756343587
+2025-08-28 06:43:07,288 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_12_1756343587
+2025-08-28 06:43:07,829 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:07)
+2025-08-28 06:43:08,483 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:08)
+2025-08-28 06:43:09,137 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:09)
+2025-08-28 06:43:09,354 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:43:09,354 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:43:09,796 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:09)
+2025-08-28 06:43:10,455 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:10)
+2025-08-28 06:43:11,116 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:11)
+2025-08-28 06:43:11,443 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:43:11,443 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:43:11,776 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:11)
+2025-08-28 06:43:12,428 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:12)
+2025-08-28 06:43:13,085 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:13)
+2025-08-28 06:43:13,517 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:43:13,517 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:43:13,736 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:13)
+2025-08-28 06:43:14,391 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:14)
+2025-08-28 06:43:15,046 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:15)
+2025-08-28 06:43:15,594 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:43:15,596 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:43:15,705 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:15)
+2025-08-28 06:43:16,356 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:16)
+2025-08-28 06:43:17,013 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:17)
+2025-08-28 06:43:17,667 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:43:17,670 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:43:17,675 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:13:17)
+2025-08-28 06:43:18,644 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 06:43:18,645 - MarketDataClient - INFO - TradeStation market data client disconnected
+2025-08-28 06:47:01,247 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 06:47:01,248 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 06:47:02,389 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:47:02,392 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:47:02,393 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:47:02,393 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:47:02,394 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_0_1756343822
+2025-08-28 06:47:02,395 - Mag7Strategy - INFO - Subscribed to market data for AAPL
+2025-08-28 06:47:02,395 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756343822
+2025-08-28 06:47:02,396 - Mag7Strategy - INFO - Subscribed to market data for MSFT
+2025-08-28 06:47:02,396 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756343822
+2025-08-28 06:47:02,397 - Mag7Strategy - INFO - Subscribed to market data for AMZN
+2025-08-28 06:47:02,397 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756343822
+2025-08-28 06:47:02,398 - Mag7Strategy - INFO - Subscribed to market data for NVDA
+2025-08-28 06:47:02,398 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756343822
+2025-08-28 06:47:02,398 - Mag7Strategy - INFO - Subscribed to market data for GOOG
+2025-08-28 06:47:02,399 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_5_1756343822
+2025-08-28 06:47:02,399 - Mag7Strategy - INFO - Subscribed to market data for TSLA
+2025-08-28 06:47:02,400 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_6_1756343822
+2025-08-28 06:47:02,400 - Mag7Strategy - INFO - Subscribed to market data for META
+2025-08-28 06:47:02,400 - Mag7Strategy - INFO - Mag7 strategy initialized successfully
+2025-08-28 06:47:02,401 - JigsawStrategy - INFO - Initialized Mag7 strategy
+2025-08-28 06:47:02,401 - JigsawStrategy - INFO - Subscribed to Mag7 stocks using dedicated method, channel: None
+2025-08-28 06:47:02,402 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_7_1756343822
+2025-08-28 06:47:02,402 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_8_1756343822
+2025-08-28 06:47:02,404 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_9_1756343822
+2025-08-28 06:47:02,404 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_10_1756343822
+2025-08-28 06:47:02,405 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Mag7 confirmation
+2025-08-28 06:47:02,409 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_11_1756343822
+2025-08-28 06:47:02,422 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 06:47:02,463 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_12_1756343822
+2025-08-28 06:47:03,023 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:03)
+2025-08-28 06:47:03,676 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:03)
+2025-08-28 06:47:04,334 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:04)
+2025-08-28 06:47:04,552 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:47:04,552 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:47:04,986 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:04)
+2025-08-28 06:47:05,799 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 06:47:05,800 - MarketDataClient - INFO - TradeStation market data client disconnected
+2025-08-28 06:47:42,398 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 06:47:42,398 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 06:47:43,554 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:47:43,554 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:47:43,554 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:47:43,554 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:47:43,554 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_0_1756343863
+2025-08-28 06:47:43,554 - Mag7Strategy - INFO - Subscribed to market data for AAPL
+2025-08-28 06:47:43,554 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756343863
+2025-08-28 06:47:43,554 - Mag7Strategy - INFO - Subscribed to market data for MSFT
+2025-08-28 06:47:43,554 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756343863
+2025-08-28 06:47:43,554 - Mag7Strategy - INFO - Subscribed to market data for AMZN
+2025-08-28 06:47:43,554 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756343863
+2025-08-28 06:47:43,554 - Mag7Strategy - INFO - Subscribed to market data for NVDA
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756343863
+2025-08-28 06:47:43,570 - Mag7Strategy - INFO - Subscribed to market data for GOOG
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_5_1756343863
+2025-08-28 06:47:43,570 - Mag7Strategy - INFO - Subscribed to market data for TSLA
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_6_1756343863
+2025-08-28 06:47:43,570 - Mag7Strategy - INFO - Subscribed to market data for META
+2025-08-28 06:47:43,570 - Mag7Strategy - INFO - Mag7 strategy initialized successfully
+2025-08-28 06:47:43,570 - JigsawStrategy - INFO - Initialized Mag7 strategy
+2025-08-28 06:47:43,570 - JigsawStrategy - INFO - Subscribed to Mag7 stocks using dedicated method, channel: None
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_7_1756343863
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_8_1756343863
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_9_1756343863
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_10_1756343863
+2025-08-28 06:47:43,570 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Mag7 confirmation
+2025-08-28 06:47:43,570 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_11_1756343863
+2025-08-28 06:47:43,586 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 06:47:43,586 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_12_1756343863
+2025-08-28 06:47:44,133 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:44)
+2025-08-28 06:47:44,789 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:44)
+2025-08-28 06:47:45,447 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:45)
+2025-08-28 06:47:45,665 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:47:45,665 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:47:46,105 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:46)
+2025-08-28 06:47:46,760 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:46)
+2025-08-28 06:47:47,411 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:47)
+2025-08-28 06:47:47,739 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:47:47,740 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:47:48,066 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:17:48)
+2025-08-28 06:47:49,012 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 06:47:49,013 - MarketDataClient - INFO - TradeStation market data client disconnected
+2025-08-28 06:52:32,267 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:52:32,272 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:52:32,275 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:52:32,277 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:52:40,645 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 06:52:40,647 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 06:52:41,594 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 06:52:41,606 - PositionManager - INFO - Position collections initialized
+2025-08-28 06:52:41,609 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 06:52:41,612 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 06:52:41,614 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_0_1756344161
+2025-08-28 06:52:41,615 - Mag7Strategy - INFO - Subscribed to market data for AAPL
+2025-08-28 06:52:41,618 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756344161
+2025-08-28 06:52:41,619 - Mag7Strategy - INFO - Subscribed to market data for MSFT
+2025-08-28 06:52:41,620 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756344161
+2025-08-28 06:52:41,620 - Mag7Strategy - INFO - Subscribed to market data for AMZN
+2025-08-28 06:52:41,621 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756344161
+2025-08-28 06:52:41,622 - Mag7Strategy - INFO - Subscribed to market data for NVDA
+2025-08-28 06:52:41,623 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756344161
+2025-08-28 06:52:41,623 - Mag7Strategy - INFO - Subscribed to market data for GOOG
+2025-08-28 06:52:41,624 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_5_1756344161
+2025-08-28 06:52:41,625 - Mag7Strategy - INFO - Subscribed to market data for TSLA
+2025-08-28 06:52:41,626 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_6_1756344161
+2025-08-28 06:52:41,627 - Mag7Strategy - INFO - Subscribed to market data for META
+2025-08-28 06:52:41,627 - Mag7Strategy - INFO - Mag7 strategy initialized successfully
+2025-08-28 06:52:41,628 - JigsawStrategy - INFO - Initialized Mag7 strategy
+2025-08-28 06:52:41,628 - MarketDataClient - INFO - Subscribing to Mag7 stocks: AAPL, MSFT, AMZN, NVDA, GOOG, TSLA, META
+2025-08-28 06:52:41,629 - MarketDataClient - INFO - Subscribed to 7 symbols on stream stream_7_1756344161
+2025-08-28 06:52:41,630 - JigsawStrategy - INFO - Subscribed to Mag7 stocks using dedicated method, channel: stream_7_1756344161
+2025-08-28 06:52:41,630 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_8_1756344161
+2025-08-28 06:52:41,632 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_9_1756344161
+2025-08-28 06:52:41,633 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_10_1756344161
+2025-08-28 06:52:41,634 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_11_1756344161
+2025-08-28 06:52:41,635 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Mag7 confirmation
+2025-08-28 06:52:41,638 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_12_1756344161
+2025-08-28 06:52:41,643 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 06:52:41,644 - MarketDataClient - INFO - Subscribing to Mag7 stocks: AAPL, MSFT, AMZN, NVDA, GOOG, TSLA, META
+2025-08-28 06:52:41,646 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_13_1756344161
+2025-08-28 06:52:41,647 - MarketDataClient - INFO - Subscribed to 7 symbols on stream stream_14_1756344161
+2025-08-28 06:52:42,245 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:42)
+2025-08-28 06:52:42,904 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:42)
+2025-08-28 06:52:43,560 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:43)
+2025-08-28 06:52:43,670 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:52:43,670 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:52:44,213 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:44)
+2025-08-28 06:52:44,866 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:44)
+2025-08-28 06:52:45,518 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:45)
+2025-08-28 06:52:45,735 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:52:45,735 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:52:46,169 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:46)
+2025-08-28 06:52:46,831 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:46)
+2025-08-28 06:52:47,498 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:47)
+2025-08-28 06:52:47,831 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:52:47,831 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:52:48,163 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:48)
+2025-08-28 06:52:48,829 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:48)
+2025-08-28 06:52:49,488 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:49)
+2025-08-28 06:52:49,924 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:52:49,925 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:52:50,141 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:50)
+2025-08-28 06:52:50,791 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:50)
+2025-08-28 06:52:51,445 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:51)
+2025-08-28 06:52:51,990 - Mag7Strategy - INFO - Mag7 alignment: 0 bullish (0.0%), 0 bearish (0.0%), threshold=60.0%
+2025-08-28 06:52:51,991 - JigsawStrategy - INFO - Using Mag7 alignment: aligned=False, direction=neutral, percentage=0.0%
+2025-08-28 06:52:52,100 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:52)
+2025-08-28 06:52:52,753 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 21:22:52)
+2025-08-28 06:52:53,393 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 06:52:53,394 - MarketDataClient - INFO - TradeStation market data client disconnected
+2025-08-28 06:54:29,566 - BacktestRun_20250828_065429 - INFO - ================================================================================
+2025-08-28 06:54:29,566 - BacktestRun_20250828_065429 - INFO - BACKTEST RUN ID: 20250828_065429
+2025-08-28 06:54:29,566 - BacktestRun_20250828_065429 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-07-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 06:54:29,567 - BacktestRun_20250828_065429 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 06:54:29,568 - BacktestRun_20250828_065429 - INFO - ================================================================================
+2025-08-28 06:54:29,665 - CandleDataClient - INFO - Fetching 58 days of 1m data from 2025-07-01 to 2025-08-28
+2025-08-28 06:54:29,704 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,708 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,714 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,717 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,720 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,727 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,735 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,745 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 06:54:29,766 - CandleDataClient - INFO - Fetching 58 days of 1m data from 2025-07-01 to 2025-08-28
+2025-08-28 06:54:29,777 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,782 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,786 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,789 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,795 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,799 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,802 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,810 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation

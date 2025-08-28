@@ -1,9 +1,0 @@
-2025-08-17 15:58:37,997 - OrderManager - INFO - Loaded 0 active orders from database
-2025-08-17 15:58:38,010 - PositionManager - INFO - Position collections initialized
-2025-08-17 15:58:38,020 - PositionManager - INFO - Loaded 0 active positions from database
-2025-08-17 15:58:38,034 - JigsawStrategy - INFO - Synced 0 active positions from position manager
-2025-08-17 15:58:45,117 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
-2025-08-17 15:58:45,133 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
-2025-08-17 15:58:45,133 - MarketDataClient - INFO - WebSocket closed: None
-2025-08-17 15:58:55,059 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
-2025-08-17 15:58:55,065 - CandleBuilder - INFO - Stopped candle builder

@@ -1,5 +1,4 @@
 # Code/bot_core/tradestation_data_fetcher.py
-
 import os
 import pandas as pd
 import numpy as np
@@ -10,6 +9,7 @@ import json
 import threading
 import queue
 import websocket
+import requests  # ADD THIS IMPORT
 from .tradestation_api import TradeStationAPI
 
 class TradeStationDataFetcher:
@@ -42,6 +42,11 @@ class TradeStationDataFetcher:
         # If no API instance provided, create one
         if not self.api:
             self.api = TradeStationAPI()
+            # Ensure the API is logged in
+            if not self.api.check_and_refresh_session():
+                self.logger.info("TradeStation API not authenticated, attempting login...")
+                if not self.api.login():
+                    self.logger.error("Failed to authenticate with TradeStation API")
     
     def _get_period_and_type(self, timeframe):
         """
@@ -132,18 +137,26 @@ class TradeStationDataFetcher:
         """Fixed version using streaming barchart endpoint"""
         try:
             if not self.api:
+                self.logger.error("No API instance available")
                 return pd.DataFrame()
             
             # Ensure logged in
             if not self.api.check_and_refresh_session():
+                self.logger.info("Attempting to login to TradeStation...")
                 if not self.api.login():
+                    self.logger.error("Failed to login to TradeStation")
                     return pd.DataFrame()
             
             # Convert dates
             if isinstance(start_date, str):
                 start_date = datetime.strptime(start_date, "%Y-%m-%d")
+            elif isinstance(start_date, date) and not isinstance(start_date, datetime):
+                start_date = datetime.combine(start_date, datetime.min.time())
+                
             if isinstance(end_date, str):
                 end_date = datetime.strptime(end_date, "%Y-%m-%d")
+            elif isinstance(end_date, date) and not isinstance(end_date, datetime):
+                end_date = datetime.combine(end_date, datetime.min.time())
             
             # Format dates for TradeStation
             start_str = start_date.strftime("%m-%d-%Y")
@@ -154,6 +167,8 @@ class TradeStationDataFetcher:
             interval = tf_params['interval']
             unit = tf_params['unit']
             
+            self.logger.info(f"Fetching {symbol} data from {start_str} to {end_str}, {interval} {unit}")
+            
             # Use streaming endpoint from swagger
             endpoint = f"/v2/stream/barchart/{symbol}/{interval}/{unit}/{start_str}/{end_str}"
             
@@ -163,56 +178,109 @@ class TradeStationDataFetcher:
             
             url = f"{self.api.base_url}{endpoint}"
             
-            # Make streaming request
-            response = requests.get(url, headers=headers, stream=True)
-            
-            if response.status_code != 200:
-                self.logger.error(f"Failed to fetch data: {response.status_code}")
-                return pd.DataFrame()
-            
-            # Parse streaming response
-            df_data = []
-            for line in response.iter_lines():
-                if line:
-                    try:
-                        # Skip END marker
-                        if line.decode('utf-8').strip() == 'END':
-                            break
-                        
-                        data = json.loads(line)
-                        
-                        # Parse timestamp
-                        ts_str = data.get('TimeStamp', '')
-                        if '/Date(' in ts_str:
-                            # Extract milliseconds from /Date(1234567890000)/
-                            ms = int(ts_str.replace('/Date(', '').replace(')/', ''))
-                            timestamp = datetime.fromtimestamp(ms / 1000)
+            # Make streaming request with proper error handling
+            try:
+                response = requests.get(url, headers=headers, stream=True, timeout=30)
+                
+                if response.status_code == 401:
+                    self.logger.error("Authentication failed - token may be expired")
+                    # Try to refresh token
+                    if self.api._refresh_access_token():
+                        # Retry with new token
+                        headers = self.api.get_auth_headers()
+                        headers['Accept'] = 'application/vnd.tradestation.streams+json'
+                        response = requests.get(url, headers=headers, stream=True, timeout=30)
+                    else:
+                        # Full re-auth needed
+                        if self.api.login():
+                            headers = self.api.get_auth_headers()
+                            headers['Accept'] = 'application/vnd.tradestation.streams+json'
+                            response = requests.get(url, headers=headers, stream=True, timeout=30)
                         else:
-                            timestamp = pd.to_datetime(data.get('TimeStamp'))
-                        
-                        df_data.append({
-                            'timestamp': timestamp,
-                            'open': float(data.get('Open', 0)),
-                            'high': float(data.get('High', 0)),
-                            'low': float(data.get('Low', 0)),
-                            'close': float(data.get('Close', 0)),
-                            'volume': float(data.get('TotalVolume', 0))
-                        })
-                    except Exception as e:
-                        self.logger.debug(f"Error parsing line: {e}")
-                        continue
-            
-            if not df_data:
+                            self.logger.error("Failed to re-authenticate with TradeStation")
+                            return pd.DataFrame()
+                
+                if response.status_code != 200:
+                    self.logger.error(f"Failed to fetch data: {response.status_code} - {response.text}")
+                    return pd.DataFrame()
+                
+                # Parse streaming response
+                df_data = []
+                error_count = 0
+                max_errors = 5
+                
+                for line in response.iter_lines():
+                    if line:
+                        try:
+                            line_str = line.decode('utf-8').strip()
+                            
+                            # Skip END marker
+                            if line_str == 'END':
+                                self.logger.debug(f"Received END marker for {symbol}")
+                                break
+                            
+                            # Check for ERROR
+                            if line_str.startswith('ERROR'):
+                                self.logger.error(f"Stream error for {symbol}: {line_str}")
+                                error_count += 1
+                                if error_count >= max_errors:
+                                    break
+                                continue
+                            
+                            # Parse JSON data
+                            data = json.loads(line_str)
+                            
+                            # Parse timestamp
+                            ts_str = data.get('TimeStamp', '')
+                            if '/Date(' in ts_str:
+                                # Extract milliseconds from /Date(1234567890000)/
+                                ms = int(ts_str.replace('/Date(', '').replace(')/', ''))
+                                timestamp = datetime.fromtimestamp(ms / 1000)
+                            else:
+                                timestamp = pd.to_datetime(data.get('TimeStamp'))
+                            
+                            df_data.append({
+                                'timestamp': timestamp,
+                                'open': float(data.get('Open', 0)),
+                                'high': float(data.get('High', 0)),
+                                'low': float(data.get('Low', 0)),
+                                'close': float(data.get('Close', 0)),
+                                'volume': float(data.get('TotalVolume', 0))
+                            })
+                        except json.JSONDecodeError as e:
+                            self.logger.debug(f"Error parsing JSON line: {e}")
+                            continue
+                        except Exception as e:
+                            self.logger.debug(f"Error parsing line: {e}")
+                            continue
+                
+                if not df_data:
+                    self.logger.warning(f"No data received for {symbol}")
+                    return pd.DataFrame()
+                
+                self.logger.info(f"Received {len(df_data)} bars for {symbol}")
+                
+                df = pd.DataFrame(df_data)
+                df.set_index('timestamp', inplace=True)
+                df.sort_index(inplace=True)
+                
+                # Validate data
+                if df.empty:
+                    self.logger.warning(f"Empty dataframe for {symbol}")
+                elif df['close'].sum() == 0:
+                    self.logger.warning(f"All close prices are zero for {symbol}")
+                
+                return df
+                
+            except requests.exceptions.Timeout:
+                self.logger.error(f"Timeout fetching data for {symbol}")
                 return pd.DataFrame()
-            
-            df = pd.DataFrame(df_data)
-            df.set_index('timestamp', inplace=True)
-            df.sort_index(inplace=True)
-            
-            return df
-            
+            except requests.exceptions.RequestException as e:
+                self.logger.error(f"Request error fetching data for {symbol}: {e}")
+                return pd.DataFrame()
+                
         except Exception as e:
-            self.logger.error(f"Error fetching bars: {e}")
+            self.logger.error(f"Error fetching bars for {symbol}: {e}", exc_info=True)
             return pd.DataFrame()
         
     
@@ -221,9 +289,15 @@ class TradeStationDataFetcher:
         try:
             if self.api:
                 # Check if we can login or are already logged in
-                return self.api.check_and_refresh_session() or self.api.login()
+                is_connected = self.api.check_and_refresh_session() or self.api.login()
+                if is_connected:
+                    self.logger.info("TradeStation connection test successful")
+                else:
+                    self.logger.error("TradeStation connection test failed")
+                return is_connected
             return False
-        except:
+        except Exception as e:
+            self.logger.error(f"Error testing TradeStation connection: {e}")
             return False
     
     def fetch_multiple_timeframes(self, symbol, start_date, end_date):

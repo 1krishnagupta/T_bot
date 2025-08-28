@@ -47,3 +47,19 @@ Traceback (most recent call last):
     self.market_data_client.request_sector_updates()
 AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updates'
 2025-08-28 06:40:46,250 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 06:54:29,704 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,708 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,714 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,717 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,720 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,727 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,735 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,745 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 06:54:29,777 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,782 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,786 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,789 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,795 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,799 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,802 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 06:54:29,810 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation

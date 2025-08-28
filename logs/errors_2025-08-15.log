@@ -1,5 +1,0 @@
-2025-08-15 03:45:01,114 - Code.bot_core.tradestation_api - ERROR - Access forbidden for account 5WY52585 - check account permissions
-2025-08-15 03:45:04,795 - Code.bot_core.tradestation_api - ERROR - Access forbidden for account 5WY52585 - check account permissions
-2025-08-15 03:45:07,787 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
-2025-08-15 03:45:07,787 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
-2025-08-15 03:45:17,817 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout

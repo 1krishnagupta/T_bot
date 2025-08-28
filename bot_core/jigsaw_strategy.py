@@ -109,7 +109,7 @@ class JigsawStrategy:
                 mag7_stocks = self.trading_config.get("mag7_stocks", 
                     ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
                 
-                # FIXED: Use the dedicated subscribe_to_mag7_stocks method
+                # Subscribe using the dedicated method
                 if hasattr(self.market_data, 'subscribe_to_mag7_stocks'):
                     # Subscribe using the dedicated method
                     channel_id = self.market_data.subscribe_to_mag7_stocks(mag7_stocks)

@@ -118,6 +118,11 @@ class ProfessionalBacktestRunner:
         
         # Create candle data client (your existing component)
         candle_data_client = CandleDataClient(market_data_client)
+
+        # Pass the API instance to candle_data_client if using TradeStation
+        if data_source == "TradeStation" and self.api:
+            if hasattr(candle_data_client, 'market_data') and candle_data_client.market_data:
+                candle_data_client.market_data.api = self.api
         
         # Create backtest engine (your existing component)
         backtest_engine = BacktestEngine(

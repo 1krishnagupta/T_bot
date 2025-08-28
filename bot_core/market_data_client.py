@@ -227,6 +227,12 @@ class MarketDataClient:
         """Subscribe to market data for Magnificent 7 stocks"""
         if mag7_stocks is None:
             mag7_stocks = self._get_mag7_stocks()
+        
+        self.logger.info(f"Subscribing to Mag7 stocks: {', '.join(mag7_stocks)}")
+        
+        # Subscribe to Mag7 stocks as regular symbols (not as sectors)
+        # Pass is_sector=False to differentiate from sector ETFs
+        return self.subscribe(mag7_stocks, event_types=["Quote", "Trade", "Summary"], is_sector=False)
 
 
     def determine_sector_status(self, sector, price):

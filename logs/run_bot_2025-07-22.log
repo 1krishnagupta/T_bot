@@ -1,4 +1,0 @@
-2025-07-22 23:15:15,479 - OrderManager - INFO - Loaded 0 active orders from database
-2025-07-22 23:15:15,485 - PositionManager - INFO - Position collections initialized
-2025-07-22 23:15:15,487 - PositionManager - INFO - Loaded 0 active positions from database
-2025-07-22 23:15:15,489 - JigsawStrategy - INFO - Synced 0 active positions from position manager
