@@ -14,3 +14,34 @@
 2025-08-19 23:44:26,133 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
 2025-08-19 23:44:26,135 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
 2025-08-19 23:44:36,091 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
+2025-08-20 00:01:05,147 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 231 days
+2025-08-20 00:01:05,156 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 231 days
+2025-08-20 00:01:11,167 - yfinance - ERROR - $XLV: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-21) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1755628269. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:11,836 - yfinance - ERROR - $XLF: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-21) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1755628269. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:12,566 - yfinance - ERROR - $XLY: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-21) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1755628270. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:13,257 - yfinance - ERROR - $XLK: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-21) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1755628271. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:13,857 - yfinance - ERROR - $NVDA: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-21) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1755628271. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:13,896 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from YFinance
+2025-08-20 00:01:53,624 - CandleDataClient - ERROR - Failed to fetch external data: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 218 days
+2025-08-20 00:01:53,630 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] ERROR: YFinance only provides 7 days of 1-minute data, but you requested 218 days
+2025-08-20 00:01:54,268 - yfinance - ERROR - $XLV: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-08) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1754625600. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:55,087 - yfinance - ERROR - $XLF: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-08) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1754625600. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:56,213 - yfinance - ERROR - $XLY: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-08) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1754625600. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:57,136 - yfinance - ERROR - $XLK: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-08) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1754625600. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:57,956 - yfinance - ERROR - $NVDA: possibly delisted; no price data found  (1m 2025-01-01 -> 2025-08-08) (Yahoo error = "1m data not available for startTime=1735707600 and endTime=1754625600. Only 8 days worth of 1m granularity data are allowed to be fetched per request.")
+2025-08-20 00:01:58,019 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from YFinance
+2025-08-20 00:02:56,110 - BacktestEngine - ERROR - Error in backtest for AAPL: [!] TastyTrade API not available - requires login
+2025-08-20 00:02:56,257 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TastyTrade API not available - requires login
+2025-08-20 00:03:29,818 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-20 00:03:33,651 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:33,677 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:33,701 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:33,721 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:33,742 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:33,807 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-20 00:03:34,018 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:34,044 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:34,066 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:34,087 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:34,110 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-20 00:03:34,164 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation

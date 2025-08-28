@@ -21,31 +21,25 @@ class MarketDataClient:
             on_candle=None, on_sector_update=None, on_mag7_update=None, save_to_db=True, 
             build_candles=True, candle_periods=(1, 2, 3, 5, 15), api=None): 
         """
-        Initialize the market data client
+        Initialize the market data client for TradeStation
         
         Args:
-            api_quote_token (dict): API quote token from TastyTrade API
+            api_quote_token (dict): Not used for TradeStation - kept for compatibility
             on_quote (callable): Callback for quote events
             on_trade (callable): Callback for trade events
             on_greek (callable): Callback for greek events
             on_candle (callable): Callback for candle events
             on_sector_update (callable): Callback for sector ETF updates
-            on_mag7_update (callable): Callback for Mag7 stock updates (NEW)
+            on_mag7_update (callable): Callback for Mag7 stock updates
             save_to_db (bool): Whether to save data to database
             build_candles (bool): Whether to build candles from tick data
             candle_periods (tuple): Candle periods in minutes to build
-            api: TastyTrade API instance for historical data fetching
+            api: TradeStation API instance
         """
-        self.token = api_quote_token.get("token")
-        self.dxlink_url = api_quote_token.get("dxlink-url")
-        self.level = api_quote_token.get("level", "api")
-        self.api = api  # Store the API reference
-        
-        self.ws = None
+        self.api = api  # TradeStation API instance
         self.running = False
-        self.keepalive_thread = None
-        self.channels = {}
-        self.channel_counter = 1
+        self.stream_threads = {}
+        self.active_streams = {}
         
         # Database storage
         self.save_to_db = save_to_db
@@ -62,19 +56,13 @@ class MarketDataClient:
             self.db.create_index(COLLECTIONS['TRADES'], [("symbol", 1), ("timestamp", 1)])
             self.db.create_index(COLLECTIONS['GREEKS'], [("symbol", 1), ("timestamp", 1)])
         
-        # First record flags to print JSON structure only once
-        self.first_quote = True
-        self.first_trade = True
-        self.first_greek = True
-        self.first_candle = True
-        
         # Callbacks
         self.on_quote = on_quote
         self.on_trade = on_trade
         self.on_greek = on_greek
         self.on_candle = on_candle
         self.on_sector_update = on_sector_update
-        self.on_mag7_update = on_mag7_update  # NEW: Store Mag7 callback
+        self.on_mag7_update = on_mag7_update
         
         # For tracking sector ETF data
         self.sector_prices = {}
@@ -101,16 +89,48 @@ class MarketDataClient:
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-
-
+   
+    def _load_config(self):
+        """Load configuration from credentials.txt or settings file"""
+        try:
+            # Try multiple paths to find config file
+            config_paths = [
+                os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'credentials.txt'),
+                os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'settings.yaml'),
+                os.path.join(os.path.dirname(__file__), '..', '..', 'config', 'settings.txt')
+            ]
             
+            for path in config_paths:
+                if os.path.exists(path):
+                    import yaml
+                    with open(path, 'r') as f:
+                        data = yaml.safe_load(f)
+                        
+                    # Look for trading config in multiple places
+                    if 'trading_config' in data:
+                        return data['trading_config']
+                    elif 'mag7_stocks' in data:  # Direct config
+                        return data
+                    elif 'broker' in data:  # In broker section
+                        return data.get('broker', {})
+                    
+            return {}
+        except Exception as e:
+            self.logger.error(f"Error loading config: {e}")
+            return {}
+
+    def _get_mag7_stocks(self):
+        """Get Mag7 stocks from config or default"""
+        config = self._load_config()
+        return config.get('mag7_stocks', ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
+    
+    def _get_sector_etfs(self):
+        """Get sector ETFs from config or default"""
+        config = self._load_config()
+        return config.get('sector_etfs', ["XLK", "XLF", "XLV", "XLY"])
+
     def _save_quote_to_db(self, quote):
-        """
-        Save a quote to the database
-        
-        Args:
-            quote (dict): Quote data to save
-        """
+        """Save a quote to the database"""
         if not self.save_to_db or not self.db:
             return
             
@@ -120,12 +140,7 @@ class MarketDataClient:
             self.logger.error(f"Error saving quote to database: {e}")
             
     def _save_trade_to_db(self, trade):
-        """
-        Save a trade to the database
-        
-        Args:
-            trade (dict): Trade data to save
-        """
+        """Save a trade to the database"""
         if not self.save_to_db or not self.db:
             return
             
@@ -135,12 +150,7 @@ class MarketDataClient:
             self.logger.error(f"Error saving trade to database: {e}")
             
     def _save_greek_to_db(self, greek):
-        """
-        Save a greek to the database
-        
-        Args:
-            greek (dict): Greek data to save
-        """
+        """Save a greek to the database"""
         if not self.save_to_db or not self.db:
             return
             
@@ -150,78 +160,33 @@ class MarketDataClient:
             self.logger.error(f"Error saving greek to database: {e}")
 
     def connect(self):
-        """Connect to TradeStation WebSocket"""
-        if not self.token or not self.dxlink_url:
-            self.logger.error("Missing token or URL for connection")
+        """Connect to TradeStation (HTTP streaming, not WebSocket)"""
+        if not self.api:
+            self.logger.error("No TradeStation API instance provided")
             return False
         
-        # TradeStation doesn't use DXLink - it has its own format
-        ws_url = f"wss://stream.tradestation.com/v3/marketdata/stream"
-        
-        def on_message(ws, message):
-            self._handle_tradestation_message(message)
-        
-        def on_error(ws, error):
-            self.logger.error(f"WebSocket error: {error}")
-        
-        def on_close(ws, close_status_code, close_msg):
-            self.logger.info(f"WebSocket closed: {close_status_code}")
-            self.running = False
-        
-        def on_open(ws):
-            self.logger.info("WebSocket opened")
-            self.running = True
-            # Subscribe to symbols after connection
-            self._subscribe_to_symbols()
-                
-            
-        try:
-            self.ws = websocket.WebSocketApp(
-                ws_url,
-                on_open=on_open,
-                on_message=on_message,
-                on_error=on_error,
-                on_close=on_close,
-                header={
-                    "Authorization": f"Bearer {self.token}"
-                }
-            )
-            
-            self.ws_thread = threading.Thread(target=self.ws.run_forever)
-            self.ws_thread.daemon = True
-            self.ws_thread.start()
-                
-            # Wait for connection to establish
-            timeout = 10
-            start_time = time.time()
-            while not self.running and time.time() - start_time < timeout:
-                time.sleep(0.1)
-                
-            if not self.running:
-                self.logger.error("Failed to establish TradeStation WebSocket connection within timeout")
+        # Ensure we're logged in
+        if not self.api.check_and_refresh_session():
+            if not self.api.login():
+                self.logger.error("Failed to login to TradeStation")
                 return False
-            
-            # For TradeStation, we might not need keepalive
-            self.logger.info("TradeStation streaming connection established")
-            
-            # Start candle builder if enabled
-            if self.build_candles and self.candle_builder:
-                self.candle_builder.start()
-                
-                # Register candle callbacks
-                if self.on_candle:
-                    self.candle_builder.register_callbacks(
-                        on_completed=self.on_candle,
-                        on_updated=self.on_candle
-                    )
-            
-            return True
-            
-        except Exception as e:
-            self.logger.error(f"Error establishing TradeStation WebSocket connection: {e}")
-            return False
         
-
+        self.running = True
+        
+        # Start candle builder if enabled
+        if self.build_candles and self.candle_builder:
+            self.candle_builder.start()
+            
+            # Register candle callbacks
+            if self.on_candle:
+                self.candle_builder.register_callbacks(
+                    on_completed=self.on_candle,
+                    on_updated=self.on_candle
+                )
+        
+        self.logger.info("TradeStation market data client connected")
+        return True
+        
     def _handle_tradestation_message(self, message):
         """Handle TradeStation format messages"""
         try:
@@ -236,18 +201,20 @@ class MarketDataClient:
                     self._process_tradestation_bar(bar)
         except Exception as e:
             self.logger.error(f"Error handling message: {e}")
-        
-
-        
-    def disconnect(self):
-        """Disconnect from DXLink websocket"""
-        self.running = False
-        if self.ws:
-            self.ws.close()
             
+    def disconnect(self):
+        """Disconnect from TradeStation"""
+        self.running = False
+        
+        # Stop all streaming threads
+        for thread_id in list(self.stream_threads.keys()):
+            self._stop_stream(thread_id)
+        
         # Stop candle builder if enabled
         if self.build_candles and self.candle_builder:
             self.candle_builder.stop()
+        
+        self.logger.info("TradeStation market data client disconnected")
             
     def _send_setup(self):
         """Send SETUP message to initialize connection"""
@@ -316,7 +283,6 @@ class MarketDataClient:
         }
         self._send_message(feed_setup_msg)
         
-
     def request_sector_updates(self):
         """
         Manually request updates for all sector ETFs to ensure continuous data
@@ -354,126 +320,16 @@ class MarketDataClient:
         except Exception as e:
             self.logger.error(f"Error requesting sector updates: {e}")
 
-    
     def subscribe_to_sector_etfs(self):
-        """
-        Subscribe to market data for sector ETFs with enhanced continuous updates
-        
-        Returns:
-            int: Channel ID for the subscription
-        """
-        # Define sector ETFs to track
-        sectors = ["XLK", "XLF", "XLV", "XLY"]
-        
-        # Reset pending updates set to include all sectors
-        self.sector_updates_pending = set(sectors)
-        
-        # Log the subscription
-        self.logger.info(f"Subscribing to market data for sectors: {', '.join(sectors)}")
-        
-        # Create a single channel for all sector ETFs
-        channel_id = self._create_channel()
-        
-        # Wait for channel to be opened
-        time.sleep(0.5)
-        
-        # Setup feed for the channel
-        self._setup_feed(channel_id)
-        
-        # Wait for feed to be configured
-        time.sleep(0.5)
-        
-        # Build subscription list for all sectors at once
-        subscriptions = []
-        for symbol in sectors:
-            # Subscribe with high priority
-            for event_type in ["Quote", "Trade", "Summary"]:
-                subscriptions.append({
-                    "type": event_type,
-                    "symbol": symbol
-                })
-                
-        # Send a single subscription request for all sectors
-        subscription_msg = {
-            "type": "FEED_SUBSCRIPTION",
-            "channel": channel_id,
-            "reset": True,
-            "add": subscriptions
-        }
-        self._send_message(subscription_msg)
-        
-        # Store channel information
-        self.channels[channel_id] = {
-            "symbols": sectors,
-            "event_types": ["Quote", "Trade", "Summary"],
-            "is_sector": True
-        }
-        
-        # Start a separate thread to periodically poll for sector data
-        self._start_sector_polling(channel_id, sectors)
-        
-        self.logger.info(f"Subscribed to all sectors simultaneously on channel {channel_id}")
-        return channel_id
-
-
-
+        """Subscribe to market data for sector ETFs"""
+        sectors = self._get_sector_etfs()
+        self.logger.info(f"Subscribing to sector ETFs: {', '.join(sectors)}")
+        return self.subscribe(sectors, is_sector=True)
+    
     def subscribe_to_mag7_stocks(self, mag7_stocks=None):
-        """
-        Subscribe to market data for Magnificent 7 stocks
-        
-        Args:
-            mag7_stocks (list): List of Mag7 stock symbols to subscribe to
-            
-        Returns:
-            int: Channel ID for the subscription
-        """
-        # Use provided list or default
+        """Subscribe to market data for Magnificent 7 stocks"""
         if mag7_stocks is None:
-            mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
-        
-        # Log the subscription
-        self.logger.info(f"Subscribing to Mag7 stocks: {', '.join(mag7_stocks)}")
-        
-        # Create channel for Mag7 stocks
-        channel_id = self._create_channel()
-        
-        # Wait for channel to be opened
-        time.sleep(0.5)
-        
-        # Setup feed for the channel
-        self._setup_feed(channel_id)
-        
-        # Wait for feed to be configured
-        time.sleep(0.5)
-        
-        # Build subscription list
-        subscriptions = []
-        for symbol in mag7_stocks:
-            for event_type in ["Quote", "Trade", "Summary"]:
-                subscriptions.append({
-                    "type": event_type,
-                    "symbol": symbol
-                })
-        
-        # Send subscription request
-        subscription_msg = {
-            "type": "FEED_SUBSCRIPTION",
-            "channel": channel_id,
-            "reset": True,
-            "add": subscriptions
-        }
-        self._send_message(subscription_msg)
-        
-        # Store channel information
-        self.channels[channel_id] = {
-            "symbols": mag7_stocks,
-            "event_types": ["Quote", "Trade", "Summary"],
-            "is_mag7": True
-        }
-        
-        self.logger.info(f"Subscribed to all Mag7 stocks on channel {channel_id}")
-        return channel_id
-
+            mag7_stocks = self._get_mag7_stocks()
 
     def _start_sector_polling(self, channel_id, sectors):
         """
@@ -510,8 +366,6 @@ class MarketDataClient:
                 
         # Start polling thread
         threading.Thread(target=poll_sectors, daemon=True).start()
-
-
 
     def _schedule_sector_updates(self, channel_id):
         """
@@ -573,160 +427,322 @@ class MarketDataClient:
         
     def subscribe(self, symbols, event_types=None, is_sector=False):
         """
-        Subscribe to market events for the given symbols
+        Subscribe to market events for the given symbols using TradeStation HTTP streaming
         
         Args:
-            symbols (list): List of streamer symbols to subscribe to
-            event_types (list): List of event types to subscribe to
-                Default: ["Quote", "Trade", "Summary"]
+            symbols (list): List of symbols to subscribe to
+            event_types (list): Not used for TradeStation - kept for compatibility
             is_sector (bool): Whether these are sector ETFs
                 
         Returns:
-            int: Channel ID for the subscription
+            str: Stream ID for the subscription
         """
         if not self.running:
-            self.logger.error("WebSocket connection not established")
+            self.logger.error("Market data client not connected")
             return None
-            
-        if not event_types:
-            event_types = ["Quote", "Trade", "Summary"]
-            
-        # Create a new channel
-        channel_id = self._create_channel()
         
-        # Wait for channel to be opened
-        time.sleep(0.5)
+        if not symbols:
+            return None
         
-        # Setup feed for the channel
-        self._setup_feed(channel_id)
+        # Generate unique stream ID
+        stream_id = f"stream_{len(self.stream_threads)}_{int(time.time())}"
         
-        # Wait for feed to be configured
-        time.sleep(0.5)
+        # Start streaming thread for these symbols
+        thread = threading.Thread(
+            target=self._stream_quotes,
+            args=(symbols, stream_id, is_sector)
+        )
+        thread.daemon = True
+        thread.start()
         
-        # Build subscription list
-        subscriptions = []
-        for symbol in symbols:
-            for event_type in event_types:
-                subscriptions.append({
-                    "type": event_type,
-                    "symbol": symbol
-                })
-                
-        # Send subscription request
-        subscription_msg = {
-            "type": "FEED_SUBSCRIPTION",
-            "channel": channel_id,
-            "reset": True,
-            "add": subscriptions
-        }
-        self._send_message(subscription_msg)
-        
-        # Store channel information
-        self.channels[channel_id] = {
+        self.stream_threads[stream_id] = thread
+        self.active_streams[stream_id] = {
             "symbols": symbols,
-            "event_types": event_types,
             "is_sector": is_sector
         }
         
-        self.logger.info(f"Subscribed to {len(symbols)} symbols on channel {channel_id}")
-        return channel_id
+        self.logger.info(f"Subscribed to {len(symbols)} symbols on stream {stream_id}")
+        return stream_id
         
-    def unsubscribe(self, channel_id):
+    def unsubscribe(self, stream_id):
         """
-        Unsubscribe from a channel
+        Unsubscribe from a stream
         
         Args:
-            channel_id (int): Channel ID to unsubscribe from
+            stream_id (str): Stream ID to unsubscribe from
         """
-        if not self.running:
-            self.logger.error("WebSocket connection not established")
-            return
-            
-        if channel_id not in self.channels:
-            self.logger.error(f"Channel {channel_id} not found")
-            return
-            
-        # Build unsubscription list
-        symbols = self.channels[channel_id]["symbols"]
-        event_types = self.channels[channel_id]["event_types"]
+        self._stop_stream(stream_id)
+
+    def _stop_stream(self, stream_id):
+        """Stop a specific stream"""
+        if stream_id in self.active_streams:
+            del self.active_streams[stream_id]
         
-        unsubscriptions = []
-        for symbol in symbols:
-            for event_type in event_types:
-                unsubscriptions.append({
-                    "type": event_type,
-                    "symbol": symbol
-                })
+        if stream_id in self.stream_threads:
+            # Thread will stop on next iteration when it checks active_streams
+            del self.stream_threads[stream_id]
+    
+    def _stream_quotes(self, symbols, stream_id, is_sector=False):
+        """
+        Stream quotes for symbols using TradeStation HTTP streaming
+        
+        Args:
+            symbols (list): Symbols to stream
+            stream_id (str): Unique stream identifier
+            is_sector (bool): Whether these are sector ETFs
+        """
+        while self.running and stream_id in self.active_streams:
+            try:
+                # Use quote snapshots endpoint for continuous updates
+                endpoint = f"/v2/stream/quote/snapshots/{','.join(symbols)}"
                 
-        # Send unsubscription request
-        unsubscription_msg = {
-            "type": "FEED_SUBSCRIPTION",
-            "channel": channel_id,
-            "remove": unsubscriptions
-        }
-        self._send_message(unsubscription_msg)
-        
-        # Remove channel from storage
-        del self.channels[channel_id]
-        self.logger.info(f"Unsubscribed from channel {channel_id}")
-        
-    def subscribe_to_candles(self, symbol, period="1d", from_time=None, channel_id=None):
+                headers = self.api.get_auth_headers()
+                headers['Accept'] = 'application/vnd.tradestation.streams+json'
+                
+                url = f"{self.api.base_url}{endpoint}"
+                
+                # Make streaming request
+                response = requests.get(url, headers=headers, stream=True, timeout=300)
+                
+                if response.status_code != 200:
+                    self.logger.error(f"Failed to stream quotes: {response.status_code}")
+                    time.sleep(5)
+                    continue
+                
+                # Process streaming response
+                for line in response.iter_lines():
+                    if not self.running or stream_id not in self.active_streams:
+                        break
+                    
+                    if line:
+                        try:
+                            line_str = line.decode('utf-8').strip()
+                            
+                            # Skip END marker
+                            if line_str == 'END':
+                                break
+                            
+                            # Skip ERROR lines
+                            if line_str.startswith('ERROR'):
+                                self.logger.error(f"Stream error: {line_str}")
+                                break
+                            
+                            # Parse JSON quote data
+                            quote_data = json.loads(line_str)
+                            
+                            # Process quote
+                            self._process_quote(quote_data, is_sector)
+                            
+                        except json.JSONDecodeError:
+                            continue
+                        except Exception as e:
+                            self.logger.error(f"Error processing quote: {e}")
+                
+            except Exception as e:
+                self.logger.error(f"Error in quote stream: {e}")
+                time.sleep(5)
+
+    def _process_quote(self, quote_data, is_sector=False):
+        """Process a quote from TradeStation"""
+        try:
+            symbol = quote_data.get("Symbol")
+            if not symbol:
+                return
+            
+            # Convert to standard format
+            quote = {
+                "symbol": symbol,
+                "bid": float(quote_data.get("Bid", 0)),
+                "ask": float(quote_data.get("Ask", 0)),
+                "bid_size": float(quote_data.get("BidSize", 0)),
+                "ask_size": float(quote_data.get("AskSize", 0)),
+                "last": float(quote_data.get("Last", 0)),
+                "volume": float(quote_data.get("Volume", 0)),
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Save to database
+            if self.save_to_db:
+                self._save_quote_to_db(quote)
+            
+            # Process for candle building
+            if self.build_candles and self.candle_builder:
+                self.candle_builder.process_quote(quote)
+            
+            # Get sector ETFs from config
+            sector_etfs = self._get_sector_etfs()
+            
+            # Handle sector updates
+            if is_sector and symbol in sector_etfs:
+                price = (quote["bid"] + quote["ask"]) / 2 if quote["bid"] > 0 and quote["ask"] > 0 else quote["last"]
+                
+                if price > 0:
+                    self.sector_prices[symbol] = price
+                    
+                    # Determine status
+                    status = self._determine_sector_status(symbol, price)
+                    
+                    # Call sector update callback
+                    if self.on_sector_update:
+                        self.on_sector_update(symbol, status, price)
+            
+            # Handle Mag7 updates
+            mag7_stocks = self._get_mag7_stocks()
+            if symbol in mag7_stocks and self.on_mag7_update:
+                price = (quote["bid"] + quote["ask"]) / 2 if quote["bid"] > 0 and quote["ask"] > 0 else quote["last"]
+                if price > 0:
+                    self.on_mag7_update(symbol, price)
+            
+            # Call quote callback
+            if self.on_quote:
+                self.on_quote(quote)
+                
+        except Exception as e:
+            self.logger.error(f"Error processing quote: {e}")
+
+    def _determine_sector_status(self, sector, price):
         """
-        Subscribe to historical candle data
+        Determine sector status based on price movements
         
         Args:
-            symbol (str): Symbol to fetch candles for (e.g. "SPY")
+            sector (str): Sector symbol
+            price (float): Current price
+            
+        Returns:
+            str: Status ("bullish", "bearish", or "neutral")
+        """
+        # Store previous prices
+        if not hasattr(self, '_prev_sector_prices'):
+            self._prev_sector_prices = {}
+        
+        prev_price = self._prev_sector_prices.get(sector, price)
+        self._prev_sector_prices[sector] = price
+        
+        if prev_price > 0:
+            pct_change = ((price - prev_price) / prev_price) * 100
+            
+            if pct_change > 0.1:  # 0.1% up
+                return "bullish"
+            elif pct_change < -0.1:  # 0.1% down
+                return "bearish"
+        
+        return "neutral"
+
+    def subscribe_to_candles(self, symbol, period="1d", from_time=None):
+        """
+        Subscribe to historical candle data using TradeStation streaming
+        
+        Args:
+            symbol (str): Symbol to fetch candles for
             period (str): Candle period (e.g. "5m", "1h", "1d")
-            from_time (int): Start time as Unix timestamp (seconds since epoch)
-            channel_id (int): Existing channel ID (creates new if None)
+            from_time (int): Start time as Unix timestamp
                 
         Returns:
-            int: Channel ID for the subscription
+            str: Stream ID for the subscription
         """
         if not self.running:
-            self.logger.error("WebSocket connection not established")
             return None
-            
-        # If no from_time provided, use 24 hours ago
-        if not from_time:
-            from_time = int(time.time()) - (24 * 60 * 60)
-            
-        # Format candle symbol
-        candle_symbol = f"{symbol}{{={period}}}"
         
-        # Use existing channel or create a new one
-        if not channel_id:
-            channel_id = self._create_channel()
-            time.sleep(0.5)
-            self._setup_feed(channel_id)
-            time.sleep(0.5)
-            
-        # Send subscription request with fromTime
-        subscription_msg = {
-            "type": "FEED_SUBSCRIPTION",
-            "channel": channel_id,
-            "reset": True,
-            "add": [{
-                "type": "Candle",
-                "symbol": candle_symbol,
-                "fromTime": from_time
-            }]
+        # Generate unique stream ID
+        stream_id = f"candle_stream_{symbol}_{period}_{int(time.time())}"
+        
+        # Start candle streaming thread
+        thread = threading.Thread(
+            target=self._stream_candles,
+            args=(symbol, period, from_time, stream_id)
+        )
+        thread.daemon = True
+        thread.start()
+        
+        self.stream_threads[stream_id] = thread
+        self.active_streams[stream_id] = {
+            "symbol": symbol,
+            "period": period,
+            "type": "candle"
         }
-        self._send_message(subscription_msg)
         
-        # Store channel information
-        if channel_id not in self.channels:
-            self.channels[channel_id] = {
-                "symbols": [candle_symbol],
-                "event_types": ["Candle"]
-            }
-        else:
-            self.channels[channel_id]["symbols"].append(candle_symbol)
-            if "Candle" not in self.channels[channel_id]["event_types"]:
-                self.channels[channel_id]["event_types"].append("Candle")
+        return stream_id
+    
+    def _stream_candles(self, symbol, period, from_time, stream_id):
+        """Stream historical candles from TradeStation"""
+        try:
+            # Convert period to TradeStation format
+            interval, unit = self._parse_period(period)
+            
+            # Calculate date range
+            if from_time:
+                start_date = datetime.fromtimestamp(from_time).strftime("%m-%d-%Y")
+            else:
+                start_date = (datetime.now() - timedelta(days=30)).strftime("%m-%d-%Y")
+            
+            endpoint = f"/v2/stream/barchart/{symbol}/{interval}/{unit}/{start_date}"
+            
+            headers = self.api.get_auth_headers()
+            headers['Accept'] = 'application/vnd.tradestation.streams+json'
+            
+            url = f"{self.api.base_url}{endpoint}"
+            
+            response = requests.get(url, headers=headers, stream=True)
+            
+            if response.status_code != 200:
+                self.logger.error(f"Failed to stream candles: {response.status_code}")
+                return
+            
+            # Process streaming response
+            for line in response.iter_lines():
+                if not self.running or stream_id not in self.active_streams:
+                    break
                 
-        self.logger.info(f"Subscribed to candles for {symbol} with period {period} on channel {channel_id}")
-        return channel_id
+                if line:
+                    try:
+                        line_str = line.decode('utf-8').strip()
+                        
+                        if line_str == 'END' or line_str.startswith('ERROR'):
+                            break
+                        
+                        # Parse candle data
+                        candle_data = json.loads(line_str)
+                        
+                        # Convert timestamp
+                        ts_str = candle_data.get('TimeStamp', '')
+                        if '/Date(' in ts_str:
+                            ms = int(ts_str.replace('/Date(', '').replace(')/', ''))
+                            timestamp = datetime.fromtimestamp(ms / 1000)
+                        else:
+                            timestamp = datetime.now()
+                        
+                        # Create standard candle format
+                        candle = {
+                            "symbol": symbol,
+                            "period": period,
+                            "timestamp": timestamp.isoformat(),
+                            "open": float(candle_data.get("Open", 0)),
+                            "high": float(candle_data.get("High", 0)),
+                            "low": float(candle_data.get("Low", 0)),
+                            "close": float(candle_data.get("Close", 0)),
+                            "volume": float(candle_data.get("TotalVolume", 0))
+                        }
+                        
+                        # Call candle callback
+                        if self.on_candle:
+                            self.on_candle(candle)
+                            
+                    except Exception as e:
+                        self.logger.error(f"Error processing candle: {e}")
+                        
+        except Exception as e:
+            self.logger.error(f"Error in candle stream: {e}")
+
+    def _parse_period(self, period):
+        """Parse period string to interval and unit"""
+        if period.endswith('m'):
+            return int(period[:-1]), "Minute"
+        elif period.endswith('h'):
+            return int(period[:-1]), "Hour"
+        elif period.endswith('d'):
+            return int(period[:-1]), "Daily"
+        else:
+            return 5, "Minute"  # Default
         
     def _send_message(self, message):
         """
@@ -893,7 +909,7 @@ class MarketDataClient:
                 
 
                 # Check if this is a Mag7 stock and we have a callback
-                mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
+                mag7_stocks = self._get_mag7_stocks()
                 if symbol in mag7_stocks and self.on_mag7_update:  # Use self.on_mag7_update instead of hasattr
                     # Calculate mid price
                     if bid_price > 0 and ask_price > 0:
@@ -1126,23 +1142,11 @@ class MarketDataClient:
         return "neutral"
         
     def get_quotes_from_db(self, symbol, start_time=None, end_time=None, limit=100):
-        """
-        Get quotes from the database
-        
-        Args:
-            symbol (str): Symbol to get quotes for
-            start_time (str): Start time in ISO format
-            end_time (str): End time in ISO format
-            limit (int): Maximum number of quotes to return
-            
-        Returns:
-            list: List of quotes from the database
-        """
+        """Get quotes from the database"""
         if not self.save_to_db or not self.db:
             return []
             
         try:
-            # Build query
             query = {"symbol": symbol}
             
             if start_time:
@@ -1155,17 +1159,13 @@ class MarketDataClient:
                     query['timestamp'] = {}
                 query['timestamp']['$lte'] = end_time if isinstance(end_time, str) else end_time.isoformat()
                 
-            # Query database
             quotes = self.db.find_many(COLLECTIONS['QUOTES'], query, limit=limit)
-            
-            # Sort by timestamp
             return sorted(quotes, key=lambda x: x['timestamp'])
+            
         except Exception as e:
             self.logger.error(f"Error getting quotes from database: {e}")
             return []
-
-
-    
+ 
     def _cleanup_old_data(self):
         """
         Clean up old data to free memory

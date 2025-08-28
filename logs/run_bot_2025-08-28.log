@@ -1,0 +1,75 @@
+2025-08-28 04:55:59,079 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 05:00:46,760 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 05:00:46,775 - PositionManager - INFO - Position collections initialized
+2025-08-28 05:00:46,790 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 05:00:46,801 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 05:01:15,369 - BacktestRun_20250828_050115 - INFO - ================================================================================
+2025-08-28 05:01:15,371 - BacktestRun_20250828_050115 - INFO - BACKTEST RUN ID: 20250828_050115
+2025-08-28 05:01:15,371 - BacktestRun_20250828_050115 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-07-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 05:01:15,372 - BacktestRun_20250828_050115 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': False, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 05:01:15,373 - BacktestRun_20250828_050115 - INFO - ================================================================================
+2025-08-28 05:01:15,659 - CandleDataClient - INFO - Fetching 58 days of 1m data from 2025-07-01 to 2025-08-28
+2025-08-28 05:01:15,755 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,765 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,777 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,796 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,807 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,838 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 05:01:15,934 - CandleDataClient - INFO - Fetching 58 days of 1m data from 2025-07-01 to 2025-08-28
+2025-08-28 05:01:15,970 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,978 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,989 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,996 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:16,010 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:16,037 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 05:02:14,324 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
+2025-08-28 05:02:14,325 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
+2025-08-28 05:02:14,325 - MarketDataClient - INFO - WebSocket closed: None
+2025-08-28 05:02:24,314 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
+2025-08-28 05:02:24,315 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 05:22:44,458 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 05:22:58,357 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 05:22:58,366 - PositionManager - INFO - Position collections initialized
+2025-08-28 05:22:58,370 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 05:22:58,372 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 05:23:03,349 - CandleBuilder - INFO - Started candle builder for periods: (1, 2, 3, 5, 15) minutes
+2025-08-28 05:23:03,349 - MarketDataClient - INFO - TradeStation market data client connected
+2025-08-28 05:23:04,534 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 05:23:04,537 - PositionManager - INFO - Position collections initialized
+2025-08-28 05:23:04,539 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 05:23:04,540 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 05:23:04,541 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 05:23:04,541 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_0_1756338784
+2025-08-28 05:23:04,542 - JigsawStrategy - INFO - Subscribed to sector ETFs for sector alignment strategy
+2025-08-28 05:23:04,543 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_1_1756338784
+2025-08-28 05:23:04,544 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_2_1756338784
+2025-08-28 05:23:04,544 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_3_1756338784
+2025-08-28 05:23:04,545 - MarketDataClient - INFO - Subscribed to 1 symbols on stream stream_4_1756338784
+2025-08-28 05:23:04,545 - JigsawStrategy - INFO - Jigsaw strategy initialized successfully with Sector Alignment confirmation
+2025-08-28 05:23:04,546 - MarketDataClient - INFO - Subscribing to sector ETFs: XLK, XLF, XLV, XLY
+2025-08-28 05:23:04,548 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_5_1756338784
+2025-08-28 05:23:04,549 - MarketDataClient - ERROR - Error in quote stream: name 'requests' is not defined
+2025-08-28 05:23:04,550 - MarketDataClient - INFO - Subscribed to 4 symbols on stream stream_5_1756338784
+2025-08-28 05:23:07,329 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:07)
+2025-08-28 05:23:07,436 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral'}
+2025-08-28 05:23:07,436 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-28 05:23:07,983 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:07)
+2025-08-28 05:23:08,637 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:08)
+2025-08-28 05:23:09,291 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:09)
+2025-08-28 05:23:09,509 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral'}
+2025-08-28 05:23:09,510 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-28 05:23:09,556 - MarketDataClient - ERROR - Error in quote stream: name 'requests' is not defined
+2025-08-28 05:23:09,618 - MarketDataClient - ERROR - Error requesting sector updates: 'MarketDataClient' object has no attribute 'channels'
+2025-08-28 05:23:09,948 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:09)
+2025-08-28 05:23:10,601 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:10)
+2025-08-28 05:23:11,255 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:11)
+2025-08-28 05:23:11,581 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral'}
+2025-08-28 05:23:11,582 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-28 05:23:11,909 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:11)
+2025-08-28 05:23:12,565 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:12)
+2025-08-28 05:23:13,216 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:13)
+2025-08-28 05:23:13,651 - JigsawStrategy - INFO - Checking sector alignment. Current statuses: {'XLK': 'neutral', 'XLF': 'neutral', 'XLV': 'neutral', 'XLY': 'neutral'}
+2025-08-28 05:23:13,652 - JigsawStrategy - INFO - XLK is neutral, no alignment possible
+2025-08-28 05:23:13,868 - JigsawStrategy - INFO - Trading not allowed: Market is closed (current ET time: 19:53:13)
+2025-08-28 05:23:14,615 - CandleBuilder - INFO - Stopped candle builder
+2025-08-28 05:23:14,616 - MarketDataClient - INFO - TradeStation market data client disconnected

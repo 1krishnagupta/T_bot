@@ -345,9 +345,8 @@ class CandleDataClient:
         
         if use_mag7:
             # Fetch Mag7 stocks for Mag7 strategy
-            mag7_stocks = ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"]
-            if config:
-                mag7_stocks = config.get("trading_config", {}).get("mag7_stocks", mag7_stocks)
+            mag7_stocks = config.get("trading_config", {}).get("mag7_stocks", 
+                ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
             
             # Add Mag7 stocks to symbols set
             all_symbols_set.update(mag7_stocks)

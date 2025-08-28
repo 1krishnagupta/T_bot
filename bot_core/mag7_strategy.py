@@ -26,6 +26,9 @@ class Mag7Strategy:
         self.mag7_stocks = self.trading_config.get("mag7_stocks", 
             ["AAPL", "MSFT", "AMZN", "NVDA", "GOOG", "TSLA", "META"])
         
+        # Get threshold from config
+        self.mag7_threshold = float(self.trading_config.get("mag7_threshold", 60))
+        
         # Track status of each Mag7 stock
         self.mag7_status = {}
         self.mag7_prices = {}

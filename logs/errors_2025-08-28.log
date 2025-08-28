@@ -1,0 +1,16 @@
+2025-08-28 04:55:59,079 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 05:01:15,755 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,765 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,777 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,796 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,807 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,838 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 05:01:15,970 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,978 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,989 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:15,996 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:16,010 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
+2025-08-28 05:01:16,037 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 05:02:14,324 - MarketDataClient - ERROR - WebSocket error: [Errno 11001] getaddrinfo failed
+2025-08-28 05:02:14,325 - websocket - ERROR - [Errno 11001] getaddrinfo failed - goodbye
+2025-08-28 05:02:24,314 - MarketDataClient - ERROR - Failed to establish TradeStation WebSocket connection within timeout
