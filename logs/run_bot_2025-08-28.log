@@ -769,3 +769,1515 @@ AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updat
 2025-08-28 06:54:29,799 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
 2025-08-28 06:54:29,802 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
 2025-08-28 06:54:29,810 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:06:16,590 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 07:06:35,560 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 07:06:35,567 - PositionManager - INFO - Position collections initialized
+2025-08-28 07:06:35,569 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 07:06:35,571 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 07:06:43,680 - BacktestRun_20250828_070643 - INFO - ================================================================================
+2025-08-28 07:06:43,681 - BacktestRun_20250828_070643 - INFO - BACKTEST RUN ID: 20250828_070643
+2025-08-28 07:06:43,681 - BacktestRun_20250828_070643 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-07-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 07:06:43,682 - BacktestRun_20250828_070643 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 07:06:43,684 - BacktestRun_20250828_070643 - INFO - ================================================================================
+2025-08-28 07:06:43,773 - CandleDataClient - INFO - Fetching 58 days of 1m data from 2025-07-01 to 2025-08-28
+2025-08-28 07:06:43,808 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 07:06:44,908 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:46,052 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:47,182 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:48,307 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:49,440 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:50,571 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:51,719 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:51,733 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:06:51,760 - CandleDataClient - INFO - Fetching 58 days of 1m data from 2025-07-01 to 2025-08-28
+2025-08-28 07:06:51,772 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 07:06:52,876 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:53,968 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:55,088 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:56,187 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:57,341 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:58,491 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:59,639 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:59,661 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:25:28,171 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 07:25:28,176 - PositionManager - INFO - Position collections initialized
+2025-08-28 07:25:28,178 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 07:25:28,180 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 07:25:39,222 - BacktestRun_20250828_072539 - INFO - ================================================================================
+2025-08-28 07:25:39,222 - BacktestRun_20250828_072539 - INFO - BACKTEST RUN ID: 20250828_072539
+2025-08-28 07:25:39,223 - BacktestRun_20250828_072539 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-06-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 07:25:39,224 - BacktestRun_20250828_072539 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 07:25:39,225 - BacktestRun_20250828_072539 - INFO - ================================================================================
+2025-08-28 07:25:39,322 - BacktestEngine - ERROR - Error in backtest for AAPL: 'int' object has no attribute 'strftime'
+2025-08-28 07:25:39,344 - BacktestEngine - ERROR - Error in backtest for NVDA: 'int' object has no attribute 'strftime'
+2025-08-28 07:27:55,829 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 07:28:09,068 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 07:28:09,072 - PositionManager - INFO - Position collections initialized
+2025-08-28 07:28:09,073 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 07:28:09,074 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 07:28:17,427 - BacktestRun_20250828_072817 - INFO - ================================================================================
+2025-08-28 07:28:17,428 - BacktestRun_20250828_072817 - INFO - BACKTEST RUN ID: 20250828_072817
+2025-08-28 07:28:17,429 - BacktestRun_20250828_072817 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-06-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 07:28:17,429 - BacktestRun_20250828_072817 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 07:28:17,430 - BacktestRun_20250828_072817 - INFO - ================================================================================
+2025-08-28 07:28:17,524 - BacktestEngine - ERROR - Error in backtest for AAPL: __init__() got an unexpected keyword argument 'api_key'
+2025-08-28 07:28:17,560 - BacktestEngine - ERROR - Error in backtest for NVDA: __init__() got an unexpected keyword argument 'api_key'
+2025-08-28 07:37:47,340 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 07:37:47,355 - PositionManager - INFO - Position collections initialized
+2025-08-28 07:37:47,359 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 07:37:47,363 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 07:37:53,367 - BacktestRun_20250828_073753 - INFO - ================================================================================
+2025-08-28 07:37:53,368 - BacktestRun_20250828_073753 - INFO - BACKTEST RUN ID: 20250828_073753
+2025-08-28 07:37:53,369 - BacktestRun_20250828_073753 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 07:37:53,370 - BacktestRun_20250828_073753 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 07:37:53,372 - BacktestRun_20250828_073753 - INFO - ================================================================================
+2025-08-28 07:37:53,601 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 07:37:53,651 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 07:37:54,908 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:56,137 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:57,366 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:58,594 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:59,926 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:01,359 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:02,565 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:02,606 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:38:02,684 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 07:38:02,743 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 07:38:04,022 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:05,252 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:06,581 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:08,221 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:09,571 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:10,984 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:12,213 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:12,265 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:45:12,881 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 07:45:12,889 - PositionManager - INFO - Position collections initialized
+2025-08-28 07:45:12,892 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 07:45:12,894 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 07:45:17,456 - BacktestRun_20250828_074517 - INFO - ================================================================================
+2025-08-28 07:45:17,457 - BacktestRun_20250828_074517 - INFO - BACKTEST RUN ID: 20250828_074517
+2025-08-28 07:45:17,457 - BacktestRun_20250828_074517 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 07:45:17,458 - BacktestRun_20250828_074517 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 07:45:17,460 - BacktestRun_20250828_074517 - INFO - ================================================================================
+2025-08-28 07:45:17,646 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 07:45:17,670 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 07:45:18,918 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:20,761 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:21,991 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:23,812 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:25,044 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:26,803 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:28,033 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:29,772 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:31,104 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:32,844 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:34,074 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:35,814 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:37,043 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:38,763 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:38,803 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:45:38,906 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 07:45:38,913 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 07:45:40,217 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:41,958 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:43,187 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:44,927 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:46,156 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:47,897 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:49,125 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:51,408 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:52,710 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:54,451 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:55,680 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:57,398 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:58,649 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:46:00,493 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:46:00,537 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:54:12,221 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 07:54:25,869 - OrderManager - INFO - Loaded 0 active orders from database
+2025-08-28 07:54:25,877 - PositionManager - INFO - Position collections initialized
+2025-08-28 07:54:25,879 - PositionManager - INFO - Loaded 0 active positions from database
+2025-08-28 07:54:25,881 - JigsawStrategy - INFO - Synced 0 active positions from position manager
+2025-08-28 07:54:31,033 - BacktestRun_20250828_075431 - INFO - ================================================================================
+2025-08-28 07:54:31,034 - BacktestRun_20250828_075431 - INFO - BACKTEST RUN ID: 20250828_075431
+2025-08-28 07:54:31,035 - BacktestRun_20250828_075431 - INFO - Parameters: {'symbols': ['AAPL', 'NVDA'], 'timeframes': '1m', 'start_date': '2025-01-01', 'end_date': '2025-08-28', 'data_source': 'TradeStation'}
+2025-08-28 07:54:31,037 - BacktestRun_20250828_075431 - INFO - Configuration: {'tickers': ['SPY', 'QQQ', 'TSLA', 'AAPL'], 'contracts_per_trade': 1, 'trailing_stop_method': 'Heiken Ashi Candle Trail (1-3 candle lookback)', 'no_trade_window_minutes': 3, 'auto_close_minutes': 15, 'cutoff_time': '15:15', 'ema_value': 15, 'failsafe_minutes': 20, 'adx_filter': True, 'adx_minimum': 20, 'news_filter': False, 'bb_width_threshold': 0.05, 'donchian_contraction_threshold': 0.6, 'volume_squeeze_threshold': 0.3, 'stop_loss_method': 'ATR Multiple', 'atr_multiple': 1.5, 'fixed_stop_percentage': 1.0, 'auto_trading_enabled': True, 'stochastic_k_period': 5, 'stochastic_d_period': 3, 'stochastic_smooth': 2, 'volume_spike_threshold': 1.5, 'liquidity_min_volume': 1000000, 'liquidity_min_oi': 500, 'liquidity_max_spread': 0.1, 'use_mag7_confirmation': True, 'sector_etfs': ['XLK', 'XLF', 'XLV', 'XLY'], 'sector_weight_threshold': 43, 'sector_weights': {'XLK': 32, 'XLF': 14, 'XLV': 11, 'XLY': 11}, 'mag7_stocks': ['AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOG', 'TSLA', 'META'], 'mag7_threshold': 60, 'mag7_price_change_threshold': 0.1, 'mag7_min_aligned': 5}
+2025-08-28 07:54:31,042 - BacktestRun_20250828_075431 - INFO - ================================================================================
+2025-08-28 07:54:31,268 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 07:54:31,297 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 08:02:09,720 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 08:02:09,724 - CandleDataClient - INFO - TradeStation connection successful
+2025-08-28 08:02:09,729 - CandleDataClient - INFO - Loading cached data for NVDA
+2025-08-28 08:02:23,930 - CandleDataClient - INFO - Loading cached data for AAPL
+2025-08-28 08:02:39,939 - CandleDataClient - INFO - Loading cached data for GOOG
+2025-08-28 08:02:53,946 - CandleDataClient - INFO - Loading cached data for AMZN
+2025-08-28 08:03:06,499 - CandleDataClient - INFO - Loading cached data for TSLA
+2025-08-28 08:03:23,559 - CandleDataClient - INFO - Loading cached data for META
+2025-08-28 08:03:41,411 - CandleDataClient - INFO - Loading cached data for MSFT
+2025-08-28 08:03:58,528 - BacktestEngine - INFO - Mag7 alignment at candle 100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:03:59,292 - BacktestEngine - INFO - Mag7 alignment at candle 200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:00,157 - BacktestEngine - INFO - Mag7 alignment at candle 300: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:04:01,267 - BacktestEngine - INFO - Mag7 alignment at candle 400: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:04:02,096 - BacktestEngine - INFO - Mag7 alignment at candle 500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:02,820 - BacktestEngine - INFO - Mag7 alignment at candle 600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:03,517 - BacktestEngine - INFO - Mag7 alignment at candle 700: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:04,278 - BacktestEngine - INFO - Mag7 alignment at candle 800: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:04:05,059 - BacktestEngine - INFO - Mag7 alignment at candle 900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:05,803 - BacktestEngine - INFO - Mag7 alignment at candle 1000: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:06,566 - BacktestEngine - INFO - Mag7 alignment at candle 1100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:07,472 - BacktestEngine - INFO - Mag7 alignment at candle 1200: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:04:08,974 - BacktestEngine - INFO - Mag7 alignment at candle 1300: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:04:09,766 - BacktestEngine - INFO - Mag7 alignment at candle 1400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:09,845 - BacktestEngine - INFO - TRADE ENTERED at candle 1410: BEARISH @ $242.95
+2025-08-28 08:04:09,847 - BacktestEngine - INFO - Option entry: Stock=$242.95, Strike=$240.52, Option=$2.69, Delta=0.60
+2025-08-28 08:04:09,855 - BacktestEngine - INFO - Option entry: Stock=$242.95, Strike=$240.52, Option=$2.69, Delta=0.60
+2025-08-28 08:04:09,864 - BacktestEngine - INFO - Option entry: Stock=$242.95, Strike=$240.52, Option=$2.69, Delta=0.60
+2025-08-28 08:04:09,873 - BacktestEngine - INFO - Option entry: Stock=$242.95, Strike=$240.52, Option=$2.69, Delta=0.60
+2025-08-28 08:04:09,884 - BacktestEngine - INFO - Option entry: Stock=$242.95, Strike=$240.52, Option=$2.69, Delta=0.60
+2025-08-28 08:04:10,539 - BacktestEngine - INFO - Mag7 alignment at candle 1500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:11,417 - BacktestEngine - INFO - Mag7 alignment at candle 1600: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:04:12,246 - BacktestEngine - INFO - Mag7 alignment at candle 1700: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:04:12,942 - BacktestEngine - INFO - Mag7 alignment at candle 1800: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:04:13,926 - BacktestEngine - INFO - Mag7 alignment at candle 1900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:15,053 - BacktestEngine - INFO - TRADE ENTERED at candle 1980: BEARISH @ $237.12
+2025-08-28 08:04:15,055 - BacktestEngine - INFO - Option entry: Stock=$237.12, Strike=$234.75, Option=$2.63, Delta=0.60
+2025-08-28 08:04:15,076 - BacktestEngine - INFO - Option entry: Stock=$237.12, Strike=$234.75, Option=$2.63, Delta=0.60
+2025-08-28 08:04:15,099 - BacktestEngine - INFO - Option entry: Stock=$237.12, Strike=$234.75, Option=$2.63, Delta=0.60
+2025-08-28 08:04:15,124 - BacktestEngine - INFO - Option entry: Stock=$237.12, Strike=$234.75, Option=$2.63, Delta=0.60
+2025-08-28 08:04:15,148 - BacktestEngine - INFO - Option entry: Stock=$237.12, Strike=$234.75, Option=$2.63, Delta=0.60
+2025-08-28 08:04:15,288 - BacktestEngine - INFO - TRADE ENTERED at candle 1986: BEARISH @ $236.25
+2025-08-28 08:04:15,289 - BacktestEngine - INFO - Option entry: Stock=$236.25, Strike=$233.89, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,335 - BacktestEngine - INFO - Option entry: Stock=$236.25, Strike=$233.89, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,372 - BacktestEngine - INFO - Option entry: Stock=$236.25, Strike=$233.89, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,398 - BacktestEngine - INFO - Option entry: Stock=$236.25, Strike=$233.89, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,421 - BacktestEngine - INFO - Option entry: Stock=$236.25, Strike=$233.89, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,577 - BacktestEngine - INFO - Mag7 alignment at candle 2000: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:15,882 - BacktestEngine - INFO - TRADE ENTERED at candle 2030: BEARISH @ $236.68
+2025-08-28 08:04:15,883 - BacktestEngine - INFO - Option entry: Stock=$236.68, Strike=$234.31, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,887 - BacktestEngine - INFO - Option entry: Stock=$236.68, Strike=$234.31, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,891 - BacktestEngine - INFO - Option entry: Stock=$236.68, Strike=$234.31, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,895 - BacktestEngine - INFO - Option entry: Stock=$236.68, Strike=$234.31, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,899 - BacktestEngine - INFO - Option entry: Stock=$236.68, Strike=$234.31, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,914 - BacktestEngine - INFO - TRADE ENTERED at candle 2031: BEARISH @ $236.48
+2025-08-28 08:04:15,915 - BacktestEngine - INFO - Option entry: Stock=$236.48, Strike=$234.12, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,927 - BacktestEngine - INFO - Option entry: Stock=$236.48, Strike=$234.12, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,938 - BacktestEngine - INFO - Option entry: Stock=$236.48, Strike=$234.12, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,951 - BacktestEngine - INFO - Option entry: Stock=$236.48, Strike=$234.12, Option=$2.62, Delta=0.60
+2025-08-28 08:04:15,963 - BacktestEngine - INFO - Option entry: Stock=$236.48, Strike=$234.12, Option=$2.62, Delta=0.60
+2025-08-28 08:04:16,522 - BacktestEngine - INFO - Mag7 alignment at candle 2100: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:04:17,384 - BacktestEngine - INFO - Mag7 alignment at candle 2200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:18,098 - BacktestEngine - INFO - Mag7 alignment at candle 2300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:18,880 - BacktestEngine - INFO - Mag7 alignment at candle 2400: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:04:19,653 - BacktestEngine - INFO - Mag7 alignment at candle 2500: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:04:20,564 - BacktestEngine - INFO - Mag7 alignment at candle 2600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:21,737 - BacktestEngine - INFO - Mag7 alignment at candle 2700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:22,737 - BacktestEngine - INFO - TRADE ENTERED at candle 2794: BEARISH @ $235.55
+2025-08-28 08:04:22,739 - BacktestEngine - INFO - Option entry: Stock=$235.55, Strike=$233.19, Option=$2.61, Delta=0.60
+2025-08-28 08:04:22,745 - BacktestEngine - INFO - Option entry: Stock=$235.55, Strike=$233.19, Option=$2.61, Delta=0.60
+2025-08-28 08:04:22,751 - BacktestEngine - INFO - Option entry: Stock=$235.55, Strike=$233.19, Option=$2.61, Delta=0.60
+2025-08-28 08:04:22,756 - BacktestEngine - INFO - Option entry: Stock=$235.55, Strike=$233.19, Option=$2.61, Delta=0.60
+2025-08-28 08:04:22,763 - BacktestEngine - INFO - Option entry: Stock=$235.55, Strike=$233.19, Option=$2.61, Delta=0.60
+2025-08-28 08:04:22,821 - BacktestEngine - INFO - Mag7 alignment at candle 2800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:23,743 - BacktestEngine - INFO - Mag7 alignment at candle 2900: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:04:24,536 - BacktestEngine - INFO - Mag7 alignment at candle 3000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:25,287 - BacktestEngine - INFO - Mag7 alignment at candle 3100: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:04:26,101 - BacktestEngine - INFO - Mag7 alignment at candle 3200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:27,000 - BacktestEngine - INFO - Mag7 alignment at candle 3300: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:28,080 - BacktestEngine - INFO - Mag7 alignment at candle 3400: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:28,916 - BacktestEngine - INFO - Mag7 alignment at candle 3500: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:04:29,671 - BacktestEngine - INFO - Mag7 alignment at candle 3600: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:04:29,818 - BacktestEngine - INFO - TRADE ENTERED at candle 3617: BEARISH @ $231.69
+2025-08-28 08:04:29,819 - BacktestEngine - INFO - Option entry: Stock=$231.69, Strike=$229.37, Option=$2.57, Delta=0.60
+2025-08-28 08:04:29,827 - BacktestEngine - INFO - Option entry: Stock=$231.69, Strike=$229.37, Option=$2.57, Delta=0.60
+2025-08-28 08:04:29,836 - BacktestEngine - INFO - Option entry: Stock=$231.69, Strike=$229.37, Option=$2.57, Delta=0.60
+2025-08-28 08:04:29,845 - BacktestEngine - INFO - Option entry: Stock=$231.69, Strike=$229.37, Option=$2.57, Delta=0.60
+2025-08-28 08:04:29,856 - BacktestEngine - INFO - Option entry: Stock=$231.69, Strike=$229.37, Option=$2.57, Delta=0.60
+2025-08-28 08:04:30,481 - BacktestEngine - INFO - Mag7 alignment at candle 3700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:31,294 - BacktestEngine - INFO - Mag7 alignment at candle 3800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:32,010 - BacktestEngine - INFO - Mag7 alignment at candle 3900: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:04:32,838 - BacktestEngine - INFO - Mag7 alignment at candle 4000: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:04:33,781 - BacktestEngine - INFO - Mag7 alignment at candle 4100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:34,845 - BacktestEngine - INFO - Mag7 alignment at candle 4200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:35,838 - BacktestEngine - INFO - Mag7 alignment at candle 4300: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:04:35,940 - BacktestEngine - INFO - TRADE ENTERED at candle 4314: BEARISH @ $221.32
+2025-08-28 08:04:35,941 - BacktestEngine - INFO - Option entry: Stock=$221.32, Strike=$219.11, Option=$2.45, Delta=0.60
+2025-08-28 08:04:35,945 - BacktestEngine - INFO - Option entry: Stock=$221.32, Strike=$219.11, Option=$2.45, Delta=0.60
+2025-08-28 08:04:35,951 - BacktestEngine - INFO - Option entry: Stock=$221.32, Strike=$219.11, Option=$2.45, Delta=0.60
+2025-08-28 08:04:35,957 - BacktestEngine - INFO - Option entry: Stock=$221.32, Strike=$219.11, Option=$2.45, Delta=0.60
+2025-08-28 08:04:35,963 - BacktestEngine - INFO - Option entry: Stock=$221.32, Strike=$219.11, Option=$2.45, Delta=0.60
+2025-08-28 08:04:36,075 - BacktestEngine - INFO - TRADE ENTERED at candle 4331: BEARISH @ $221.27
+2025-08-28 08:04:36,076 - BacktestEngine - INFO - Option entry: Stock=$221.27, Strike=$219.06, Option=$2.45, Delta=0.60
+2025-08-28 08:04:36,081 - BacktestEngine - INFO - Option entry: Stock=$221.27, Strike=$219.06, Option=$2.45, Delta=0.60
+2025-08-28 08:04:36,091 - BacktestEngine - INFO - Option entry: Stock=$221.27, Strike=$219.06, Option=$2.45, Delta=0.60
+2025-08-28 08:04:36,101 - BacktestEngine - INFO - Option entry: Stock=$221.27, Strike=$219.06, Option=$2.45, Delta=0.60
+2025-08-28 08:04:36,110 - BacktestEngine - INFO - Option entry: Stock=$221.27, Strike=$219.06, Option=$2.45, Delta=0.60
+2025-08-28 08:04:36,647 - BacktestEngine - INFO - Mag7 alignment at candle 4400: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:37,371 - BacktestEngine - INFO - Mag7 alignment at candle 4500: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:04:38,113 - BacktestEngine - INFO - Mag7 alignment at candle 4600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:38,955 - BacktestEngine - INFO - Mag7 alignment at candle 4700: 4 bullish (57.1%), 1 bearish (14.3%)
+2025-08-28 08:04:39,657 - BacktestEngine - INFO - Mag7 alignment at candle 4800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:40,541 - BacktestEngine - INFO - Mag7 alignment at candle 4900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:41,417 - BacktestEngine - INFO - Mag7 alignment at candle 5000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:42,185 - BacktestEngine - INFO - Mag7 alignment at candle 5100: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:04:42,923 - BacktestEngine - INFO - Mag7 alignment at candle 5200: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:04:43,739 - BacktestEngine - INFO - Mag7 alignment at candle 5300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:44,377 - BacktestEngine - INFO - Mag7 alignment at candle 5400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:44,938 - BacktestEngine - INFO - Mag7 alignment at candle 5500: 1 bullish (14.3%), 3 bearish (42.9%)
+2025-08-28 08:04:45,634 - BacktestEngine - INFO - Mag7 alignment at candle 5600: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:46,132 - BacktestEngine - INFO - Mag7 alignment at candle 5700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:46,549 - BacktestEngine - INFO - Mag7 alignment at candle 5800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:47,363 - BacktestEngine - INFO - Mag7 alignment at candle 5900: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:04:47,890 - BacktestEngine - INFO - Mag7 alignment at candle 6000: 4 bullish (57.1%), 1 bearish (14.3%)
+2025-08-28 08:04:48,919 - BacktestEngine - INFO - Mag7 alignment at candle 6100: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:04:49,656 - BacktestEngine - INFO - Mag7 alignment at candle 6200: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:04:50,256 - BacktestEngine - INFO - TRADE ENTERED at candle 6271: BULLISH @ $235.02
+2025-08-28 08:04:50,258 - BacktestEngine - INFO - Option entry: Stock=$235.02, Strike=$237.37, Option=$2.60, Delta=0.60
+2025-08-28 08:04:50,263 - BacktestEngine - INFO - Option entry: Stock=$235.02, Strike=$237.37, Option=$2.60, Delta=0.60
+2025-08-28 08:04:50,270 - BacktestEngine - INFO - Option entry: Stock=$235.02, Strike=$237.37, Option=$2.60, Delta=0.60
+2025-08-28 08:04:50,276 - BacktestEngine - INFO - Option entry: Stock=$235.02, Strike=$237.37, Option=$2.60, Delta=0.60
+2025-08-28 08:04:50,284 - BacktestEngine - INFO - Option entry: Stock=$235.02, Strike=$237.37, Option=$2.60, Delta=0.60
+2025-08-28 08:04:50,327 - BacktestEngine - INFO - TRADE ENTERED at candle 6274: BULLISH @ $235.78
+2025-08-28 08:04:50,328 - BacktestEngine - INFO - Option entry: Stock=$235.78, Strike=$238.14, Option=$2.61, Delta=0.60
+2025-08-28 08:04:50,346 - BacktestEngine - INFO - Option entry: Stock=$235.78, Strike=$238.14, Option=$2.61, Delta=0.60
+2025-08-28 08:04:50,370 - BacktestEngine - INFO - Option entry: Stock=$235.78, Strike=$238.14, Option=$2.61, Delta=0.60
+2025-08-28 08:04:50,388 - BacktestEngine - INFO - Option entry: Stock=$235.78, Strike=$238.14, Option=$2.61, Delta=0.60
+2025-08-28 08:04:50,408 - BacktestEngine - INFO - Option entry: Stock=$235.78, Strike=$238.14, Option=$2.61, Delta=0.60
+2025-08-28 08:04:50,649 - BacktestEngine - INFO - Mag7 alignment at candle 6300: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:04:51,522 - BacktestEngine - INFO - Mag7 alignment at candle 6400: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:04:52,345 - BacktestEngine - INFO - Mag7 alignment at candle 6500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:53,164 - BacktestEngine - INFO - Mag7 alignment at candle 6600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:04:53,697 - BacktestEngine - INFO - TRADE ENTERED at candle 6653: BULLISH @ $235.95
+2025-08-28 08:04:53,703 - BacktestEngine - INFO - Option entry: Stock=$235.95, Strike=$238.31, Option=$2.61, Delta=0.60
+2025-08-28 08:04:53,766 - BacktestEngine - INFO - Option entry: Stock=$235.95, Strike=$238.31, Option=$2.61, Delta=0.60
+2025-08-28 08:04:53,824 - BacktestEngine - INFO - Option entry: Stock=$235.95, Strike=$238.31, Option=$2.61, Delta=0.60
+2025-08-28 08:04:53,891 - BacktestEngine - INFO - Option entry: Stock=$235.95, Strike=$238.31, Option=$2.61, Delta=0.60
+2025-08-28 08:04:53,945 - BacktestEngine - INFO - Option entry: Stock=$235.95, Strike=$238.31, Option=$2.61, Delta=0.60
+2025-08-28 08:04:54,614 - BacktestEngine - INFO - Mag7 alignment at candle 6700: 1 bullish (14.3%), 4 bearish (57.1%)
+2025-08-28 08:04:55,345 - BacktestEngine - INFO - TRADE ENTERED at candle 6764: BULLISH @ $237.07
+2025-08-28 08:04:55,348 - BacktestEngine - INFO - Option entry: Stock=$237.07, Strike=$239.44, Option=$2.63, Delta=0.60
+2025-08-28 08:04:55,388 - BacktestEngine - INFO - Option entry: Stock=$237.07, Strike=$239.44, Option=$2.63, Delta=0.60
+2025-08-28 08:04:55,424 - BacktestEngine - INFO - Option entry: Stock=$237.07, Strike=$239.44, Option=$2.63, Delta=0.60
+2025-08-28 08:04:55,463 - BacktestEngine - INFO - Option entry: Stock=$237.07, Strike=$239.44, Option=$2.63, Delta=0.60
+2025-08-28 08:04:55,485 - BacktestEngine - INFO - Option entry: Stock=$237.07, Strike=$239.44, Option=$2.63, Delta=0.60
+2025-08-28 08:04:55,852 - BacktestEngine - INFO - Mag7 alignment at candle 6800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:04:56,663 - BacktestEngine - INFO - Mag7 alignment at candle 6900: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:04:57,464 - BacktestEngine - INFO - Mag7 alignment at candle 7000: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:04:57,960 - BacktestEngine - INFO - TRADE ENTERED at candle 7085: BULLISH @ $238.81
+2025-08-28 08:04:57,962 - BacktestEngine - INFO - Option entry: Stock=$238.81, Strike=$241.20, Option=$2.65, Delta=0.60
+2025-08-28 08:04:58,004 - BacktestEngine - INFO - Option entry: Stock=$238.81, Strike=$241.20, Option=$2.65, Delta=0.60
+2025-08-28 08:04:58,045 - BacktestEngine - INFO - Option entry: Stock=$238.81, Strike=$241.20, Option=$2.65, Delta=0.60
+2025-08-28 08:04:58,087 - BacktestEngine - INFO - Option entry: Stock=$238.81, Strike=$241.20, Option=$2.65, Delta=0.60
+2025-08-28 08:04:58,118 - BacktestEngine - INFO - Option entry: Stock=$238.81, Strike=$241.20, Option=$2.65, Delta=0.60
+2025-08-28 08:04:58,288 - BacktestEngine - INFO - Mag7 alignment at candle 7100: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:04:58,953 - BacktestEngine - INFO - Mag7 alignment at candle 7200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:04:59,674 - BacktestEngine - INFO - Mag7 alignment at candle 7300: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:00,503 - BacktestEngine - INFO - Mag7 alignment at candle 7400: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:01,040 - BacktestEngine - INFO - TRADE ENTERED at candle 7441: BULLISH @ $242.68
+2025-08-28 08:05:01,043 - BacktestEngine - INFO - Option entry: Stock=$242.68, Strike=$245.11, Option=$2.69, Delta=0.60
+2025-08-28 08:05:01,065 - BacktestEngine - INFO - Option entry: Stock=$242.68, Strike=$245.11, Option=$2.69, Delta=0.60
+2025-08-28 08:05:01,072 - BacktestEngine - INFO - Option entry: Stock=$242.68, Strike=$245.11, Option=$2.69, Delta=0.60
+2025-08-28 08:05:01,083 - BacktestEngine - INFO - Option entry: Stock=$242.68, Strike=$245.11, Option=$2.69, Delta=0.60
+2025-08-28 08:05:01,093 - BacktestEngine - INFO - Option entry: Stock=$242.68, Strike=$245.11, Option=$2.69, Delta=0.60
+2025-08-28 08:05:01,539 - BacktestEngine - INFO - Mag7 alignment at candle 7500: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:02,276 - BacktestEngine - INFO - Mag7 alignment at candle 7600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:03,011 - BacktestEngine - INFO - Mag7 alignment at candle 7700: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:05:03,615 - BacktestEngine - INFO - Mag7 alignment at candle 7800: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:05:04,109 - BacktestEngine - INFO - Mag7 alignment at candle 7900: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:05:04,681 - BacktestEngine - INFO - Mag7 alignment at candle 8000: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:05:05,465 - BacktestEngine - INFO - Mag7 alignment at candle 8100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:06,007 - BacktestEngine - INFO - Mag7 alignment at candle 8200: 2 bullish (28.6%), 4 bearish (57.1%)
+2025-08-28 08:05:06,692 - BacktestEngine - INFO - Mag7 alignment at candle 8300: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:07,586 - BacktestEngine - INFO - Mag7 alignment at candle 8400: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:05:08,353 - BacktestEngine - INFO - Mag7 alignment at candle 8500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:09,094 - BacktestEngine - INFO - Mag7 alignment at candle 8600: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:05:09,248 - BacktestEngine - INFO - TRADE ENTERED at candle 8613: BEARISH @ $229.47
+2025-08-28 08:05:09,250 - BacktestEngine - INFO - Option entry: Stock=$229.47, Strike=$227.18, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,275 - BacktestEngine - INFO - Option entry: Stock=$229.47, Strike=$227.18, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,301 - BacktestEngine - INFO - Option entry: Stock=$229.47, Strike=$227.18, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,333 - BacktestEngine - INFO - Option entry: Stock=$229.47, Strike=$227.18, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,363 - BacktestEngine - INFO - Option entry: Stock=$229.47, Strike=$227.18, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,436 - BacktestEngine - INFO - TRADE ENTERED at candle 8616: BEARISH @ $229.23
+2025-08-28 08:05:09,437 - BacktestEngine - INFO - Option entry: Stock=$229.23, Strike=$226.94, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,452 - BacktestEngine - INFO - Option entry: Stock=$229.23, Strike=$226.94, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,469 - BacktestEngine - INFO - Option entry: Stock=$229.23, Strike=$226.94, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,487 - BacktestEngine - INFO - Option entry: Stock=$229.23, Strike=$226.94, Option=$2.54, Delta=0.60
+2025-08-28 08:05:09,504 - BacktestEngine - INFO - Option entry: Stock=$229.23, Strike=$226.94, Option=$2.54, Delta=0.60
+2025-08-28 08:05:10,204 - BacktestEngine - INFO - Mag7 alignment at candle 8700: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:05:10,797 - BacktestEngine - INFO - Mag7 alignment at candle 8800: 0 bullish (0.0%), 5 bearish (71.4%)
+2025-08-28 08:05:11,713 - BacktestEngine - INFO - Mag7 alignment at candle 8900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:12,581 - BacktestEngine - INFO - Mag7 alignment at candle 9000: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:05:13,290 - BacktestEngine - INFO - Mag7 alignment at candle 9100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:13,922 - BacktestEngine - INFO - Mag7 alignment at candle 9200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:15,033 - BacktestEngine - INFO - Mag7 alignment at candle 9300: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:15,820 - BacktestEngine - INFO - Mag7 alignment at candle 9400: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:05:16,642 - BacktestEngine - INFO - Mag7 alignment at candle 9500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:17,571 - BacktestEngine - INFO - Mag7 alignment at candle 9600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:18,386 - BacktestEngine - INFO - Mag7 alignment at candle 9700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:19,182 - BacktestEngine - INFO - Mag7 alignment at candle 9800: 4 bullish (57.1%), 1 bearish (14.3%)
+2025-08-28 08:05:19,914 - BacktestEngine - INFO - Mag7 alignment at candle 9900: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:20,778 - BacktestEngine - INFO - Mag7 alignment at candle 10000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:05:22,081 - BacktestEngine - INFO - Mag7 alignment at candle 10100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:23,006 - BacktestEngine - INFO - Mag7 alignment at candle 10200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:24,254 - BacktestEngine - INFO - Mag7 alignment at candle 10300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:25,099 - BacktestEngine - INFO - Mag7 alignment at candle 10400: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:05:25,769 - BacktestEngine - INFO - Mag7 alignment at candle 10500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:26,472 - BacktestEngine - INFO - Mag7 alignment at candle 10600: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:05:27,356 - BacktestEngine - INFO - Mag7 alignment at candle 10700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:27,974 - BacktestEngine - INFO - Mag7 alignment at candle 10800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:28,808 - BacktestEngine - INFO - Mag7 alignment at candle 10900: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:29,506 - BacktestEngine - INFO - Mag7 alignment at candle 11000: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:05:30,044 - BacktestEngine - INFO - Mag7 alignment at candle 11100: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:05:30,809 - BacktestEngine - INFO - Mag7 alignment at candle 11200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:31,566 - BacktestEngine - INFO - Mag7 alignment at candle 11300: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:32,402 - BacktestEngine - INFO - Mag7 alignment at candle 11400: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:05:33,188 - BacktestEngine - INFO - Mag7 alignment at candle 11500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:34,062 - BacktestEngine - INFO - Mag7 alignment at candle 11600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:34,831 - BacktestEngine - INFO - Mag7 alignment at candle 11700: 2 bullish (28.6%), 3 bearish (42.9%)
+2025-08-28 08:05:35,660 - BacktestEngine - INFO - Mag7 alignment at candle 11800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:36,230 - BacktestEngine - INFO - Mag7 alignment at candle 11900: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:36,997 - BacktestEngine - INFO - Mag7 alignment at candle 12000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:37,818 - BacktestEngine - INFO - Mag7 alignment at candle 12100: 3 bullish (42.9%), 2 bearish (28.6%)
+2025-08-28 08:05:38,620 - BacktestEngine - INFO - Mag7 alignment at candle 12200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:39,356 - BacktestEngine - INFO - Mag7 alignment at candle 12300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:40,113 - BacktestEngine - INFO - Mag7 alignment at candle 12400: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:05:40,684 - BacktestEngine - INFO - Mag7 alignment at candle 12500: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:05:40,973 - BacktestEngine - INFO - TRADE ENTERED at candle 12528: BULLISH @ $245.12
+2025-08-28 08:05:40,973 - BacktestEngine - INFO - Option entry: Stock=$245.12, Strike=$247.57, Option=$2.72, Delta=0.60
+2025-08-28 08:05:40,985 - BacktestEngine - INFO - Option entry: Stock=$245.12, Strike=$247.57, Option=$2.72, Delta=0.60
+2025-08-28 08:05:40,990 - BacktestEngine - INFO - Option entry: Stock=$245.12, Strike=$247.57, Option=$2.72, Delta=0.60
+2025-08-28 08:05:40,998 - BacktestEngine - INFO - Option entry: Stock=$245.12, Strike=$247.57, Option=$2.72, Delta=0.60
+2025-08-28 08:05:40,998 - BacktestEngine - INFO - Option entry: Stock=$245.12, Strike=$247.57, Option=$2.72, Delta=0.60
+2025-08-28 08:05:41,662 - BacktestEngine - INFO - Mag7 alignment at candle 12600: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:05:42,492 - BacktestEngine - INFO - Mag7 alignment at candle 12700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:43,239 - BacktestEngine - INFO - Mag7 alignment at candle 12800: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:05:43,967 - BacktestEngine - INFO - Mag7 alignment at candle 12900: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:05:44,056 - BacktestEngine - INFO - TRADE ENTERED at candle 12911: BULLISH @ $245.89
+2025-08-28 08:05:44,056 - BacktestEngine - INFO - Option entry: Stock=$245.89, Strike=$248.35, Option=$2.72, Delta=0.60
+2025-08-28 08:05:44,107 - BacktestEngine - INFO - Option entry: Stock=$245.89, Strike=$248.35, Option=$2.72, Delta=0.60
+2025-08-28 08:05:44,161 - BacktestEngine - INFO - Option entry: Stock=$245.89, Strike=$248.35, Option=$2.72, Delta=0.60
+2025-08-28 08:05:44,213 - BacktestEngine - INFO - Option entry: Stock=$245.89, Strike=$248.35, Option=$2.72, Delta=0.60
+2025-08-28 08:05:44,252 - BacktestEngine - INFO - Option entry: Stock=$245.89, Strike=$248.35, Option=$2.72, Delta=0.60
+2025-08-28 08:05:44,944 - BacktestEngine - INFO - Mag7 alignment at candle 13000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:45,494 - BacktestEngine - INFO - Mag7 alignment at candle 13100: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:46,177 - BacktestEngine - INFO - Mag7 alignment at candle 13200: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:05:46,993 - BacktestEngine - INFO - Mag7 alignment at candle 13300: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:05:47,767 - BacktestEngine - INFO - Mag7 alignment at candle 13400: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:05:48,321 - BacktestEngine - INFO - Mag7 alignment at candle 13500: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:05:48,719 - BacktestEngine - INFO - Mag7 alignment at candle 13600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:49,537 - BacktestEngine - INFO - Mag7 alignment at candle 13700: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:05:50,509 - BacktestEngine - INFO - Mag7 alignment at candle 13800: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:05:50,719 - BacktestEngine - INFO - TRADE ENTERED at candle 13829: BULLISH @ $249.58
+2025-08-28 08:05:50,719 - BacktestEngine - INFO - Option entry: Stock=$249.58, Strike=$252.08, Option=$2.77, Delta=0.60
+2025-08-28 08:05:50,723 - BacktestEngine - INFO - Option entry: Stock=$249.58, Strike=$252.08, Option=$2.77, Delta=0.60
+2025-08-28 08:05:50,727 - BacktestEngine - INFO - Option entry: Stock=$249.58, Strike=$252.08, Option=$2.77, Delta=0.60
+2025-08-28 08:05:50,733 - BacktestEngine - INFO - Option entry: Stock=$249.58, Strike=$252.08, Option=$2.77, Delta=0.60
+2025-08-28 08:05:50,742 - BacktestEngine - INFO - Option entry: Stock=$249.58, Strike=$252.08, Option=$2.77, Delta=0.60
+2025-08-28 08:05:51,416 - BacktestEngine - INFO - Mag7 alignment at candle 13900: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:05:52,157 - BacktestEngine - INFO - Mag7 alignment at candle 14000: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:05:52,812 - BacktestEngine - INFO - Mag7 alignment at candle 14100: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:05:53,712 - BacktestEngine - INFO - Mag7 alignment at candle 14200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:05:54,627 - BacktestEngine - INFO - Mag7 alignment at candle 14300: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:05:55,732 - BacktestEngine - INFO - Mag7 alignment at candle 14400: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:05:56,794 - BacktestEngine - INFO - TRADE ENTERED at candle 14499: BULLISH @ $241.64
+2025-08-28 08:05:56,794 - BacktestEngine - INFO - Option entry: Stock=$241.64, Strike=$244.06, Option=$2.68, Delta=0.60
+2025-08-28 08:05:56,807 - BacktestEngine - INFO - Option entry: Stock=$241.64, Strike=$244.06, Option=$2.68, Delta=0.60
+2025-08-28 08:05:56,819 - BacktestEngine - INFO - Option entry: Stock=$241.64, Strike=$244.06, Option=$2.68, Delta=0.60
+2025-08-28 08:05:56,833 - BacktestEngine - INFO - Option entry: Stock=$241.64, Strike=$244.06, Option=$2.68, Delta=0.60
+2025-08-28 08:05:56,844 - BacktestEngine - INFO - Option entry: Stock=$241.64, Strike=$244.06, Option=$2.68, Delta=0.60
+2025-08-28 08:05:56,860 - BacktestEngine - INFO - Mag7 alignment at candle 14500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:05:57,714 - BacktestEngine - INFO - Mag7 alignment at candle 14600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:05:58,602 - BacktestEngine - INFO - Mag7 alignment at candle 14700: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:05:59,634 - BacktestEngine - INFO - Mag7 alignment at candle 14800: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:06:00,146 - BacktestEngine - INFO - TRADE ENTERED at candle 14850: BULLISH @ $237.29
+2025-08-28 08:06:00,151 - BacktestEngine - INFO - Option entry: Stock=$237.29, Strike=$239.66, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,155 - BacktestEngine - INFO - Option entry: Stock=$237.29, Strike=$239.66, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,160 - BacktestEngine - INFO - Option entry: Stock=$237.29, Strike=$239.66, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,164 - BacktestEngine - INFO - Option entry: Stock=$237.29, Strike=$239.66, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,171 - BacktestEngine - INFO - Option entry: Stock=$237.29, Strike=$239.66, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,194 - BacktestEngine - INFO - TRADE ENTERED at candle 14851: BULLISH @ $237.06
+2025-08-28 08:06:00,201 - BacktestEngine - INFO - Option entry: Stock=$237.06, Strike=$239.43, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,207 - BacktestEngine - INFO - Option entry: Stock=$237.06, Strike=$239.43, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,212 - BacktestEngine - INFO - Option entry: Stock=$237.06, Strike=$239.43, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,213 - BacktestEngine - INFO - Option entry: Stock=$237.06, Strike=$239.43, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,222 - BacktestEngine - INFO - Option entry: Stock=$237.06, Strike=$239.43, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,346 - BacktestEngine - INFO - TRADE ENTERED at candle 14860: BULLISH @ $237.26
+2025-08-28 08:06:00,346 - BacktestEngine - INFO - Option entry: Stock=$237.26, Strike=$239.63, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,355 - BacktestEngine - INFO - Option entry: Stock=$237.26, Strike=$239.63, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,363 - BacktestEngine - INFO - Option entry: Stock=$237.26, Strike=$239.63, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,372 - BacktestEngine - INFO - Option entry: Stock=$237.26, Strike=$239.63, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,379 - BacktestEngine - INFO - Option entry: Stock=$237.26, Strike=$239.63, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,786 - BacktestEngine - INFO - Mag7 alignment at candle 14900: 2 bullish (28.6%), 2 bearish (28.6%)
+2025-08-28 08:06:00,802 - BacktestEngine - INFO - TRADE ENTERED at candle 14901: BULLISH @ $237.55
+2025-08-28 08:06:00,802 - BacktestEngine - INFO - Option entry: Stock=$237.55, Strike=$239.93, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,841 - BacktestEngine - INFO - Option entry: Stock=$237.55, Strike=$239.93, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,875 - BacktestEngine - INFO - Option entry: Stock=$237.55, Strike=$239.93, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,908 - BacktestEngine - INFO - Option entry: Stock=$237.55, Strike=$239.93, Option=$2.63, Delta=0.60
+2025-08-28 08:06:00,941 - BacktestEngine - INFO - Option entry: Stock=$237.55, Strike=$239.93, Option=$2.63, Delta=0.60
+2025-08-28 08:06:01,813 - BacktestEngine - INFO - Mag7 alignment at candle 15000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:06:02,614 - BacktestEngine - INFO - Mag7 alignment at candle 15100: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:03,207 - BacktestEngine - INFO - TRADE ENTERED at candle 15177: BULLISH @ $239.53
+2025-08-28 08:06:03,207 - BacktestEngine - INFO - Option entry: Stock=$239.53, Strike=$241.93, Option=$2.65, Delta=0.60
+2025-08-28 08:06:03,228 - BacktestEngine - INFO - Option entry: Stock=$239.53, Strike=$241.93, Option=$2.65, Delta=0.60
+2025-08-28 08:06:03,237 - BacktestEngine - INFO - Option entry: Stock=$239.53, Strike=$241.93, Option=$2.65, Delta=0.60
+2025-08-28 08:06:03,249 - BacktestEngine - INFO - Option entry: Stock=$239.53, Strike=$241.93, Option=$2.65, Delta=0.60
+2025-08-28 08:06:03,256 - BacktestEngine - INFO - Option entry: Stock=$239.53, Strike=$241.93, Option=$2.65, Delta=0.60
+2025-08-28 08:06:03,446 - BacktestEngine - INFO - Mag7 alignment at candle 15200: 6 bullish (85.7%), 1 bearish (14.3%)
+2025-08-28 08:06:04,052 - BacktestEngine - INFO - TRADE ENTERED at candle 15262: BULLISH @ $241.05
+2025-08-28 08:06:04,054 - BacktestEngine - INFO - Option entry: Stock=$241.05, Strike=$243.46, Option=$2.67, Delta=0.60
+2025-08-28 08:06:04,082 - BacktestEngine - INFO - Option entry: Stock=$241.05, Strike=$243.46, Option=$2.67, Delta=0.60
+2025-08-28 08:06:04,119 - BacktestEngine - INFO - Option entry: Stock=$241.05, Strike=$243.46, Option=$2.67, Delta=0.60
+2025-08-28 08:06:04,153 - BacktestEngine - INFO - Option entry: Stock=$241.05, Strike=$243.46, Option=$2.67, Delta=0.60
+2025-08-28 08:06:04,192 - BacktestEngine - INFO - Option entry: Stock=$241.05, Strike=$243.46, Option=$2.67, Delta=0.60
+2025-08-28 08:06:04,568 - BacktestEngine - INFO - Mag7 alignment at candle 15300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:06:05,418 - BacktestEngine - INFO - Mag7 alignment at candle 15400: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:06:06,300 - BacktestEngine - INFO - Mag7 alignment at candle 15500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:06:07,515 - BacktestEngine - INFO - Mag7 alignment at candle 15600: 1 bullish (14.3%), 5 bearish (71.4%)
+2025-08-28 08:06:08,307 - BacktestEngine - INFO - TRADE ENTERED at candle 15690: BULLISH @ $239.54
+2025-08-28 08:06:08,308 - BacktestEngine - INFO - Option entry: Stock=$239.54, Strike=$241.94, Option=$2.65, Delta=0.60
+2025-08-28 08:06:08,313 - BacktestEngine - INFO - Option entry: Stock=$239.54, Strike=$241.94, Option=$2.65, Delta=0.60
+2025-08-28 08:06:08,318 - BacktestEngine - INFO - Option entry: Stock=$239.54, Strike=$241.94, Option=$2.65, Delta=0.60
+2025-08-28 08:06:08,326 - BacktestEngine - INFO - Option entry: Stock=$239.54, Strike=$241.94, Option=$2.65, Delta=0.60
+2025-08-28 08:06:08,331 - BacktestEngine - INFO - Option entry: Stock=$239.54, Strike=$241.94, Option=$2.65, Delta=0.60
+2025-08-28 08:06:08,413 - BacktestEngine - INFO - Mag7 alignment at candle 15700: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:09,229 - BacktestEngine - INFO - Mag7 alignment at candle 15800: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:06:09,754 - BacktestEngine - INFO - TRADE ENTERED at candle 15864: BULLISH @ $237.60
+2025-08-28 08:06:09,755 - BacktestEngine - INFO - Option entry: Stock=$237.60, Strike=$239.98, Option=$2.63, Delta=0.60
+2025-08-28 08:06:09,770 - BacktestEngine - INFO - Option entry: Stock=$237.60, Strike=$239.98, Option=$2.63, Delta=0.60
+2025-08-28 08:06:09,784 - BacktestEngine - INFO - Option entry: Stock=$237.60, Strike=$239.98, Option=$2.63, Delta=0.60
+2025-08-28 08:06:09,799 - BacktestEngine - INFO - Option entry: Stock=$237.60, Strike=$239.98, Option=$2.63, Delta=0.60
+2025-08-28 08:06:09,817 - BacktestEngine - INFO - Option entry: Stock=$237.60, Strike=$239.98, Option=$2.63, Delta=0.60
+2025-08-28 08:06:10,122 - BacktestEngine - INFO - Mag7 alignment at candle 15900: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:06:10,897 - BacktestEngine - INFO - Mag7 alignment at candle 16000: 5 bullish (71.4%), 1 bearish (14.3%)
+2025-08-28 08:06:11,519 - BacktestEngine - INFO - TRADE ENTERED at candle 16080: BEARISH @ $232.23
+2025-08-28 08:06:11,521 - BacktestEngine - INFO - Option entry: Stock=$232.23, Strike=$229.91, Option=$2.57, Delta=0.60
+2025-08-28 08:06:11,536 - BacktestEngine - INFO - Option entry: Stock=$232.23, Strike=$229.91, Option=$2.57, Delta=0.60
+2025-08-28 08:06:11,555 - BacktestEngine - INFO - Option entry: Stock=$232.23, Strike=$229.91, Option=$2.57, Delta=0.60
+2025-08-28 08:06:11,576 - BacktestEngine - INFO - Option entry: Stock=$232.23, Strike=$229.91, Option=$2.57, Delta=0.60
+2025-08-28 08:06:11,594 - BacktestEngine - INFO - Option entry: Stock=$232.23, Strike=$229.91, Option=$2.57, Delta=0.60
+2025-08-28 08:06:11,769 - BacktestEngine - INFO - Mag7 alignment at candle 16100: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:06:12,574 - BacktestEngine - INFO - Mag7 alignment at candle 16200: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:13,634 - BacktestEngine - INFO - Mag7 alignment at candle 16300: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:06:14,744 - BacktestEngine - INFO - Mag7 alignment at candle 16400: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:06:14,965 - BacktestEngine - INFO - TRADE ENTERED at candle 16413: BULLISH @ $235.76
+2025-08-28 08:06:14,967 - BacktestEngine - INFO - Option entry: Stock=$235.76, Strike=$238.12, Option=$2.61, Delta=0.60
+2025-08-28 08:06:14,979 - BacktestEngine - INFO - Option entry: Stock=$235.76, Strike=$238.12, Option=$2.61, Delta=0.60
+2025-08-28 08:06:14,991 - BacktestEngine - INFO - Option entry: Stock=$235.76, Strike=$238.12, Option=$2.61, Delta=0.60
+2025-08-28 08:06:15,004 - BacktestEngine - INFO - Option entry: Stock=$235.76, Strike=$238.12, Option=$2.61, Delta=0.60
+2025-08-28 08:06:15,026 - BacktestEngine - INFO - Option entry: Stock=$235.76, Strike=$238.12, Option=$2.61, Delta=0.60
+2025-08-28 08:06:15,841 - BacktestEngine - INFO - Mag7 alignment at candle 16500: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:06:16,297 - BacktestEngine - INFO - TRADE ENTERED at candle 16556: BEARISH @ $234.57
+2025-08-28 08:06:16,298 - BacktestEngine - INFO - Option entry: Stock=$234.57, Strike=$232.22, Option=$2.60, Delta=0.60
+2025-08-28 08:06:16,319 - BacktestEngine - INFO - Option entry: Stock=$234.57, Strike=$232.22, Option=$2.60, Delta=0.60
+2025-08-28 08:06:16,341 - BacktestEngine - INFO - Option entry: Stock=$234.57, Strike=$232.22, Option=$2.60, Delta=0.60
+2025-08-28 08:06:16,362 - BacktestEngine - INFO - Option entry: Stock=$234.57, Strike=$232.22, Option=$2.60, Delta=0.60
+2025-08-28 08:06:16,366 - BacktestEngine - INFO - Option entry: Stock=$234.57, Strike=$232.22, Option=$2.60, Delta=0.60
+2025-08-28 08:06:16,716 - BacktestEngine - INFO - Mag7 alignment at candle 16600: 0 bullish (0.0%), 5 bearish (71.4%)
+2025-08-28 08:06:17,613 - BacktestEngine - INFO - Mag7 alignment at candle 16700: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:06:17,931 - BacktestEngine - INFO - TRADE ENTERED at candle 16734: BEARISH @ $234.82
+2025-08-28 08:06:17,932 - BacktestEngine - INFO - Option entry: Stock=$234.82, Strike=$232.47, Option=$2.60, Delta=0.60
+2025-08-28 08:06:17,936 - BacktestEngine - INFO - Option entry: Stock=$234.82, Strike=$232.47, Option=$2.60, Delta=0.60
+2025-08-28 08:06:17,940 - BacktestEngine - INFO - Option entry: Stock=$234.82, Strike=$232.47, Option=$2.60, Delta=0.60
+2025-08-28 08:06:17,945 - BacktestEngine - INFO - Option entry: Stock=$234.82, Strike=$232.47, Option=$2.60, Delta=0.60
+2025-08-28 08:06:17,949 - BacktestEngine - INFO - Option entry: Stock=$234.82, Strike=$232.47, Option=$2.60, Delta=0.60
+2025-08-28 08:06:18,523 - BacktestEngine - INFO - Mag7 alignment at candle 16800: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:06:19,478 - BacktestEngine - INFO - Mag7 alignment at candle 16900: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:06:20,222 - BacktestEngine - INFO - TRADE ENTERED at candle 16964: BULLISH @ $239.58
+2025-08-28 08:06:20,223 - BacktestEngine - INFO - Option entry: Stock=$239.58, Strike=$241.98, Option=$2.65, Delta=0.60
+2025-08-28 08:06:20,241 - BacktestEngine - INFO - Option entry: Stock=$239.58, Strike=$241.98, Option=$2.65, Delta=0.60
+2025-08-28 08:06:20,260 - BacktestEngine - INFO - Option entry: Stock=$239.58, Strike=$241.98, Option=$2.65, Delta=0.60
+2025-08-28 08:06:20,286 - BacktestEngine - INFO - Option entry: Stock=$239.58, Strike=$241.98, Option=$2.65, Delta=0.60
+2025-08-28 08:06:20,312 - BacktestEngine - INFO - Option entry: Stock=$239.58, Strike=$241.98, Option=$2.65, Delta=0.60
+2025-08-28 08:06:20,775 - BacktestEngine - INFO - Mag7 alignment at candle 17000: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:06:21,633 - BacktestEngine - INFO - Mag7 alignment at candle 17100: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:22,309 - BacktestEngine - INFO - TRADE ENTERED at candle 17183: BEARISH @ $229.72
+2025-08-28 08:06:22,310 - BacktestEngine - INFO - Option entry: Stock=$229.72, Strike=$227.42, Option=$2.55, Delta=0.60
+2025-08-28 08:06:22,317 - BacktestEngine - INFO - Option entry: Stock=$229.72, Strike=$227.42, Option=$2.55, Delta=0.60
+2025-08-28 08:06:22,325 - BacktestEngine - INFO - Option entry: Stock=$229.72, Strike=$227.42, Option=$2.55, Delta=0.60
+2025-08-28 08:06:22,332 - BacktestEngine - INFO - Option entry: Stock=$229.72, Strike=$227.42, Option=$2.55, Delta=0.60
+2025-08-28 08:06:22,339 - BacktestEngine - INFO - Option entry: Stock=$229.72, Strike=$227.42, Option=$2.55, Delta=0.60
+2025-08-28 08:06:22,421 - BacktestEngine - INFO - TRADE ENTERED at candle 17191: BEARISH @ $229.68
+2025-08-28 08:06:22,422 - BacktestEngine - INFO - Option entry: Stock=$229.68, Strike=$227.38, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,457 - BacktestEngine - INFO - Option entry: Stock=$229.68, Strike=$227.38, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,491 - BacktestEngine - INFO - Option entry: Stock=$229.68, Strike=$227.38, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,531 - BacktestEngine - INFO - Option entry: Stock=$229.68, Strike=$227.38, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,540 - BacktestEngine - INFO - Option entry: Stock=$229.68, Strike=$227.38, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,631 - BacktestEngine - INFO - Mag7 alignment at candle 17200: 1 bullish (14.3%), 4 bearish (57.1%)
+2025-08-28 08:06:22,691 - BacktestEngine - INFO - TRADE ENTERED at candle 17207: BEARISH @ $229.61
+2025-08-28 08:06:22,692 - BacktestEngine - INFO - Option entry: Stock=$229.61, Strike=$227.31, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,697 - BacktestEngine - INFO - Option entry: Stock=$229.61, Strike=$227.31, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,703 - BacktestEngine - INFO - Option entry: Stock=$229.61, Strike=$227.31, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,710 - BacktestEngine - INFO - Option entry: Stock=$229.61, Strike=$227.31, Option=$2.54, Delta=0.60
+2025-08-28 08:06:22,716 - BacktestEngine - INFO - Option entry: Stock=$229.61, Strike=$227.31, Option=$2.54, Delta=0.60
+2025-08-28 08:06:23,510 - BacktestEngine - INFO - Mag7 alignment at candle 17300: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:23,627 - BacktestEngine - INFO - TRADE ENTERED at candle 17309: BEARISH @ $226.59
+2025-08-28 08:06:23,629 - BacktestEngine - INFO - Option entry: Stock=$226.59, Strike=$224.32, Option=$2.51, Delta=0.60
+2025-08-28 08:06:23,650 - BacktestEngine - INFO - Option entry: Stock=$226.59, Strike=$224.32, Option=$2.51, Delta=0.60
+2025-08-28 08:06:23,672 - BacktestEngine - INFO - Option entry: Stock=$226.59, Strike=$224.32, Option=$2.51, Delta=0.60
+2025-08-28 08:06:23,693 - BacktestEngine - INFO - Option entry: Stock=$226.59, Strike=$224.32, Option=$2.51, Delta=0.60
+2025-08-28 08:06:23,718 - BacktestEngine - INFO - Option entry: Stock=$226.59, Strike=$224.32, Option=$2.51, Delta=0.60
+2025-08-28 08:06:24,233 - BacktestEngine - INFO - TRADE ENTERED at candle 17372: BEARISH @ $225.24
+2025-08-28 08:06:24,235 - BacktestEngine - INFO - Option entry: Stock=$225.24, Strike=$222.99, Option=$2.50, Delta=0.60
+2025-08-28 08:06:24,246 - BacktestEngine - INFO - Option entry: Stock=$225.24, Strike=$222.99, Option=$2.50, Delta=0.60
+2025-08-28 08:06:24,260 - BacktestEngine - INFO - Option entry: Stock=$225.24, Strike=$222.99, Option=$2.50, Delta=0.60
+2025-08-28 08:06:24,273 - BacktestEngine - INFO - Option entry: Stock=$225.24, Strike=$222.99, Option=$2.50, Delta=0.60
+2025-08-28 08:06:24,287 - BacktestEngine - INFO - Option entry: Stock=$225.24, Strike=$222.99, Option=$2.50, Delta=0.60
+2025-08-28 08:06:24,508 - BacktestEngine - INFO - Mag7 alignment at candle 17400: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:25,318 - BacktestEngine - INFO - Mag7 alignment at candle 17500: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:06:26,328 - BacktestEngine - INFO - Mag7 alignment at candle 17600: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:06:26,422 - BacktestEngine - INFO - TRADE ENTERED at candle 17608: BEARISH @ $222.51
+2025-08-28 08:06:26,425 - BacktestEngine - INFO - Option entry: Stock=$222.51, Strike=$220.28, Option=$2.47, Delta=0.60
+2025-08-28 08:06:26,464 - BacktestEngine - INFO - Option entry: Stock=$222.51, Strike=$220.28, Option=$2.47, Delta=0.60
+2025-08-28 08:06:26,488 - BacktestEngine - INFO - Option entry: Stock=$222.51, Strike=$220.28, Option=$2.47, Delta=0.60
+2025-08-28 08:06:26,510 - BacktestEngine - INFO - Option entry: Stock=$222.51, Strike=$220.28, Option=$2.47, Delta=0.60
+2025-08-28 08:06:26,538 - BacktestEngine - INFO - Option entry: Stock=$222.51, Strike=$220.28, Option=$2.47, Delta=0.60
+2025-08-28 08:06:27,466 - BacktestEngine - INFO - Mag7 alignment at candle 17700: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:06:28,250 - BacktestEngine - INFO - Mag7 alignment at candle 17800: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:06:28,707 - BacktestEngine - INFO - TRADE ENTERED at candle 17850: BEARISH @ $220.18
+2025-08-28 08:06:28,709 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:06:28,733 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:06:28,757 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:06:28,785 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:06:28,807 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:06:29,299 - BacktestEngine - INFO - Mag7 alignment at candle 17900: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:06:30,052 - BacktestEngine - INFO - Mag7 alignment at candle 18000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:06:30,819 - BacktestEngine - INFO - Mag7 alignment at candle 18100: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:06:31,618 - BacktestEngine - INFO - Mag7 alignment at candle 18200: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:06:32,511 - BacktestEngine - INFO - Mag7 alignment at candle 18300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:06:33,359 - BacktestEngine - INFO - TRADE ENTERED at candle 18371: BEARISH @ $214.72
+2025-08-28 08:06:33,361 - BacktestEngine - INFO - Option entry: Stock=$214.72, Strike=$212.57, Option=$2.38, Delta=0.60
+2025-08-28 08:06:33,366 - BacktestEngine - INFO - Option entry: Stock=$214.72, Strike=$212.57, Option=$2.38, Delta=0.60
+2025-08-28 08:06:33,372 - BacktestEngine - INFO - Option entry: Stock=$214.72, Strike=$212.57, Option=$2.38, Delta=0.60
+2025-08-28 08:06:33,377 - BacktestEngine - INFO - Option entry: Stock=$214.72, Strike=$212.57, Option=$2.38, Delta=0.60
+2025-08-28 08:06:33,382 - BacktestEngine - INFO - Option entry: Stock=$214.72, Strike=$212.57, Option=$2.38, Delta=0.60
+2025-08-28 08:06:33,690 - BacktestEngine - INFO - Mag7 alignment at candle 18400: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:34,440 - BacktestEngine - INFO - Mag7 alignment at candle 18500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:06:35,314 - BacktestEngine - INFO - Mag7 alignment at candle 18600: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:06:36,196 - BacktestEngine - INFO - Mag7 alignment at candle 18700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:06:36,544 - BacktestEngine - INFO - TRADE ENTERED at candle 18747: BEARISH @ $212.59
+2025-08-28 08:06:36,545 - BacktestEngine - INFO - Option entry: Stock=$212.59, Strike=$210.46, Option=$2.36, Delta=0.60
+2025-08-28 08:06:36,558 - BacktestEngine - INFO - Option entry: Stock=$212.59, Strike=$210.46, Option=$2.36, Delta=0.60
+2025-08-28 08:06:36,571 - BacktestEngine - INFO - Option entry: Stock=$212.59, Strike=$210.46, Option=$2.36, Delta=0.60
+2025-08-28 08:06:36,584 - BacktestEngine - INFO - Option entry: Stock=$212.59, Strike=$210.46, Option=$2.36, Delta=0.60
+2025-08-28 08:06:36,599 - BacktestEngine - INFO - Option entry: Stock=$212.59, Strike=$210.46, Option=$2.36, Delta=0.60
+2025-08-28 08:06:36,636 - BacktestEngine - INFO - TRADE ENTERED at candle 18749: BEARISH @ $212.49
+2025-08-28 08:06:36,637 - BacktestEngine - INFO - Option entry: Stock=$212.49, Strike=$210.37, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,646 - BacktestEngine - INFO - Option entry: Stock=$212.49, Strike=$210.37, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,655 - BacktestEngine - INFO - Option entry: Stock=$212.49, Strike=$210.37, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,664 - BacktestEngine - INFO - Option entry: Stock=$212.49, Strike=$210.37, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,674 - BacktestEngine - INFO - Option entry: Stock=$212.49, Strike=$210.37, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,694 - BacktestEngine - INFO - TRADE ENTERED at candle 18750: BEARISH @ $212.00
+2025-08-28 08:06:36,696 - BacktestEngine - INFO - Option entry: Stock=$212.00, Strike=$209.88, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,715 - BacktestEngine - INFO - Option entry: Stock=$212.00, Strike=$209.88, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,735 - BacktestEngine - INFO - Option entry: Stock=$212.00, Strike=$209.88, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,755 - BacktestEngine - INFO - Option entry: Stock=$212.00, Strike=$209.88, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,781 - BacktestEngine - INFO - Option entry: Stock=$212.00, Strike=$209.88, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,827 - BacktestEngine - INFO - TRADE ENTERED at candle 18752: BEARISH @ $211.79
+2025-08-28 08:06:36,829 - BacktestEngine - INFO - Option entry: Stock=$211.79, Strike=$209.67, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,845 - BacktestEngine - INFO - Option entry: Stock=$211.79, Strike=$209.67, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,863 - BacktestEngine - INFO - Option entry: Stock=$211.79, Strike=$209.67, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,879 - BacktestEngine - INFO - Option entry: Stock=$211.79, Strike=$209.67, Option=$2.35, Delta=0.60
+2025-08-28 08:06:36,900 - BacktestEngine - INFO - Option entry: Stock=$211.79, Strike=$209.67, Option=$2.35, Delta=0.60
+2025-08-28 08:06:37,052 - BacktestEngine - INFO - TRADE ENTERED at candle 18758: BEARISH @ $211.38
+2025-08-28 08:06:37,052 - BacktestEngine - INFO - Option entry: Stock=$211.38, Strike=$209.27, Option=$2.34, Delta=0.60
+2025-08-28 08:06:37,059 - BacktestEngine - INFO - Option entry: Stock=$211.38, Strike=$209.27, Option=$2.34, Delta=0.60
+2025-08-28 08:06:37,065 - BacktestEngine - INFO - Option entry: Stock=$211.38, Strike=$209.27, Option=$2.34, Delta=0.60
+2025-08-28 08:06:37,072 - BacktestEngine - INFO - Option entry: Stock=$211.38, Strike=$209.27, Option=$2.34, Delta=0.60
+2025-08-28 08:06:37,079 - BacktestEngine - INFO - Option entry: Stock=$211.38, Strike=$209.27, Option=$2.34, Delta=0.60
+2025-08-28 08:06:37,478 - BacktestEngine - INFO - Mag7 alignment at candle 18800: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:06:38,206 - BacktestEngine - INFO - TRADE ENTERED at candle 18882: BEARISH @ $212.50
+2025-08-28 08:06:38,207 - BacktestEngine - INFO - Option entry: Stock=$212.50, Strike=$210.38, Option=$2.35, Delta=0.60
+2025-08-28 08:06:38,239 - BacktestEngine - INFO - Option entry: Stock=$212.50, Strike=$210.38, Option=$2.35, Delta=0.60
+2025-08-28 08:06:38,282 - BacktestEngine - INFO - Option entry: Stock=$212.50, Strike=$210.38, Option=$2.35, Delta=0.60
+2025-08-28 08:06:38,327 - BacktestEngine - INFO - Option entry: Stock=$212.50, Strike=$210.38, Option=$2.35, Delta=0.60
+2025-08-28 08:06:38,342 - BacktestEngine - INFO - Option entry: Stock=$212.50, Strike=$210.38, Option=$2.35, Delta=0.60
+2025-08-28 08:06:38,518 - BacktestEngine - INFO - Mag7 alignment at candle 18900: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:06:39,349 - BacktestEngine - INFO - Mag7 alignment at candle 19000: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:06:40,551 - BacktestEngine - INFO - Mag7 alignment at candle 19100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:06:41,526 - BacktestEngine - INFO - Mag7 alignment at candle 19200: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:06:42,391 - BacktestEngine - INFO - Mag7 alignment at candle 19300: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:42,413 - BacktestEngine - INFO - TRADE ENTERED at candle 19302: BEARISH @ $211.31
+2025-08-28 08:06:42,415 - BacktestEngine - INFO - Option entry: Stock=$211.31, Strike=$209.20, Option=$2.34, Delta=0.60
+2025-08-28 08:06:42,434 - BacktestEngine - INFO - Option entry: Stock=$211.31, Strike=$209.20, Option=$2.34, Delta=0.60
+2025-08-28 08:06:42,455 - BacktestEngine - INFO - Option entry: Stock=$211.31, Strike=$209.20, Option=$2.34, Delta=0.60
+2025-08-28 08:06:42,475 - BacktestEngine - INFO - Option entry: Stock=$211.31, Strike=$209.20, Option=$2.34, Delta=0.60
+2025-08-28 08:06:42,489 - BacktestEngine - INFO - Option entry: Stock=$211.31, Strike=$209.20, Option=$2.34, Delta=0.60
+2025-08-28 08:06:43,441 - BacktestEngine - INFO - Mag7 alignment at candle 19400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:06:44,334 - BacktestEngine - INFO - Mag7 alignment at candle 19500: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:06:45,200 - BacktestEngine - INFO - Mag7 alignment at candle 19600: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:06:46,030 - BacktestEngine - INFO - Mag7 alignment at candle 19700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:06:47,221 - BacktestEngine - INFO - Mag7 alignment at candle 19800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:06:48,124 - BacktestEngine - INFO - Mag7 alignment at candle 19900: 4 bullish (57.1%), 1 bearish (14.3%)
+2025-08-28 08:06:48,890 - BacktestEngine - INFO - Mag7 alignment at candle 20000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:06:49,582 - BacktestEngine - INFO - Mag7 alignment at candle 20100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:06:50,337 - BacktestEngine - INFO - Mag7 alignment at candle 20200: 0 bullish (0.0%), 5 bearish (71.4%)
+2025-08-28 08:06:50,904 - BacktestEngine - INFO - TRADE ENTERED at candle 20268: BEARISH @ $215.22
+2025-08-28 08:06:50,906 - BacktestEngine - INFO - Option entry: Stock=$215.22, Strike=$213.07, Option=$2.38, Delta=0.60
+2025-08-28 08:06:50,926 - BacktestEngine - INFO - Option entry: Stock=$215.22, Strike=$213.07, Option=$2.38, Delta=0.60
+2025-08-28 08:06:50,948 - BacktestEngine - INFO - Option entry: Stock=$215.22, Strike=$213.07, Option=$2.38, Delta=0.60
+2025-08-28 08:06:50,973 - BacktestEngine - INFO - Option entry: Stock=$215.22, Strike=$213.07, Option=$2.38, Delta=0.60
+2025-08-28 08:06:50,984 - BacktestEngine - INFO - Option entry: Stock=$215.22, Strike=$213.07, Option=$2.38, Delta=0.60
+2025-08-28 08:06:51,055 - BacktestEngine - INFO - TRADE ENTERED at candle 20270: BEARISH @ $214.78
+2025-08-28 08:06:51,056 - BacktestEngine - INFO - Option entry: Stock=$214.78, Strike=$212.63, Option=$2.38, Delta=0.60
+2025-08-28 08:06:51,068 - BacktestEngine - INFO - Option entry: Stock=$214.78, Strike=$212.63, Option=$2.38, Delta=0.60
+2025-08-28 08:06:51,084 - BacktestEngine - INFO - Option entry: Stock=$214.78, Strike=$212.63, Option=$2.38, Delta=0.60
+2025-08-28 08:06:51,100 - BacktestEngine - INFO - Option entry: Stock=$214.78, Strike=$212.63, Option=$2.38, Delta=0.60
+2025-08-28 08:06:51,109 - BacktestEngine - INFO - Option entry: Stock=$214.78, Strike=$212.63, Option=$2.38, Delta=0.60
+2025-08-28 08:06:51,379 - BacktestEngine - INFO - Mag7 alignment at candle 20300: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:06:51,837 - BacktestEngine - INFO - TRADE ENTERED at candle 20360: BEARISH @ $216.78
+2025-08-28 08:06:51,838 - BacktestEngine - INFO - Option entry: Stock=$216.78, Strike=$214.61, Option=$2.40, Delta=0.60
+2025-08-28 08:06:51,841 - BacktestEngine - INFO - Option entry: Stock=$216.78, Strike=$214.61, Option=$2.40, Delta=0.60
+2025-08-28 08:06:51,844 - BacktestEngine - INFO - Option entry: Stock=$216.78, Strike=$214.61, Option=$2.40, Delta=0.60
+2025-08-28 08:06:51,848 - BacktestEngine - INFO - Option entry: Stock=$216.78, Strike=$214.61, Option=$2.40, Delta=0.60
+2025-08-28 08:06:51,852 - BacktestEngine - INFO - Option entry: Stock=$216.78, Strike=$214.61, Option=$2.40, Delta=0.60
+2025-08-28 08:06:52,145 - BacktestEngine - INFO - Mag7 alignment at candle 20400: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:06:52,815 - BacktestEngine - INFO - TRADE ENTERED at candle 20473: BEARISH @ $213.59
+2025-08-28 08:06:52,817 - BacktestEngine - INFO - Option entry: Stock=$213.59, Strike=$211.45, Option=$2.37, Delta=0.60
+2025-08-28 08:06:52,827 - BacktestEngine - INFO - Option entry: Stock=$213.59, Strike=$211.45, Option=$2.37, Delta=0.60
+2025-08-28 08:06:52,836 - BacktestEngine - INFO - Option entry: Stock=$213.59, Strike=$211.45, Option=$2.37, Delta=0.60
+2025-08-28 08:06:52,849 - BacktestEngine - INFO - Option entry: Stock=$213.59, Strike=$211.45, Option=$2.37, Delta=0.60
+2025-08-28 08:06:52,863 - BacktestEngine - INFO - Option entry: Stock=$213.59, Strike=$211.45, Option=$2.37, Delta=0.60
+2025-08-28 08:06:53,205 - BacktestEngine - INFO - Mag7 alignment at candle 20500: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:06:54,225 - BacktestEngine - INFO - Mag7 alignment at candle 20600: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:06:54,321 - BacktestEngine - INFO - TRADE ENTERED at candle 20607: BEARISH @ $212.63
+2025-08-28 08:06:54,323 - BacktestEngine - INFO - Option entry: Stock=$212.63, Strike=$210.50, Option=$2.36, Delta=0.60
+2025-08-28 08:06:54,383 - BacktestEngine - INFO - Option entry: Stock=$212.63, Strike=$210.50, Option=$2.36, Delta=0.60
+2025-08-28 08:06:54,441 - BacktestEngine - INFO - Option entry: Stock=$212.63, Strike=$210.50, Option=$2.36, Delta=0.60
+2025-08-28 08:06:54,503 - BacktestEngine - INFO - Option entry: Stock=$212.63, Strike=$210.50, Option=$2.36, Delta=0.60
+2025-08-28 08:06:54,528 - BacktestEngine - INFO - Option entry: Stock=$212.63, Strike=$210.50, Option=$2.36, Delta=0.60
+2025-08-28 08:06:55,257 - BacktestEngine - INFO - Mag7 alignment at candle 20700: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:06:56,003 - BacktestEngine - INFO - Mag7 alignment at candle 20800: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:06:56,997 - BacktestEngine - INFO - Mag7 alignment at candle 20900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:06:57,695 - BacktestEngine - INFO - Mag7 alignment at candle 21000: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:06:58,615 - BacktestEngine - INFO - Mag7 alignment at candle 21100: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:06:59,703 - BacktestEngine - INFO - Mag7 alignment at candle 21200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:07:00,840 - BacktestEngine - INFO - Mag7 alignment at candle 21300: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:07:01,668 - BacktestEngine - INFO - Mag7 alignment at candle 21400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:07:02,455 - BacktestEngine - INFO - Mag7 alignment at candle 21500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:07:03,207 - BacktestEngine - INFO - Mag7 alignment at candle 21600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:07:03,853 - BacktestEngine - INFO - Mag7 alignment at candle 21700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:07:04,557 - BacktestEngine - INFO - Mag7 alignment at candle 21800: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:07:05,384 - BacktestEngine - INFO - Mag7 alignment at candle 21900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:07:06,403 - BacktestEngine - INFO - Mag7 alignment at candle 22000: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:07:07,647 - BacktestEngine - INFO - Mag7 alignment at candle 22100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:07:08,374 - BacktestEngine - INFO - Mag7 alignment at candle 22200: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:07:09,159 - BacktestEngine - INFO - Mag7 alignment at candle 22300: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:07:09,556 - BacktestEngine - INFO - TRADE ENTERED at candle 22349: BEARISH @ $222.80
+2025-08-28 08:07:09,557 - BacktestEngine - INFO - Option entry: Stock=$222.80, Strike=$220.57, Option=$2.47, Delta=0.60
+2025-08-28 08:07:09,577 - BacktestEngine - INFO - Option entry: Stock=$222.80, Strike=$220.57, Option=$2.47, Delta=0.60
+2025-08-28 08:07:09,598 - BacktestEngine - INFO - Option entry: Stock=$222.80, Strike=$220.57, Option=$2.47, Delta=0.60
+2025-08-28 08:07:09,617 - BacktestEngine - INFO - Option entry: Stock=$222.80, Strike=$220.57, Option=$2.47, Delta=0.60
+2025-08-28 08:07:09,626 - BacktestEngine - INFO - Option entry: Stock=$222.80, Strike=$220.57, Option=$2.47, Delta=0.60
+2025-08-28 08:07:10,047 - BacktestEngine - INFO - Mag7 alignment at candle 22400: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:07:10,823 - BacktestEngine - INFO - Mag7 alignment at candle 22500: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:07:11,532 - BacktestEngine - INFO - Mag7 alignment at candle 22600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:07:11,981 - BacktestEngine - INFO - TRADE ENTERED at candle 22656: BEARISH @ $223.06
+2025-08-28 08:07:11,982 - BacktestEngine - INFO - Option entry: Stock=$223.06, Strike=$220.83, Option=$2.47, Delta=0.60
+2025-08-28 08:07:11,988 - BacktestEngine - INFO - Option entry: Stock=$223.06, Strike=$220.83, Option=$2.47, Delta=0.60
+2025-08-28 08:07:11,996 - BacktestEngine - INFO - Option entry: Stock=$223.06, Strike=$220.83, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,003 - BacktestEngine - INFO - Option entry: Stock=$223.06, Strike=$220.83, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,011 - BacktestEngine - INFO - Option entry: Stock=$223.06, Strike=$220.83, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,037 - BacktestEngine - INFO - TRADE ENTERED at candle 22657: BEARISH @ $222.99
+2025-08-28 08:07:12,038 - BacktestEngine - INFO - Option entry: Stock=$222.99, Strike=$220.76, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,042 - BacktestEngine - INFO - Option entry: Stock=$222.99, Strike=$220.76, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,048 - BacktestEngine - INFO - Option entry: Stock=$222.99, Strike=$220.76, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,054 - BacktestEngine - INFO - Option entry: Stock=$222.99, Strike=$220.76, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,059 - BacktestEngine - INFO - Option entry: Stock=$222.99, Strike=$220.76, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,077 - BacktestEngine - INFO - TRADE ENTERED at candle 22658: BEARISH @ $222.56
+2025-08-28 08:07:12,078 - BacktestEngine - INFO - Option entry: Stock=$222.56, Strike=$220.33, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,083 - BacktestEngine - INFO - Option entry: Stock=$222.56, Strike=$220.33, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,087 - BacktestEngine - INFO - Option entry: Stock=$222.56, Strike=$220.33, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,090 - BacktestEngine - INFO - Option entry: Stock=$222.56, Strike=$220.33, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,094 - BacktestEngine - INFO - Option entry: Stock=$222.56, Strike=$220.33, Option=$2.47, Delta=0.60
+2025-08-28 08:07:12,393 - BacktestEngine - INFO - TRADE ENTERED at candle 22696: BEARISH @ $220.18
+2025-08-28 08:07:12,395 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:07:12,404 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:07:12,415 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:07:12,427 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:07:12,441 - BacktestEngine - INFO - Option entry: Stock=$220.18, Strike=$217.98, Option=$2.44, Delta=0.60
+2025-08-28 08:07:12,485 - BacktestEngine - INFO - Mag7 alignment at candle 22700: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:07:13,395 - BacktestEngine - INFO - Mag7 alignment at candle 22800: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:07:14,453 - BacktestEngine - INFO - Mag7 alignment at candle 22900: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:07:15,198 - BacktestEngine - INFO - Mag7 alignment at candle 23000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:07:15,823 - BacktestEngine - INFO - TRADE ENTERED at candle 23077: BEARISH @ $218.58
+2025-08-28 08:07:15,824 - BacktestEngine - INFO - Option entry: Stock=$218.58, Strike=$216.39, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,830 - BacktestEngine - INFO - Option entry: Stock=$218.58, Strike=$216.39, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,833 - BacktestEngine - INFO - Option entry: Stock=$218.58, Strike=$216.39, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,839 - BacktestEngine - INFO - Option entry: Stock=$218.58, Strike=$216.39, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,843 - BacktestEngine - INFO - Option entry: Stock=$218.58, Strike=$216.39, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,860 - BacktestEngine - INFO - TRADE ENTERED at candle 23078: BEARISH @ $218.65
+2025-08-28 08:07:15,861 - BacktestEngine - INFO - Option entry: Stock=$218.65, Strike=$216.46, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,865 - BacktestEngine - INFO - Option entry: Stock=$218.65, Strike=$216.46, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,868 - BacktestEngine - INFO - Option entry: Stock=$218.65, Strike=$216.46, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,870 - BacktestEngine - INFO - Option entry: Stock=$218.65, Strike=$216.46, Option=$2.42, Delta=0.60
+2025-08-28 08:07:15,873 - BacktestEngine - INFO - Option entry: Stock=$218.65, Strike=$216.46, Option=$2.42, Delta=0.60
+2025-08-28 08:07:16,043 - BacktestEngine - INFO - Mag7 alignment at candle 23100: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:07:16,798 - BacktestEngine - INFO - Mag7 alignment at candle 23200: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:07:17,688 - BacktestEngine - INFO - Mag7 alignment at candle 23300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:07:18,465 - BacktestEngine - INFO - Mag7 alignment at candle 23400: 1 bullish (14.3%), 6 bearish (85.7%)
+2025-08-28 08:07:19,279 - BacktestEngine - INFO - Mag7 alignment at candle 23500: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:07:20,471 - BacktestEngine - INFO - Mag7 alignment at candle 23600: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:07:21,333 - BacktestEngine - INFO - Mag7 alignment at candle 23700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:07:22,103 - BacktestEngine - INFO - Mag7 alignment at candle 23800: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:07:22,911 - BacktestEngine - INFO - Mag7 alignment at candle 23900: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:07:23,713 - BacktestEngine - INFO - Mag7 alignment at candle 24000: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:07:24,494 - BacktestEngine - INFO - Mag7 alignment at candle 24100: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:07:25,312 - BacktestEngine - INFO - Mag7 alignment at candle 24200: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:07:26,350 - BacktestEngine - INFO - Mag7 alignment at candle 24300: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:07:27,415 - BacktestEngine - INFO - Mag7 alignment at candle 24400: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:07:28,248 - BacktestEngine - INFO - Mag7 alignment at candle 24500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:07:28,453 - BacktestEngine - INFO - TRADE ENTERED at candle 24526: BEARISH @ $202.45
+2025-08-28 08:07:28,454 - BacktestEngine - INFO - Option entry: Stock=$202.45, Strike=$200.43, Option=$2.24, Delta=0.60
+2025-08-28 08:07:28,477 - BacktestEngine - INFO - Option entry: Stock=$202.45, Strike=$200.43, Option=$2.24, Delta=0.60
+2025-08-28 08:07:28,506 - BacktestEngine - INFO - Option entry: Stock=$202.45, Strike=$200.43, Option=$2.24, Delta=0.60
+2025-08-28 08:07:28,532 - BacktestEngine - INFO - Option entry: Stock=$202.45, Strike=$200.43, Option=$2.24, Delta=0.60
+2025-08-28 08:07:28,557 - BacktestEngine - INFO - Option entry: Stock=$202.45, Strike=$200.43, Option=$2.24, Delta=0.60
+2025-08-28 08:07:29,304 - BacktestEngine - INFO - Mag7 alignment at candle 24600: 4 bullish (57.1%), 2 bearish (28.6%)
+2025-08-28 08:07:29,348 - BacktestEngine - INFO - TRADE ENTERED at candle 24603: BEARISH @ $197.40
+2025-08-28 08:07:29,349 - BacktestEngine - INFO - Option entry: Stock=$197.40, Strike=$195.43, Option=$2.19, Delta=0.60
+2025-08-28 08:07:29,357 - BacktestEngine - INFO - Option entry: Stock=$197.40, Strike=$195.43, Option=$2.19, Delta=0.60
+2025-08-28 08:07:29,365 - BacktestEngine - INFO - Option entry: Stock=$197.40, Strike=$195.43, Option=$2.19, Delta=0.60
+2025-08-28 08:07:29,374 - BacktestEngine - INFO - Option entry: Stock=$197.40, Strike=$195.43, Option=$2.19, Delta=0.60
+2025-08-28 08:07:29,383 - BacktestEngine - INFO - Option entry: Stock=$197.40, Strike=$195.43, Option=$2.19, Delta=0.60
+2025-08-28 08:07:30,378 - BacktestEngine - INFO - TRADE ENTERED at candle 24685: BEARISH @ $195.13
+2025-08-28 08:07:30,379 - BacktestEngine - INFO - Option entry: Stock=$195.13, Strike=$193.18, Option=$2.16, Delta=0.60
+2025-08-28 08:07:30,411 - BacktestEngine - INFO - Option entry: Stock=$195.13, Strike=$193.18, Option=$2.16, Delta=0.60
+2025-08-28 08:07:30,443 - BacktestEngine - INFO - Option entry: Stock=$195.13, Strike=$193.18, Option=$2.16, Delta=0.60
+2025-08-28 08:07:30,466 - BacktestEngine - INFO - Option entry: Stock=$195.13, Strike=$193.18, Option=$2.16, Delta=0.60
+2025-08-28 08:07:30,488 - BacktestEngine - INFO - Option entry: Stock=$195.13, Strike=$193.18, Option=$2.16, Delta=0.60
+2025-08-28 08:07:30,667 - BacktestEngine - INFO - Mag7 alignment at candle 24700: 1 bullish (14.3%), 4 bearish (57.1%)
+2025-08-28 08:07:31,536 - BacktestEngine - INFO - Mag7 alignment at candle 24800: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:07:32,373 - BacktestEngine - INFO - Mag7 alignment at candle 24900: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:07:33,600 - BacktestEngine - INFO - Mag7 alignment at candle 25000: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:07:34,813 - BacktestEngine - INFO - Mag7 alignment at candle 25100: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:07:35,728 - BacktestEngine - INFO - Mag7 alignment at candle 25200: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:07:36,448 - BacktestEngine - INFO - TRADE ENTERED at candle 25279: BEARISH @ $180.70
+2025-08-28 08:07:36,449 - BacktestEngine - INFO - Option entry: Stock=$180.70, Strike=$178.89, Option=$2.00, Delta=0.60
+2025-08-28 08:07:36,457 - BacktestEngine - INFO - Option entry: Stock=$180.70, Strike=$178.89, Option=$2.00, Delta=0.60
+2025-08-28 08:07:36,466 - BacktestEngine - INFO - Option entry: Stock=$180.70, Strike=$178.89, Option=$2.00, Delta=0.60
+2025-08-28 08:07:36,475 - BacktestEngine - INFO - Option entry: Stock=$180.70, Strike=$178.89, Option=$2.00, Delta=0.60
+2025-08-28 08:07:36,485 - BacktestEngine - INFO - Option entry: Stock=$180.70, Strike=$178.89, Option=$2.00, Delta=0.60
+2025-08-28 08:07:36,761 - BacktestEngine - INFO - Mag7 alignment at candle 25300: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:07:37,698 - BacktestEngine - INFO - Mag7 alignment at candle 25400: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:07:37,824 - BacktestEngine - INFO - TRADE ENTERED at candle 25409: BEARISH @ $189.32
+2025-08-28 08:07:37,825 - BacktestEngine - INFO - Option entry: Stock=$189.32, Strike=$187.43, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,831 - BacktestEngine - INFO - Option entry: Stock=$189.32, Strike=$187.43, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,837 - BacktestEngine - INFO - Option entry: Stock=$189.32, Strike=$187.43, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,844 - BacktestEngine - INFO - Option entry: Stock=$189.32, Strike=$187.43, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,850 - BacktestEngine - INFO - Option entry: Stock=$189.32, Strike=$187.43, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,877 - BacktestEngine - INFO - TRADE ENTERED at candle 25410: BEARISH @ $189.17
+2025-08-28 08:07:37,879 - BacktestEngine - INFO - Option entry: Stock=$189.17, Strike=$187.28, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,886 - BacktestEngine - INFO - Option entry: Stock=$189.17, Strike=$187.28, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,896 - BacktestEngine - INFO - Option entry: Stock=$189.17, Strike=$187.28, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,903 - BacktestEngine - INFO - Option entry: Stock=$189.17, Strike=$187.28, Option=$2.10, Delta=0.60
+2025-08-28 08:07:37,913 - BacktestEngine - INFO - Option entry: Stock=$189.17, Strike=$187.28, Option=$2.10, Delta=0.60
+2025-08-28 08:07:38,488 - BacktestEngine - INFO - TRADE ENTERED at candle 25469: BEARISH @ $184.09
+2025-08-28 08:07:38,489 - BacktestEngine - INFO - Option entry: Stock=$184.09, Strike=$182.25, Option=$2.04, Delta=0.60
+2025-08-28 08:07:38,492 - BacktestEngine - INFO - Option entry: Stock=$184.09, Strike=$182.25, Option=$2.04, Delta=0.60
+2025-08-28 08:07:38,495 - BacktestEngine - INFO - Option entry: Stock=$184.09, Strike=$182.25, Option=$2.04, Delta=0.60
+2025-08-28 08:07:38,498 - BacktestEngine - INFO - Option entry: Stock=$184.09, Strike=$182.25, Option=$2.04, Delta=0.60
+2025-08-28 08:07:38,500 - BacktestEngine - INFO - Option entry: Stock=$184.09, Strike=$182.25, Option=$2.04, Delta=0.60
+2025-08-28 08:07:38,765 - BacktestEngine - INFO - Mag7 alignment at candle 25500: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:07:39,706 - BacktestEngine - INFO - Mag7 alignment at candle 25600: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:07:40,933 - BacktestEngine - INFO - Mag7 alignment at candle 25700: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:07:41,043 - BacktestEngine - INFO - TRADE ENTERED at candle 25711: BEARISH @ $172.28
+2025-08-28 08:07:41,045 - BacktestEngine - INFO - Option entry: Stock=$172.28, Strike=$170.56, Option=$1.91, Delta=0.60
+2025-08-28 08:07:41,051 - BacktestEngine - INFO - Option entry: Stock=$172.28, Strike=$170.56, Option=$1.91, Delta=0.60
+2025-08-28 08:07:41,059 - BacktestEngine - INFO - Option entry: Stock=$172.28, Strike=$170.56, Option=$1.91, Delta=0.60
+2025-08-28 08:07:41,067 - BacktestEngine - INFO - Option entry: Stock=$172.28, Strike=$170.56, Option=$1.91, Delta=0.60
+2025-08-28 08:07:41,077 - BacktestEngine - INFO - Option entry: Stock=$172.28, Strike=$170.56, Option=$1.91, Delta=0.60
+2025-08-28 08:07:41,747 - BacktestEngine - INFO - TRADE ENTERED at candle 25775: BEARISH @ $177.92
+2025-08-28 08:07:41,749 - BacktestEngine - INFO - Option entry: Stock=$177.92, Strike=$176.14, Option=$1.97, Delta=0.60
+2025-08-28 08:07:41,751 - BacktestEngine - INFO - Option entry: Stock=$177.92, Strike=$176.14, Option=$1.97, Delta=0.60
+2025-08-28 08:07:41,754 - BacktestEngine - INFO - Option entry: Stock=$177.92, Strike=$176.14, Option=$1.97, Delta=0.60
+2025-08-28 08:07:41,757 - BacktestEngine - INFO - Option entry: Stock=$177.92, Strike=$176.14, Option=$1.97, Delta=0.60
+2025-08-28 08:07:41,759 - BacktestEngine - INFO - Option entry: Stock=$177.92, Strike=$176.14, Option=$1.97, Delta=0.60
+2025-08-28 08:07:41,985 - BacktestEngine - INFO - Mag7 alignment at candle 25800: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:07:42,770 - BacktestEngine - INFO - Mag7 alignment at candle 25900: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:07:43,755 - BacktestEngine - INFO - Mag7 alignment at candle 26000: 1 bullish (14.3%), 3 bearish (42.9%)
+2025-08-28 08:07:44,565 - BacktestEngine - INFO - Mag7 alignment at candle 26100: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:07:45,173 - BacktestEngine - INFO - TRADE ENTERED at candle 26161: BEARISH @ $192.20
+2025-08-28 08:07:45,175 - BacktestEngine - INFO - Option entry: Stock=$192.20, Strike=$190.28, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,182 - BacktestEngine - INFO - Option entry: Stock=$192.20, Strike=$190.28, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,189 - BacktestEngine - INFO - Option entry: Stock=$192.20, Strike=$190.28, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,198 - BacktestEngine - INFO - Option entry: Stock=$192.20, Strike=$190.28, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,207 - BacktestEngine - INFO - Option entry: Stock=$192.20, Strike=$190.28, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,336 - BacktestEngine - INFO - TRADE ENTERED at candle 26170: BEARISH @ $192.66
+2025-08-28 08:07:45,337 - BacktestEngine - INFO - Option entry: Stock=$192.66, Strike=$190.73, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,341 - BacktestEngine - INFO - Option entry: Stock=$192.66, Strike=$190.73, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,347 - BacktestEngine - INFO - Option entry: Stock=$192.66, Strike=$190.73, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,352 - BacktestEngine - INFO - Option entry: Stock=$192.66, Strike=$190.73, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,357 - BacktestEngine - INFO - Option entry: Stock=$192.66, Strike=$190.73, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,381 - BacktestEngine - INFO - TRADE ENTERED at candle 26171: BEARISH @ $191.85
+2025-08-28 08:07:45,382 - BacktestEngine - INFO - Option entry: Stock=$191.85, Strike=$189.93, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,416 - BacktestEngine - INFO - Option entry: Stock=$191.85, Strike=$189.93, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,443 - BacktestEngine - INFO - Option entry: Stock=$191.85, Strike=$189.93, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,472 - BacktestEngine - INFO - Option entry: Stock=$191.85, Strike=$189.93, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,502 - BacktestEngine - INFO - Option entry: Stock=$191.85, Strike=$189.93, Option=$2.13, Delta=0.60
+2025-08-28 08:07:45,765 - BacktestEngine - INFO - Mag7 alignment at candle 26200: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:07:46,024 - BacktestEngine - INFO - TRADE ENTERED at candle 26232: BEARISH @ $190.08
+2025-08-28 08:07:46,025 - BacktestEngine - INFO - Option entry: Stock=$190.08, Strike=$188.18, Option=$2.11, Delta=0.60
+2025-08-28 08:07:46,032 - BacktestEngine - INFO - Option entry: Stock=$190.08, Strike=$188.18, Option=$2.11, Delta=0.60
+2025-08-28 08:07:46,040 - BacktestEngine - INFO - Option entry: Stock=$190.08, Strike=$188.18, Option=$2.11, Delta=0.60
+2025-08-28 08:07:46,046 - BacktestEngine - INFO - Option entry: Stock=$190.08, Strike=$188.18, Option=$2.11, Delta=0.60
+2025-08-28 08:07:46,054 - BacktestEngine - INFO - Option entry: Stock=$190.08, Strike=$188.18, Option=$2.11, Delta=0.60
+2025-08-28 08:07:46,086 - BacktestEngine - INFO - TRADE ENTERED at candle 26234: BEARISH @ $189.54
+2025-08-28 08:07:46,087 - BacktestEngine - INFO - Option entry: Stock=$189.54, Strike=$187.64, Option=$2.10, Delta=0.60
+2025-08-28 08:07:46,092 - BacktestEngine - INFO - Option entry: Stock=$189.54, Strike=$187.64, Option=$2.10, Delta=0.60
+2025-08-28 08:07:46,094 - BacktestEngine - INFO - Option entry: Stock=$189.54, Strike=$187.64, Option=$2.10, Delta=0.60
+2025-08-28 08:07:46,098 - BacktestEngine - INFO - Option entry: Stock=$189.54, Strike=$187.64, Option=$2.10, Delta=0.60
+2025-08-28 08:07:46,104 - BacktestEngine - INFO - Option entry: Stock=$189.54, Strike=$187.64, Option=$2.10, Delta=0.60
+2025-08-28 08:07:46,888 - BacktestEngine - INFO - Mag7 alignment at candle 26300: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:07:48,107 - BacktestEngine - INFO - Mag7 alignment at candle 26400: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:07:48,558 - BacktestEngine - INFO - TRADE ENTERED at candle 26448: BEARISH @ $190.63
+2025-08-28 08:07:48,559 - BacktestEngine - INFO - Option entry: Stock=$190.63, Strike=$188.72, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,571 - BacktestEngine - INFO - Option entry: Stock=$190.63, Strike=$188.72, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,583 - BacktestEngine - INFO - Option entry: Stock=$190.63, Strike=$188.72, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,597 - BacktestEngine - INFO - Option entry: Stock=$190.63, Strike=$188.72, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,611 - BacktestEngine - INFO - Option entry: Stock=$190.63, Strike=$188.72, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,636 - BacktestEngine - INFO - TRADE ENTERED at candle 26449: BEARISH @ $190.61
+2025-08-28 08:07:48,638 - BacktestEngine - INFO - Option entry: Stock=$190.61, Strike=$188.70, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,647 - BacktestEngine - INFO - Option entry: Stock=$190.61, Strike=$188.70, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,659 - BacktestEngine - INFO - Option entry: Stock=$190.61, Strike=$188.70, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,671 - BacktestEngine - INFO - Option entry: Stock=$190.61, Strike=$188.70, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,682 - BacktestEngine - INFO - Option entry: Stock=$190.61, Strike=$188.70, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,733 - BacktestEngine - INFO - TRADE ENTERED at candle 26453: BEARISH @ $190.21
+2025-08-28 08:07:48,735 - BacktestEngine - INFO - Option entry: Stock=$190.21, Strike=$188.31, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,737 - BacktestEngine - INFO - Option entry: Stock=$190.21, Strike=$188.31, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,740 - BacktestEngine - INFO - Option entry: Stock=$190.21, Strike=$188.31, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,743 - BacktestEngine - INFO - Option entry: Stock=$190.21, Strike=$188.31, Option=$2.11, Delta=0.60
+2025-08-28 08:07:48,746 - BacktestEngine - INFO - Option entry: Stock=$190.21, Strike=$188.31, Option=$2.11, Delta=0.60
+2025-08-28 08:07:49,127 - BacktestEngine - INFO - Mag7 alignment at candle 26500: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:07:49,697 - BacktestEngine - INFO - TRADE ENTERED at candle 26561: BEARISH @ $191.23
+2025-08-28 08:07:49,698 - BacktestEngine - INFO - Option entry: Stock=$191.23, Strike=$189.32, Option=$2.12, Delta=0.60
+2025-08-28 08:07:49,703 - BacktestEngine - INFO - Option entry: Stock=$191.23, Strike=$189.32, Option=$2.12, Delta=0.60
+2025-08-28 08:07:49,707 - BacktestEngine - INFO - Option entry: Stock=$191.23, Strike=$189.32, Option=$2.12, Delta=0.60
+2025-08-28 08:07:49,711 - BacktestEngine - INFO - Option entry: Stock=$191.23, Strike=$189.32, Option=$2.12, Delta=0.60
+2025-08-28 08:07:49,716 - BacktestEngine - INFO - Option entry: Stock=$191.23, Strike=$189.32, Option=$2.12, Delta=0.60
+2025-08-28 08:07:50,035 - BacktestEngine - INFO - Mag7 alignment at candle 26600: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:07:50,922 - BacktestEngine - INFO - Mag7 alignment at candle 26700: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:07:51,703 - BacktestEngine - INFO - Mag7 alignment at candle 26800: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:07:52,444 - BacktestEngine - INFO - Mag7 alignment at candle 26900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:07:53,251 - BacktestEngine - INFO - Mag7 alignment at candle 27000: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:07:54,437 - BacktestEngine - INFO - Mag7 alignment at candle 27100: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:07:54,563 - BacktestEngine - INFO - TRADE ENTERED at candle 27110: BEARISH @ $202.60
+2025-08-28 08:07:54,564 - BacktestEngine - INFO - Option entry: Stock=$202.60, Strike=$200.57, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,578 - BacktestEngine - INFO - Option entry: Stock=$202.60, Strike=$200.57, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,597 - BacktestEngine - INFO - Option entry: Stock=$202.60, Strike=$200.57, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,617 - BacktestEngine - INFO - Option entry: Stock=$202.60, Strike=$200.57, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,635 - BacktestEngine - INFO - Option entry: Stock=$202.60, Strike=$200.57, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,677 - BacktestEngine - INFO - TRADE ENTERED at candle 27112: BEARISH @ $202.42
+2025-08-28 08:07:54,678 - BacktestEngine - INFO - Option entry: Stock=$202.42, Strike=$200.40, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,680 - BacktestEngine - INFO - Option entry: Stock=$202.42, Strike=$200.40, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,683 - BacktestEngine - INFO - Option entry: Stock=$202.42, Strike=$200.40, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,686 - BacktestEngine - INFO - Option entry: Stock=$202.42, Strike=$200.40, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,690 - BacktestEngine - INFO - Option entry: Stock=$202.42, Strike=$200.40, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,727 - BacktestEngine - INFO - TRADE ENTERED at candle 27116: BEARISH @ $202.48
+2025-08-28 08:07:54,728 - BacktestEngine - INFO - Option entry: Stock=$202.48, Strike=$200.46, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,735 - BacktestEngine - INFO - Option entry: Stock=$202.48, Strike=$200.46, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,740 - BacktestEngine - INFO - Option entry: Stock=$202.48, Strike=$200.46, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,747 - BacktestEngine - INFO - Option entry: Stock=$202.48, Strike=$200.46, Option=$2.24, Delta=0.60
+2025-08-28 08:07:54,751 - BacktestEngine - INFO - Option entry: Stock=$202.48, Strike=$200.46, Option=$2.24, Delta=0.60
+2025-08-28 08:07:55,396 - BacktestEngine - INFO - Mag7 alignment at candle 27200: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:07:56,255 - BacktestEngine - INFO - Mag7 alignment at candle 27300: 2 bullish (28.6%), 3 bearish (42.9%)
+2025-08-28 08:07:57,032 - BacktestEngine - INFO - Mag7 alignment at candle 27400: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:07:57,877 - BacktestEngine - INFO - Mag7 alignment at candle 27500: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:07:58,724 - BacktestEngine - INFO - Mag7 alignment at candle 27600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:07:59,440 - BacktestEngine - INFO - Mag7 alignment at candle 27700: 1 bullish (14.3%), 3 bearish (42.9%)
+2025-08-28 08:07:59,751 - BacktestEngine - INFO - TRADE ENTERED at candle 27734: BEARISH @ $196.31
+2025-08-28 08:07:59,754 - BacktestEngine - INFO - Option entry: Stock=$196.31, Strike=$194.35, Option=$2.17, Delta=0.60
+2025-08-28 08:07:59,766 - BacktestEngine - INFO - Option entry: Stock=$196.31, Strike=$194.35, Option=$2.17, Delta=0.60
+2025-08-28 08:07:59,785 - BacktestEngine - INFO - Option entry: Stock=$196.31, Strike=$194.35, Option=$2.17, Delta=0.60
+2025-08-28 08:07:59,801 - BacktestEngine - INFO - Option entry: Stock=$196.31, Strike=$194.35, Option=$2.17, Delta=0.60
+2025-08-28 08:07:59,820 - BacktestEngine - INFO - Option entry: Stock=$196.31, Strike=$194.35, Option=$2.17, Delta=0.60
+2025-08-28 08:08:00,629 - BacktestEngine - INFO - Mag7 alignment at candle 27800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:01,579 - BacktestEngine - INFO - Mag7 alignment at candle 27900: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:08:02,291 - BacktestEngine - INFO - TRADE ENTERED at candle 27977: BEARISH @ $194.53
+2025-08-28 08:08:02,292 - BacktestEngine - INFO - Option entry: Stock=$194.53, Strike=$192.58, Option=$2.16, Delta=0.60
+2025-08-28 08:08:02,300 - BacktestEngine - INFO - Option entry: Stock=$194.53, Strike=$192.58, Option=$2.16, Delta=0.60
+2025-08-28 08:08:02,309 - BacktestEngine - INFO - Option entry: Stock=$194.53, Strike=$192.58, Option=$2.16, Delta=0.60
+2025-08-28 08:08:02,318 - BacktestEngine - INFO - Option entry: Stock=$194.53, Strike=$192.58, Option=$2.16, Delta=0.60
+2025-08-28 08:08:02,325 - BacktestEngine - INFO - Option entry: Stock=$194.53, Strike=$192.58, Option=$2.16, Delta=0.60
+2025-08-28 08:08:02,447 - BacktestEngine - INFO - TRADE ENTERED at candle 27990: BEARISH @ $194.43
+2025-08-28 08:08:02,448 - BacktestEngine - INFO - Option entry: Stock=$194.43, Strike=$192.49, Option=$2.15, Delta=0.60
+2025-08-28 08:08:02,462 - BacktestEngine - INFO - Option entry: Stock=$194.43, Strike=$192.49, Option=$2.15, Delta=0.60
+2025-08-28 08:08:02,480 - BacktestEngine - INFO - Option entry: Stock=$194.43, Strike=$192.49, Option=$2.15, Delta=0.60
+2025-08-28 08:08:02,496 - BacktestEngine - INFO - Option entry: Stock=$194.43, Strike=$192.49, Option=$2.15, Delta=0.60
+2025-08-28 08:08:02,515 - BacktestEngine - INFO - Option entry: Stock=$194.43, Strike=$192.49, Option=$2.15, Delta=0.60
+2025-08-28 08:08:02,610 - BacktestEngine - INFO - Mag7 alignment at candle 28000: 0 bullish (0.0%), 5 bearish (71.4%)
+2025-08-28 08:08:03,420 - BacktestEngine - INFO - Mag7 alignment at candle 28100: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:08:03,573 - BacktestEngine - INFO - TRADE ENTERED at candle 28117: BEARISH @ $195.76
+2025-08-28 08:08:03,574 - BacktestEngine - INFO - Option entry: Stock=$195.76, Strike=$193.80, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,579 - BacktestEngine - INFO - Option entry: Stock=$195.76, Strike=$193.80, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,586 - BacktestEngine - INFO - Option entry: Stock=$195.76, Strike=$193.80, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,593 - BacktestEngine - INFO - Option entry: Stock=$195.76, Strike=$193.80, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,599 - BacktestEngine - INFO - Option entry: Stock=$195.76, Strike=$193.80, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,678 - BacktestEngine - INFO - TRADE ENTERED at candle 28126: BEARISH @ $195.74
+2025-08-28 08:08:03,679 - BacktestEngine - INFO - Option entry: Stock=$195.74, Strike=$193.78, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,692 - BacktestEngine - INFO - Option entry: Stock=$195.74, Strike=$193.78, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,705 - BacktestEngine - INFO - Option entry: Stock=$195.74, Strike=$193.78, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,720 - BacktestEngine - INFO - Option entry: Stock=$195.74, Strike=$193.78, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,735 - BacktestEngine - INFO - Option entry: Stock=$195.74, Strike=$193.78, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,822 - BacktestEngine - INFO - TRADE ENTERED at candle 28134: BEARISH @ $195.88
+2025-08-28 08:08:03,823 - BacktestEngine - INFO - Option entry: Stock=$195.88, Strike=$193.92, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,833 - BacktestEngine - INFO - Option entry: Stock=$195.88, Strike=$193.92, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,844 - BacktestEngine - INFO - Option entry: Stock=$195.88, Strike=$193.92, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,857 - BacktestEngine - INFO - Option entry: Stock=$195.88, Strike=$193.92, Option=$2.17, Delta=0.60
+2025-08-28 08:08:03,868 - BacktestEngine - INFO - Option entry: Stock=$195.88, Strike=$193.92, Option=$2.17, Delta=0.60
+2025-08-28 08:08:04,391 - BacktestEngine - INFO - Mag7 alignment at candle 28200: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:08:05,218 - BacktestEngine - INFO - Mag7 alignment at candle 28300: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:08:05,974 - BacktestEngine - INFO - Mag7 alignment at candle 28400: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:08:07,271 - BacktestEngine - INFO - Mag7 alignment at candle 28500: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:08:08,376 - BacktestEngine - INFO - Mag7 alignment at candle 28600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:08:09,125 - BacktestEngine - INFO - Mag7 alignment at candle 28700: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:08:09,939 - BacktestEngine - INFO - Mag7 alignment at candle 28800: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:08:10,701 - BacktestEngine - INFO - Mag7 alignment at candle 28900: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:08:11,470 - BacktestEngine - INFO - Mag7 alignment at candle 29000: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:08:12,268 - BacktestEngine - INFO - Mag7 alignment at candle 29100: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:08:13,260 - BacktestEngine - INFO - Mag7 alignment at candle 29200: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:08:14,392 - BacktestEngine - INFO - Mag7 alignment at candle 29300: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:08:15,121 - BacktestEngine - INFO - TRADE ENTERED at candle 29388: BEARISH @ $204.20
+2025-08-28 08:08:15,122 - BacktestEngine - INFO - Option entry: Stock=$204.20, Strike=$202.16, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,153 - BacktestEngine - INFO - Option entry: Stock=$204.20, Strike=$202.16, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,188 - BacktestEngine - INFO - Option entry: Stock=$204.20, Strike=$202.16, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,222 - BacktestEngine - INFO - Option entry: Stock=$204.20, Strike=$202.16, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,236 - BacktestEngine - INFO - Option entry: Stock=$204.20, Strike=$202.16, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,274 - BacktestEngine - INFO - TRADE ENTERED at candle 29389: BEARISH @ $204.08
+2025-08-28 08:08:15,275 - BacktestEngine - INFO - Option entry: Stock=$204.08, Strike=$202.04, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,283 - BacktestEngine - INFO - Option entry: Stock=$204.08, Strike=$202.04, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,291 - BacktestEngine - INFO - Option entry: Stock=$204.08, Strike=$202.04, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,301 - BacktestEngine - INFO - Option entry: Stock=$204.08, Strike=$202.04, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,309 - BacktestEngine - INFO - Option entry: Stock=$204.08, Strike=$202.04, Option=$2.26, Delta=0.60
+2025-08-28 08:08:15,404 - BacktestEngine - INFO - Mag7 alignment at candle 29400: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:08:16,199 - BacktestEngine - INFO - Mag7 alignment at candle 29500: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:08:16,981 - BacktestEngine - INFO - Mag7 alignment at candle 29600: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:08:17,913 - BacktestEngine - INFO - Mag7 alignment at candle 29700: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:08:18,648 - BacktestEngine - INFO - Mag7 alignment at candle 29800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:19,455 - BacktestEngine - INFO - Mag7 alignment at candle 29900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:08:20,566 - BacktestEngine - INFO - Mag7 alignment at candle 30000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:21,551 - BacktestEngine - INFO - Mag7 alignment at candle 30100: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:08:22,300 - BacktestEngine - INFO - Mag7 alignment at candle 30200: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:08:22,513 - BacktestEngine - INFO - TRADE ENTERED at candle 30228: BEARISH @ $208.47
+2025-08-28 08:08:22,514 - BacktestEngine - INFO - Option entry: Stock=$208.47, Strike=$206.39, Option=$2.31, Delta=0.60
+2025-08-28 08:08:22,538 - BacktestEngine - INFO - Option entry: Stock=$208.47, Strike=$206.39, Option=$2.31, Delta=0.60
+2025-08-28 08:08:22,561 - BacktestEngine - INFO - Option entry: Stock=$208.47, Strike=$206.39, Option=$2.31, Delta=0.60
+2025-08-28 08:08:22,588 - BacktestEngine - INFO - Option entry: Stock=$208.47, Strike=$206.39, Option=$2.31, Delta=0.60
+2025-08-28 08:08:22,593 - BacktestEngine - INFO - Option entry: Stock=$208.47, Strike=$206.39, Option=$2.31, Delta=0.60
+2025-08-28 08:08:23,217 - BacktestEngine - INFO - Mag7 alignment at candle 30300: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:08:24,066 - BacktestEngine - INFO - Mag7 alignment at candle 30400: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:08:24,638 - BacktestEngine - INFO - TRADE ENTERED at candle 30476: BEARISH @ $209.00
+2025-08-28 08:08:24,639 - BacktestEngine - INFO - Option entry: Stock=$209.00, Strike=$206.91, Option=$2.32, Delta=0.60
+2025-08-28 08:08:24,645 - BacktestEngine - INFO - Option entry: Stock=$209.00, Strike=$206.91, Option=$2.32, Delta=0.60
+2025-08-28 08:08:24,652 - BacktestEngine - INFO - Option entry: Stock=$209.00, Strike=$206.91, Option=$2.32, Delta=0.60
+2025-08-28 08:08:24,659 - BacktestEngine - INFO - Option entry: Stock=$209.00, Strike=$206.91, Option=$2.32, Delta=0.60
+2025-08-28 08:08:24,668 - BacktestEngine - INFO - Option entry: Stock=$209.00, Strike=$206.91, Option=$2.32, Delta=0.60
+2025-08-28 08:08:24,860 - BacktestEngine - INFO - Mag7 alignment at candle 30500: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:08:25,666 - BacktestEngine - INFO - Mag7 alignment at candle 30600: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:08:26,768 - BacktestEngine - INFO - Mag7 alignment at candle 30700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:27,883 - BacktestEngine - INFO - Mag7 alignment at candle 30800: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:08:28,691 - BacktestEngine - INFO - Mag7 alignment at candle 30900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:29,508 - BacktestEngine - INFO - Mag7 alignment at candle 31000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:30,388 - BacktestEngine - INFO - Mag7 alignment at candle 31100: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:08:31,092 - BacktestEngine - INFO - Mag7 alignment at candle 31200: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:08:31,312 - BacktestEngine - INFO - TRADE ENTERED at candle 31226: BEARISH @ $207.27
+2025-08-28 08:08:31,313 - BacktestEngine - INFO - Option entry: Stock=$207.27, Strike=$205.20, Option=$2.30, Delta=0.60
+2025-08-28 08:08:31,319 - BacktestEngine - INFO - Option entry: Stock=$207.27, Strike=$205.20, Option=$2.30, Delta=0.60
+2025-08-28 08:08:31,324 - BacktestEngine - INFO - Option entry: Stock=$207.27, Strike=$205.20, Option=$2.30, Delta=0.60
+2025-08-28 08:08:31,330 - BacktestEngine - INFO - Option entry: Stock=$207.27, Strike=$205.20, Option=$2.30, Delta=0.60
+2025-08-28 08:08:31,340 - BacktestEngine - INFO - Option entry: Stock=$207.27, Strike=$205.20, Option=$2.30, Delta=0.60
+2025-08-28 08:08:31,973 - BacktestEngine - INFO - Mag7 alignment at candle 31300: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:08:32,782 - BacktestEngine - INFO - Mag7 alignment at candle 31400: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:32,917 - BacktestEngine - INFO - TRADE ENTERED at candle 31415: BEARISH @ $210.56
+2025-08-28 08:08:32,920 - BacktestEngine - INFO - Option entry: Stock=$210.56, Strike=$208.45, Option=$2.33, Delta=0.60
+2025-08-28 08:08:32,931 - BacktestEngine - INFO - Option entry: Stock=$210.56, Strike=$208.45, Option=$2.33, Delta=0.60
+2025-08-28 08:08:32,945 - BacktestEngine - INFO - Option entry: Stock=$210.56, Strike=$208.45, Option=$2.33, Delta=0.60
+2025-08-28 08:08:32,959 - BacktestEngine - INFO - Option entry: Stock=$210.56, Strike=$208.45, Option=$2.33, Delta=0.60
+2025-08-28 08:08:32,973 - BacktestEngine - INFO - Option entry: Stock=$210.56, Strike=$208.45, Option=$2.33, Delta=0.60
+2025-08-28 08:08:33,970 - BacktestEngine - INFO - Mag7 alignment at candle 31500: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:08:34,792 - BacktestEngine - INFO - Mag7 alignment at candle 31600: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:08:34,888 - BacktestEngine - INFO - TRADE ENTERED at candle 31613: BEARISH @ $211.18
+2025-08-28 08:08:34,889 - BacktestEngine - INFO - Option entry: Stock=$211.18, Strike=$209.07, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,893 - BacktestEngine - INFO - Option entry: Stock=$211.18, Strike=$209.07, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,896 - BacktestEngine - INFO - Option entry: Stock=$211.18, Strike=$209.07, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,900 - BacktestEngine - INFO - Option entry: Stock=$211.18, Strike=$209.07, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,904 - BacktestEngine - INFO - Option entry: Stock=$211.18, Strike=$209.07, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,930 - BacktestEngine - INFO - TRADE ENTERED at candle 31615: BEARISH @ $211.08
+2025-08-28 08:08:34,932 - BacktestEngine - INFO - Option entry: Stock=$211.08, Strike=$208.97, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,947 - BacktestEngine - INFO - Option entry: Stock=$211.08, Strike=$208.97, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,966 - BacktestEngine - INFO - Option entry: Stock=$211.08, Strike=$208.97, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,982 - BacktestEngine - INFO - Option entry: Stock=$211.08, Strike=$208.97, Option=$2.34, Delta=0.60
+2025-08-28 08:08:34,998 - BacktestEngine - INFO - Option entry: Stock=$211.08, Strike=$208.97, Option=$2.34, Delta=0.60
+2025-08-28 08:08:35,038 - BacktestEngine - INFO - TRADE ENTERED at candle 31617: BEARISH @ $210.86
+2025-08-28 08:08:35,040 - BacktestEngine - INFO - Option entry: Stock=$210.86, Strike=$208.75, Option=$2.34, Delta=0.60
+2025-08-28 08:08:35,058 - BacktestEngine - INFO - Option entry: Stock=$210.86, Strike=$208.75, Option=$2.34, Delta=0.60
+2025-08-28 08:08:35,079 - BacktestEngine - INFO - Option entry: Stock=$210.86, Strike=$208.75, Option=$2.34, Delta=0.60
+2025-08-28 08:08:35,097 - BacktestEngine - INFO - Option entry: Stock=$210.86, Strike=$208.75, Option=$2.34, Delta=0.60
+2025-08-28 08:08:35,119 - BacktestEngine - INFO - Option entry: Stock=$210.86, Strike=$208.75, Option=$2.34, Delta=0.60
+2025-08-28 08:08:35,823 - BacktestEngine - INFO - Mag7 alignment at candle 31700: 2 bullish (28.6%), 2 bearish (28.6%)
+2025-08-28 08:08:36,554 - BacktestEngine - INFO - Mag7 alignment at candle 31800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:37,309 - BacktestEngine - INFO - Mag7 alignment at candle 31900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:38,088 - BacktestEngine - INFO - Mag7 alignment at candle 32000: 2 bullish (28.6%), 3 bearish (42.9%)
+2025-08-28 08:08:38,101 - BacktestEngine - INFO - TRADE ENTERED at candle 32001: BEARISH @ $202.65
+2025-08-28 08:08:38,102 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:08:38,105 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:08:38,109 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:08:38,112 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:08:38,115 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:08:38,887 - BacktestEngine - INFO - Mag7 alignment at candle 32100: 1 bullish (14.3%), 3 bearish (42.9%)
+2025-08-28 08:08:39,941 - BacktestEngine - INFO - Mag7 alignment at candle 32200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:08:40,991 - BacktestEngine - INFO - Mag7 alignment at candle 32300: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:08:41,745 - BacktestEngine - INFO - Mag7 alignment at candle 32400: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:08:41,790 - BacktestEngine - INFO - TRADE ENTERED at candle 32404: BEARISH @ $199.66
+2025-08-28 08:08:41,792 - BacktestEngine - INFO - Option entry: Stock=$199.66, Strike=$197.66, Option=$2.21, Delta=0.60
+2025-08-28 08:08:41,842 - BacktestEngine - INFO - Option entry: Stock=$199.66, Strike=$197.66, Option=$2.21, Delta=0.60
+2025-08-28 08:08:41,886 - BacktestEngine - INFO - Option entry: Stock=$199.66, Strike=$197.66, Option=$2.21, Delta=0.60
+2025-08-28 08:08:41,929 - BacktestEngine - INFO - Option entry: Stock=$199.66, Strike=$197.66, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,024 - BacktestEngine - INFO - Option entry: Stock=$199.66, Strike=$197.66, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,235 - BacktestEngine - INFO - TRADE ENTERED at candle 32422: BEARISH @ $199.38
+2025-08-28 08:08:42,236 - BacktestEngine - INFO - Option entry: Stock=$199.38, Strike=$197.39, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,242 - BacktestEngine - INFO - Option entry: Stock=$199.38, Strike=$197.39, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,247 - BacktestEngine - INFO - Option entry: Stock=$199.38, Strike=$197.39, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,253 - BacktestEngine - INFO - Option entry: Stock=$199.38, Strike=$197.39, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,259 - BacktestEngine - INFO - Option entry: Stock=$199.38, Strike=$197.39, Option=$2.21, Delta=0.60
+2025-08-28 08:08:42,987 - BacktestEngine - INFO - Mag7 alignment at candle 32500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:43,803 - BacktestEngine - INFO - Mag7 alignment at candle 32600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:44,492 - BacktestEngine - INFO - Mag7 alignment at candle 32700: 0 bullish (0.0%), 5 bearish (71.4%)
+2025-08-28 08:08:45,310 - BacktestEngine - INFO - Mag7 alignment at candle 32800: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:08:46,181 - BacktestEngine - INFO - Mag7 alignment at candle 32900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:47,413 - BacktestEngine - INFO - Mag7 alignment at candle 33000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:48,273 - BacktestEngine - INFO - Mag7 alignment at candle 33100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:49,010 - BacktestEngine - INFO - Mag7 alignment at candle 33200: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:08:49,811 - BacktestEngine - INFO - Mag7 alignment at candle 33300: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:08:50,536 - BacktestEngine - INFO - Mag7 alignment at candle 33400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:51,499 - BacktestEngine - INFO - Mag7 alignment at candle 33500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:52,320 - BacktestEngine - INFO - Mag7 alignment at candle 33600: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:08:53,250 - BacktestEngine - INFO - Mag7 alignment at candle 33700: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:08:54,344 - BacktestEngine - INFO - Mag7 alignment at candle 33800: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:08:55,237 - BacktestEngine - INFO - Mag7 alignment at candle 33900: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:56,000 - BacktestEngine - INFO - Mag7 alignment at candle 34000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:08:56,811 - BacktestEngine - INFO - Mag7 alignment at candle 34100: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:08:57,607 - BacktestEngine - INFO - Mag7 alignment at candle 34200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:08:57,736 - BacktestEngine - INFO - TRADE ENTERED at candle 34217: BEARISH @ $198.75
+2025-08-28 08:08:57,737 - BacktestEngine - INFO - Option entry: Stock=$198.75, Strike=$196.76, Option=$2.20, Delta=0.60
+2025-08-28 08:08:57,760 - BacktestEngine - INFO - Option entry: Stock=$198.75, Strike=$196.76, Option=$2.20, Delta=0.60
+2025-08-28 08:08:57,783 - BacktestEngine - INFO - Option entry: Stock=$198.75, Strike=$196.76, Option=$2.20, Delta=0.60
+2025-08-28 08:08:57,807 - BacktestEngine - INFO - Option entry: Stock=$198.75, Strike=$196.76, Option=$2.20, Delta=0.60
+2025-08-28 08:08:57,817 - BacktestEngine - INFO - Option entry: Stock=$198.75, Strike=$196.76, Option=$2.20, Delta=0.60
+2025-08-28 08:08:58,416 - BacktestEngine - INFO - Mag7 alignment at candle 34300: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:08:59,157 - BacktestEngine - INFO - Mag7 alignment at candle 34400: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:09:00,088 - BacktestEngine - INFO - Mag7 alignment at candle 34500: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:09:01,107 - BacktestEngine - INFO - Mag7 alignment at candle 34600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:01,962 - BacktestEngine - INFO - Mag7 alignment at candle 34700: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:09:02,737 - BacktestEngine - INFO - Mag7 alignment at candle 34800: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:09:03,483 - BacktestEngine - INFO - Mag7 alignment at candle 34900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:04,208 - BacktestEngine - INFO - Mag7 alignment at candle 35000: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:09:04,909 - BacktestEngine - INFO - Mag7 alignment at candle 35100: 5 bullish (71.4%), 1 bearish (14.3%)
+2025-08-28 08:09:05,636 - BacktestEngine - INFO - Mag7 alignment at candle 35200: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:09:06,525 - BacktestEngine - INFO - Mag7 alignment at candle 35300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:07,727 - BacktestEngine - INFO - Mag7 alignment at candle 35400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:08,781 - BacktestEngine - INFO - Mag7 alignment at candle 35500: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:09:09,493 - BacktestEngine - INFO - Mag7 alignment at candle 35600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:10,287 - BacktestEngine - INFO - Mag7 alignment at candle 35700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:10,983 - BacktestEngine - INFO - Mag7 alignment at candle 35800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:11,720 - BacktestEngine - INFO - Mag7 alignment at candle 35900: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:09:12,523 - BacktestEngine - INFO - Mag7 alignment at candle 36000: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:09:13,270 - BacktestEngine - INFO - Mag7 alignment at candle 36100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:14,378 - BacktestEngine - INFO - Mag7 alignment at candle 36200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:15,248 - BacktestEngine - INFO - Mag7 alignment at candle 36300: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:09:15,481 - BacktestEngine - INFO - TRADE ENTERED at candle 36328: BEARISH @ $206.74
+2025-08-28 08:09:15,482 - BacktestEngine - INFO - Option entry: Stock=$206.74, Strike=$204.67, Option=$2.29, Delta=0.60
+2025-08-28 08:09:15,495 - BacktestEngine - INFO - Option entry: Stock=$206.74, Strike=$204.67, Option=$2.29, Delta=0.60
+2025-08-28 08:09:15,511 - BacktestEngine - INFO - Option entry: Stock=$206.74, Strike=$204.67, Option=$2.29, Delta=0.60
+2025-08-28 08:09:15,527 - BacktestEngine - INFO - Option entry: Stock=$206.74, Strike=$204.67, Option=$2.29, Delta=0.60
+2025-08-28 08:09:15,536 - BacktestEngine - INFO - Option entry: Stock=$206.74, Strike=$204.67, Option=$2.29, Delta=0.60
+2025-08-28 08:09:16,055 - BacktestEngine - INFO - Mag7 alignment at candle 36400: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:09:16,797 - BacktestEngine - INFO - Mag7 alignment at candle 36500: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:09:17,540 - BacktestEngine - INFO - Mag7 alignment at candle 36600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:18,239 - BacktestEngine - INFO - TRADE ENTERED at candle 36688: BEARISH @ $207.32
+2025-08-28 08:09:18,240 - BacktestEngine - INFO - Option entry: Stock=$207.32, Strike=$205.25, Option=$2.30, Delta=0.60
+2025-08-28 08:09:18,248 - BacktestEngine - INFO - Option entry: Stock=$207.32, Strike=$205.25, Option=$2.30, Delta=0.60
+2025-08-28 08:09:18,258 - BacktestEngine - INFO - Option entry: Stock=$207.32, Strike=$205.25, Option=$2.30, Delta=0.60
+2025-08-28 08:09:18,267 - BacktestEngine - INFO - Option entry: Stock=$207.32, Strike=$205.25, Option=$2.30, Delta=0.60
+2025-08-28 08:09:18,277 - BacktestEngine - INFO - Option entry: Stock=$207.32, Strike=$205.25, Option=$2.30, Delta=0.60
+2025-08-28 08:09:18,384 - BacktestEngine - INFO - Mag7 alignment at candle 36700: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:09:19,099 - BacktestEngine - INFO - Mag7 alignment at candle 36800: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:09:19,833 - BacktestEngine - INFO - Mag7 alignment at candle 36900: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:20,941 - BacktestEngine - INFO - TRADE ENTERED at candle 36990: BEARISH @ $205.28
+2025-08-28 08:09:20,945 - BacktestEngine - INFO - Option entry: Stock=$205.28, Strike=$203.23, Option=$2.27, Delta=0.60
+2025-08-28 08:09:20,978 - BacktestEngine - INFO - Option entry: Stock=$205.28, Strike=$203.23, Option=$2.27, Delta=0.60
+2025-08-28 08:09:21,008 - BacktestEngine - INFO - Option entry: Stock=$205.28, Strike=$203.23, Option=$2.27, Delta=0.60
+2025-08-28 08:09:21,032 - BacktestEngine - INFO - Option entry: Stock=$205.28, Strike=$203.23, Option=$2.27, Delta=0.60
+2025-08-28 08:09:21,043 - BacktestEngine - INFO - Option entry: Stock=$205.28, Strike=$203.23, Option=$2.27, Delta=0.60
+2025-08-28 08:09:21,148 - BacktestEngine - INFO - Mag7 alignment at candle 37000: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:09:21,905 - BacktestEngine - INFO - Mag7 alignment at candle 37100: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:09:22,491 - BacktestEngine - INFO - TRADE ENTERED at candle 37171: BEARISH @ $206.39
+2025-08-28 08:09:22,492 - BacktestEngine - INFO - Option entry: Stock=$206.39, Strike=$204.33, Option=$2.29, Delta=0.60
+2025-08-28 08:09:22,509 - BacktestEngine - INFO - Option entry: Stock=$206.39, Strike=$204.33, Option=$2.29, Delta=0.60
+2025-08-28 08:09:22,528 - BacktestEngine - INFO - Option entry: Stock=$206.39, Strike=$204.33, Option=$2.29, Delta=0.60
+2025-08-28 08:09:22,547 - BacktestEngine - INFO - Option entry: Stock=$206.39, Strike=$204.33, Option=$2.29, Delta=0.60
+2025-08-28 08:09:22,561 - BacktestEngine - INFO - Option entry: Stock=$206.39, Strike=$204.33, Option=$2.29, Delta=0.60
+2025-08-28 08:09:22,860 - BacktestEngine - INFO - Mag7 alignment at candle 37200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:23,665 - BacktestEngine - INFO - Mag7 alignment at candle 37300: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:09:24,531 - BacktestEngine - INFO - Mag7 alignment at candle 37400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:25,413 - BacktestEngine - INFO - Mag7 alignment at candle 37500: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:09:26,256 - BacktestEngine - INFO - Mag7 alignment at candle 37600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:27,395 - BacktestEngine - INFO - Mag7 alignment at candle 37700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:28,481 - BacktestEngine - INFO - Mag7 alignment at candle 37800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:29,297 - BacktestEngine - INFO - Mag7 alignment at candle 37900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:30,011 - BacktestEngine - INFO - Mag7 alignment at candle 38000: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:09:30,833 - BacktestEngine - INFO - Mag7 alignment at candle 38100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:31,536 - BacktestEngine - INFO - Mag7 alignment at candle 38200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:32,319 - BacktestEngine - INFO - Mag7 alignment at candle 38300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:33,161 - BacktestEngine - INFO - Mag7 alignment at candle 38400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:34,223 - BacktestEngine - INFO - Mag7 alignment at candle 38500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:35,242 - BacktestEngine - INFO - Mag7 alignment at candle 38600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:36,107 - BacktestEngine - INFO - Mag7 alignment at candle 38700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:36,811 - BacktestEngine - INFO - Mag7 alignment at candle 38800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:37,551 - BacktestEngine - INFO - Mag7 alignment at candle 38900: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:38,309 - BacktestEngine - INFO - Mag7 alignment at candle 39000: 7 bullish (100.0%), 0 bearish (0.0%)
+2025-08-28 08:09:38,634 - BacktestEngine - INFO - TRADE ENTERED at candle 39035: BEARISH @ $201.23
+2025-08-28 08:09:38,635 - BacktestEngine - INFO - Option entry: Stock=$201.23, Strike=$199.22, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,684 - BacktestEngine - INFO - Option entry: Stock=$201.23, Strike=$199.22, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,734 - BacktestEngine - INFO - Option entry: Stock=$201.23, Strike=$199.22, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,784 - BacktestEngine - INFO - Option entry: Stock=$201.23, Strike=$199.22, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,797 - BacktestEngine - INFO - Option entry: Stock=$201.23, Strike=$199.22, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,873 - BacktestEngine - INFO - TRADE ENTERED at candle 39037: BEARISH @ $200.94
+2025-08-28 08:09:38,874 - BacktestEngine - INFO - Option entry: Stock=$200.94, Strike=$198.93, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,885 - BacktestEngine - INFO - Option entry: Stock=$200.94, Strike=$198.93, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,898 - BacktestEngine - INFO - Option entry: Stock=$200.94, Strike=$198.93, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,909 - BacktestEngine - INFO - Option entry: Stock=$200.94, Strike=$198.93, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,920 - BacktestEngine - INFO - Option entry: Stock=$200.94, Strike=$198.93, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,944 - BacktestEngine - INFO - TRADE ENTERED at candle 39038: BEARISH @ $201.00
+2025-08-28 08:09:38,945 - BacktestEngine - INFO - Option entry: Stock=$201.00, Strike=$198.99, Option=$2.23, Delta=0.60
+2025-08-28 08:09:38,998 - BacktestEngine - INFO - Option entry: Stock=$201.00, Strike=$198.99, Option=$2.23, Delta=0.60
+2025-08-28 08:09:39,047 - BacktestEngine - INFO - Option entry: Stock=$201.00, Strike=$198.99, Option=$2.23, Delta=0.60
+2025-08-28 08:09:39,096 - BacktestEngine - INFO - Option entry: Stock=$201.00, Strike=$198.99, Option=$2.23, Delta=0.60
+2025-08-28 08:09:39,105 - BacktestEngine - INFO - Option entry: Stock=$201.00, Strike=$198.99, Option=$2.23, Delta=0.60
+2025-08-28 08:09:39,626 - BacktestEngine - INFO - Mag7 alignment at candle 39100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:40,784 - BacktestEngine - INFO - Mag7 alignment at candle 39200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:41,653 - BacktestEngine - INFO - Mag7 alignment at candle 39300: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:09:42,391 - BacktestEngine - INFO - Mag7 alignment at candle 39400: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:09:43,148 - BacktestEngine - INFO - Mag7 alignment at candle 39500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:44,010 - BacktestEngine - INFO - Mag7 alignment at candle 39600: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:09:44,719 - BacktestEngine - INFO - Mag7 alignment at candle 39700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:45,541 - BacktestEngine - INFO - Mag7 alignment at candle 39800: 1 bullish (14.3%), 5 bearish (71.4%)
+2025-08-28 08:09:46,474 - BacktestEngine - INFO - Mag7 alignment at candle 39900: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:47,513 - BacktestEngine - INFO - Mag7 alignment at candle 40000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:48,437 - BacktestEngine - INFO - Mag7 alignment at candle 40100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:49,191 - BacktestEngine - INFO - Mag7 alignment at candle 40200: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:09:49,974 - BacktestEngine - INFO - Mag7 alignment at candle 40300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:50,707 - BacktestEngine - INFO - Mag7 alignment at candle 40400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:51,407 - BacktestEngine - INFO - Mag7 alignment at candle 40500: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:09:52,166 - BacktestEngine - INFO - Mag7 alignment at candle 40600: 6 bullish (85.7%), 0 bearish (0.0%)
+2025-08-28 08:09:53,165 - BacktestEngine - INFO - Mag7 alignment at candle 40700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:54,033 - BacktestEngine - INFO - Mag7 alignment at candle 40800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:54,911 - BacktestEngine - INFO - Mag7 alignment at candle 40900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:09:55,671 - BacktestEngine - INFO - Mag7 alignment at candle 41000: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:09:56,421 - BacktestEngine - INFO - Mag7 alignment at candle 41100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:09:56,758 - BacktestEngine - INFO - TRADE ENTERED at candle 41145: BEARISH @ $202.53
+2025-08-28 08:09:56,759 - BacktestEngine - INFO - Option entry: Stock=$202.53, Strike=$200.50, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,771 - BacktestEngine - INFO - Option entry: Stock=$202.53, Strike=$200.50, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,782 - BacktestEngine - INFO - Option entry: Stock=$202.53, Strike=$200.50, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,795 - BacktestEngine - INFO - Option entry: Stock=$202.53, Strike=$200.50, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,812 - BacktestEngine - INFO - Option entry: Stock=$202.53, Strike=$200.50, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,848 - BacktestEngine - INFO - TRADE ENTERED at candle 41147: BEARISH @ $202.38
+2025-08-28 08:09:56,849 - BacktestEngine - INFO - Option entry: Stock=$202.38, Strike=$200.36, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,859 - BacktestEngine - INFO - Option entry: Stock=$202.38, Strike=$200.36, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,868 - BacktestEngine - INFO - Option entry: Stock=$202.38, Strike=$200.36, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,878 - BacktestEngine - INFO - Option entry: Stock=$202.38, Strike=$200.36, Option=$2.24, Delta=0.60
+2025-08-28 08:09:56,888 - BacktestEngine - INFO - Option entry: Stock=$202.38, Strike=$200.36, Option=$2.24, Delta=0.60
+2025-08-28 08:09:57,342 - BacktestEngine - INFO - Mag7 alignment at candle 41200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:09:58,087 - BacktestEngine - INFO - Mag7 alignment at candle 41300: 1 bullish (14.3%), 2 bearish (28.6%)
+2025-08-28 08:09:58,917 - BacktestEngine - INFO - Mag7 alignment at candle 41400: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:09:59,961 - BacktestEngine - INFO - Mag7 alignment at candle 41500: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:10:01,118 - BacktestEngine - INFO - Mag7 alignment at candle 41600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:01,974 - BacktestEngine - INFO - Mag7 alignment at candle 41700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:02,683 - BacktestEngine - INFO - Mag7 alignment at candle 41800: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:10:03,472 - BacktestEngine - INFO - Mag7 alignment at candle 41900: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:04,145 - BacktestEngine - INFO - Mag7 alignment at candle 42000: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:05,014 - BacktestEngine - INFO - Mag7 alignment at candle 42100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:05,430 - BacktestEngine - INFO - Mag7 alignment at candle 42200: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:10:06,052 - BacktestEngine - INFO - Mag7 alignment at candle 42300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:06,920 - BacktestEngine - INFO - Mag7 alignment at candle 42400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:07,531 - BacktestEngine - INFO - TRADE ENTERED at candle 42467: BEARISH @ $202.82
+2025-08-28 08:10:07,533 - BacktestEngine - INFO - Option entry: Stock=$202.82, Strike=$200.79, Option=$2.25, Delta=0.60
+2025-08-28 08:10:07,597 - BacktestEngine - INFO - Option entry: Stock=$202.82, Strike=$200.79, Option=$2.25, Delta=0.60
+2025-08-28 08:10:07,656 - BacktestEngine - INFO - Option entry: Stock=$202.82, Strike=$200.79, Option=$2.25, Delta=0.60
+2025-08-28 08:10:07,728 - BacktestEngine - INFO - Option entry: Stock=$202.82, Strike=$200.79, Option=$2.25, Delta=0.60
+2025-08-28 08:10:07,754 - BacktestEngine - INFO - Option entry: Stock=$202.82, Strike=$200.79, Option=$2.25, Delta=0.60
+2025-08-28 08:10:08,080 - BacktestEngine - INFO - Mag7 alignment at candle 42500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:08,972 - BacktestEngine - INFO - Mag7 alignment at candle 42600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:09,711 - BacktestEngine - INFO - Mag7 alignment at candle 42700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:10,596 - BacktestEngine - INFO - Mag7 alignment at candle 42800: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:10:11,416 - BacktestEngine - INFO - Mag7 alignment at candle 42900: 2 bullish (28.6%), 4 bearish (57.1%)
+2025-08-28 08:10:12,332 - BacktestEngine - INFO - Mag7 alignment at candle 43000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:13,208 - BacktestEngine - INFO - Mag7 alignment at candle 43100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:14,102 - BacktestEngine - INFO - Mag7 alignment at candle 43200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:14,936 - BacktestEngine - INFO - Mag7 alignment at candle 43300: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:10:15,875 - BacktestEngine - INFO - Mag7 alignment at candle 43400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:16,854 - BacktestEngine - INFO - Mag7 alignment at candle 43500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:18,066 - BacktestEngine - INFO - Mag7 alignment at candle 43600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:19,114 - BacktestEngine - INFO - Mag7 alignment at candle 43700: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:10:20,199 - BacktestEngine - INFO - Mag7 alignment at candle 43800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:21,332 - BacktestEngine - INFO - Mag7 alignment at candle 43900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:10:22,352 - BacktestEngine - INFO - Mag7 alignment at candle 44000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:23,440 - BacktestEngine - INFO - Mag7 alignment at candle 44100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:24,603 - BacktestEngine - INFO - Mag7 alignment at candle 44200: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:10:25,679 - BacktestEngine - INFO - Mag7 alignment at candle 44300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:26,856 - BacktestEngine - INFO - Mag7 alignment at candle 44400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:27,987 - BacktestEngine - INFO - Mag7 alignment at candle 44500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:29,141 - BacktestEngine - INFO - Mag7 alignment at candle 44600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:30,298 - BacktestEngine - INFO - Mag7 alignment at candle 44700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:31,078 - BacktestEngine - INFO - TRADE ENTERED at candle 44765: BEARISH @ $195.72
+2025-08-28 08:10:31,080 - BacktestEngine - INFO - Option entry: Stock=$195.72, Strike=$193.76, Option=$2.17, Delta=0.60
+2025-08-28 08:10:31,092 - BacktestEngine - INFO - Option entry: Stock=$195.72, Strike=$193.76, Option=$2.17, Delta=0.60
+2025-08-28 08:10:31,104 - BacktestEngine - INFO - Option entry: Stock=$195.72, Strike=$193.76, Option=$2.17, Delta=0.60
+2025-08-28 08:10:31,117 - BacktestEngine - INFO - Option entry: Stock=$195.72, Strike=$193.76, Option=$2.17, Delta=0.60
+2025-08-28 08:10:31,124 - BacktestEngine - INFO - Option entry: Stock=$195.72, Strike=$193.76, Option=$2.17, Delta=0.60
+2025-08-28 08:10:31,594 - BacktestEngine - INFO - Mag7 alignment at candle 44800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:32,474 - BacktestEngine - INFO - TRADE ENTERED at candle 44879: BEARISH @ $199.85
+2025-08-28 08:10:32,475 - BacktestEngine - INFO - Option entry: Stock=$199.85, Strike=$197.85, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,483 - BacktestEngine - INFO - Option entry: Stock=$199.85, Strike=$197.85, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,490 - BacktestEngine - INFO - Option entry: Stock=$199.85, Strike=$197.85, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,499 - BacktestEngine - INFO - Option entry: Stock=$199.85, Strike=$197.85, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,506 - BacktestEngine - INFO - Option entry: Stock=$199.85, Strike=$197.85, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,527 - BacktestEngine - INFO - TRADE ENTERED at candle 44880: BEARISH @ $199.80
+2025-08-28 08:10:32,529 - BacktestEngine - INFO - Option entry: Stock=$199.80, Strike=$197.80, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,532 - BacktestEngine - INFO - Option entry: Stock=$199.80, Strike=$197.80, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,536 - BacktestEngine - INFO - Option entry: Stock=$199.80, Strike=$197.80, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,540 - BacktestEngine - INFO - Option entry: Stock=$199.80, Strike=$197.80, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,545 - BacktestEngine - INFO - Option entry: Stock=$199.80, Strike=$197.80, Option=$2.21, Delta=0.60
+2025-08-28 08:10:32,772 - BacktestEngine - INFO - Mag7 alignment at candle 44900: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:34,003 - BacktestEngine - INFO - Mag7 alignment at candle 45000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:35,203 - BacktestEngine - INFO - Mag7 alignment at candle 45100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:36,109 - BacktestEngine - INFO - Mag7 alignment at candle 45200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:36,525 - BacktestEngine - INFO - Mag7 alignment at candle 45300: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:10:36,936 - BacktestEngine - INFO - Mag7 alignment at candle 45400: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:10:37,368 - BacktestEngine - INFO - Mag7 alignment at candle 45500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:37,768 - BacktestEngine - INFO - Mag7 alignment at candle 45600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:38,369 - BacktestEngine - INFO - Mag7 alignment at candle 45700: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:10:39,786 - BacktestEngine - INFO - Mag7 alignment at candle 45800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:41,388 - BacktestEngine - INFO - Mag7 alignment at candle 45900: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:42,751 - BacktestEngine - INFO - Mag7 alignment at candle 46000: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:10:44,044 - BacktestEngine - INFO - Mag7 alignment at candle 46100: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:10:45,453 - BacktestEngine - INFO - Mag7 alignment at candle 46200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:46,990 - BacktestEngine - INFO - Mag7 alignment at candle 46300: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:48,524 - BacktestEngine - INFO - Mag7 alignment at candle 46400: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:10:49,857 - BacktestEngine - INFO - Mag7 alignment at candle 46500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:10:50,885 - BacktestEngine - INFO - Mag7 alignment at candle 46600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:51,684 - BacktestEngine - INFO - Mag7 alignment at candle 46700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:52,572 - BacktestEngine - INFO - Mag7 alignment at candle 46800: 5 bullish (71.4%), 1 bearish (14.3%)
+2025-08-28 08:10:53,637 - BacktestEngine - INFO - Mag7 alignment at candle 46900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:54,432 - BacktestEngine - INFO - Mag7 alignment at candle 47000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:55,343 - BacktestEngine - INFO - Mag7 alignment at candle 47100: 0 bullish (0.0%), 6 bearish (85.7%)
+2025-08-28 08:10:56,334 - BacktestEngine - INFO - Mag7 alignment at candle 47200: 1 bullish (14.3%), 3 bearish (42.9%)
+2025-08-28 08:10:57,292 - BacktestEngine - INFO - Mag7 alignment at candle 47300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:10:58,416 - BacktestEngine - INFO - Mag7 alignment at candle 47400: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:10:59,489 - BacktestEngine - INFO - Mag7 alignment at candle 47500: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:11:00,483 - BacktestEngine - INFO - Mag7 alignment at candle 47600: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:11:01,605 - BacktestEngine - INFO - Mag7 alignment at candle 47700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:02,630 - BacktestEngine - INFO - Mag7 alignment at candle 47800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:03,627 - BacktestEngine - INFO - Mag7 alignment at candle 47900: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:04,583 - BacktestEngine - INFO - Mag7 alignment at candle 48000: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:11:05,595 - BacktestEngine - INFO - Mag7 alignment at candle 48100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:06,563 - BacktestEngine - INFO - Mag7 alignment at candle 48200: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:11:07,684 - BacktestEngine - INFO - Mag7 alignment at candle 48300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:08,824 - BacktestEngine - INFO - Mag7 alignment at candle 48400: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:11:09,921 - BacktestEngine - INFO - Mag7 alignment at candle 48500: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:11:10,962 - BacktestEngine - INFO - Mag7 alignment at candle 48600: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:11:12,021 - BacktestEngine - INFO - Mag7 alignment at candle 48700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:13,138 - BacktestEngine - INFO - Mag7 alignment at candle 48800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:14,332 - BacktestEngine - INFO - Mag7 alignment at candle 48900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:15,379 - BacktestEngine - INFO - Mag7 alignment at candle 49000: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:11:16,407 - BacktestEngine - INFO - Mag7 alignment at candle 49100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:17,325 - BacktestEngine - INFO - Mag7 alignment at candle 49200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:18,076 - BacktestEngine - INFO - Mag7 alignment at candle 49300: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:18,764 - BacktestEngine - INFO - Mag7 alignment at candle 49400: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:19,520 - BacktestEngine - INFO - Mag7 alignment at candle 49500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:20,184 - BacktestEngine - INFO - Mag7 alignment at candle 49600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:20,867 - BacktestEngine - INFO - Mag7 alignment at candle 49700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:21,512 - BacktestEngine - INFO - Mag7 alignment at candle 49800: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:11:22,170 - BacktestEngine - INFO - Mag7 alignment at candle 49900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:22,805 - BacktestEngine - INFO - Mag7 alignment at candle 50000: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:23,675 - BacktestEngine - INFO - Mag7 alignment at candle 50100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:24,879 - BacktestEngine - INFO - Mag7 alignment at candle 50200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:26,036 - BacktestEngine - INFO - Mag7 alignment at candle 50300: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:27,168 - BacktestEngine - INFO - Mag7 alignment at candle 50400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:28,082 - BacktestEngine - INFO - Mag7 alignment at candle 50500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:29,458 - BacktestEngine - INFO - Mag7 alignment at candle 50600: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:11:30,863 - BacktestEngine - INFO - Mag7 alignment at candle 50700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:31,910 - BacktestEngine - INFO - Mag7 alignment at candle 50800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:32,949 - BacktestEngine - INFO - Mag7 alignment at candle 50900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:33,939 - BacktestEngine - INFO - Mag7 alignment at candle 51000: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:11:34,968 - BacktestEngine - INFO - Mag7 alignment at candle 51100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:35,928 - BacktestEngine - INFO - Mag7 alignment at candle 51200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:37,069 - BacktestEngine - INFO - Mag7 alignment at candle 51300: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:11:38,058 - BacktestEngine - INFO - Mag7 alignment at candle 51400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:39,082 - BacktestEngine - INFO - Mag7 alignment at candle 51500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:40,172 - BacktestEngine - INFO - Mag7 alignment at candle 51600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:41,061 - BacktestEngine - INFO - Mag7 alignment at candle 51700: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:11:41,951 - BacktestEngine - INFO - Mag7 alignment at candle 51800: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:11:43,046 - BacktestEngine - INFO - Mag7 alignment at candle 51900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:44,141 - BacktestEngine - INFO - Mag7 alignment at candle 52000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:44,990 - BacktestEngine - INFO - Mag7 alignment at candle 52100: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:11:45,816 - BacktestEngine - INFO - Mag7 alignment at candle 52200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:46,687 - BacktestEngine - INFO - Mag7 alignment at candle 52300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:47,458 - BacktestEngine - INFO - Mag7 alignment at candle 52400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:48,440 - BacktestEngine - INFO - Mag7 alignment at candle 52500: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:11:49,436 - BacktestEngine - INFO - Mag7 alignment at candle 52600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:50,489 - BacktestEngine - INFO - Mag7 alignment at candle 52700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:51,615 - BacktestEngine - INFO - Mag7 alignment at candle 52800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:11:52,615 - BacktestEngine - INFO - Mag7 alignment at candle 52900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:11:53,644 - BacktestEngine - INFO - Mag7 alignment at candle 53000: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:54,668 - BacktestEngine - INFO - Mag7 alignment at candle 53100: 3 bullish (42.9%), 0 bearish (0.0%)
+2025-08-28 08:11:55,613 - BacktestEngine - INFO - Mag7 alignment at candle 53200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:11:56,635 - BacktestEngine - INFO - Mag7 alignment at candle 53300: 2 bullish (28.6%), 1 bearish (14.3%)
+2025-08-28 08:11:57,662 - BacktestEngine - INFO - Mag7 alignment at candle 53400: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:58,630 - BacktestEngine - INFO - Mag7 alignment at candle 53500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:11:59,555 - BacktestEngine - INFO - Mag7 alignment at candle 53600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:00,450 - BacktestEngine - INFO - Mag7 alignment at candle 53700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:01,456 - BacktestEngine - INFO - Mag7 alignment at candle 53800: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:02,432 - BacktestEngine - INFO - Mag7 alignment at candle 53900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:03,498 - BacktestEngine - INFO - Mag7 alignment at candle 54000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:04,694 - BacktestEngine - INFO - Mag7 alignment at candle 54100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:05,734 - BacktestEngine - INFO - Mag7 alignment at candle 54200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:06,797 - BacktestEngine - INFO - Mag7 alignment at candle 54300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:07,806 - BacktestEngine - INFO - Mag7 alignment at candle 54400: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:08,939 - BacktestEngine - INFO - Mag7 alignment at candle 54500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:10,207 - BacktestEngine - INFO - Mag7 alignment at candle 54600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:11,648 - BacktestEngine - INFO - Mag7 alignment at candle 54700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:12,759 - BacktestEngine - INFO - Mag7 alignment at candle 54800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:13,876 - BacktestEngine - INFO - Mag7 alignment at candle 54900: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:12:15,015 - BacktestEngine - INFO - Mag7 alignment at candle 55000: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:12:16,185 - BacktestEngine - INFO - Mag7 alignment at candle 55100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:17,350 - BacktestEngine - INFO - Mag7 alignment at candle 55200: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:12:18,734 - BacktestEngine - INFO - Mag7 alignment at candle 55300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:19,829 - BacktestEngine - INFO - Mag7 alignment at candle 55400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:20,994 - BacktestEngine - INFO - Mag7 alignment at candle 55500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:21,983 - BacktestEngine - INFO - Mag7 alignment at candle 55600: 4 bullish (57.1%), 1 bearish (14.3%)
+2025-08-28 08:12:23,062 - BacktestEngine - INFO - Mag7 alignment at candle 55700: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:12:24,002 - BacktestEngine - INFO - Mag7 alignment at candle 55800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:25,216 - BacktestEngine - INFO - Mag7 alignment at candle 55900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:26,050 - BacktestEngine - INFO - Mag7 alignment at candle 56000: 1 bullish (14.3%), 4 bearish (57.1%)
+2025-08-28 08:12:27,087 - BacktestEngine - INFO - Mag7 alignment at candle 56100: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:12:27,802 - BacktestEngine - INFO - TRADE ENTERED at candle 56173: BEARISH @ $202.65
+2025-08-28 08:12:27,804 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:12:27,808 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:12:27,812 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:12:27,816 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:12:27,821 - BacktestEngine - INFO - Option entry: Stock=$202.65, Strike=$200.62, Option=$2.25, Delta=0.60
+2025-08-28 08:12:28,118 - BacktestEngine - INFO - Mag7 alignment at candle 56200: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:12:28,996 - BacktestEngine - INFO - Mag7 alignment at candle 56300: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:12:30,030 - BacktestEngine - INFO - Mag7 alignment at candle 56400: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:12:31,064 - BacktestEngine - INFO - Mag7 alignment at candle 56500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:32,181 - BacktestEngine - INFO - Mag7 alignment at candle 56600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:33,159 - BacktestEngine - INFO - Mag7 alignment at candle 56700: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:12:34,138 - BacktestEngine - INFO - Mag7 alignment at candle 56800: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:12:35,129 - BacktestEngine - INFO - Mag7 alignment at candle 56900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:12:36,216 - BacktestEngine - INFO - Mag7 alignment at candle 57000: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:12:37,254 - BacktestEngine - INFO - Mag7 alignment at candle 57100: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:38,261 - BacktestEngine - INFO - Mag7 alignment at candle 57200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:39,318 - BacktestEngine - INFO - Mag7 alignment at candle 57300: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:40,297 - BacktestEngine - INFO - Mag7 alignment at candle 57400: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:12:41,194 - BacktestEngine - INFO - Mag7 alignment at candle 57500: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:41,864 - BacktestEngine - INFO - TRADE ENTERED at candle 57569: BULLISH @ $220.15
+2025-08-28 08:12:41,865 - BacktestEngine - INFO - Option entry: Stock=$220.15, Strike=$222.35, Option=$2.44, Delta=0.60
+2025-08-28 08:12:41,869 - BacktestEngine - INFO - Option entry: Stock=$220.15, Strike=$222.35, Option=$2.44, Delta=0.60
+2025-08-28 08:12:41,875 - BacktestEngine - INFO - Option entry: Stock=$220.15, Strike=$222.35, Option=$2.44, Delta=0.60
+2025-08-28 08:12:41,883 - BacktestEngine - INFO - Option entry: Stock=$220.15, Strike=$222.35, Option=$2.44, Delta=0.60
+2025-08-28 08:12:41,889 - BacktestEngine - INFO - Option entry: Stock=$220.15, Strike=$222.35, Option=$2.44, Delta=0.60
+2025-08-28 08:12:42,249 - BacktestEngine - INFO - Mag7 alignment at candle 57600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:43,268 - BacktestEngine - INFO - Mag7 alignment at candle 57700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:44,195 - BacktestEngine - INFO - Mag7 alignment at candle 57800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:45,183 - BacktestEngine - INFO - Mag7 alignment at candle 57900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:46,182 - BacktestEngine - INFO - Mag7 alignment at candle 58000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:12:47,103 - BacktestEngine - INFO - Mag7 alignment at candle 58100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:48,172 - BacktestEngine - INFO - Mag7 alignment at candle 58200: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:49,127 - BacktestEngine - INFO - Mag7 alignment at candle 58300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:50,118 - BacktestEngine - INFO - Mag7 alignment at candle 58400: 0 bullish (0.0%), 3 bearish (42.9%)
+2025-08-28 08:12:51,197 - BacktestEngine - INFO - Mag7 alignment at candle 58500: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:12:52,240 - BacktestEngine - INFO - Mag7 alignment at candle 58600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:53,312 - BacktestEngine - INFO - Mag7 alignment at candle 58700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:54,516 - BacktestEngine - INFO - Mag7 alignment at candle 58800: 3 bullish (42.9%), 1 bearish (14.3%)
+2025-08-28 08:12:55,566 - BacktestEngine - INFO - Mag7 alignment at candle 58900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:12:56,470 - BacktestEngine - INFO - Mag7 alignment at candle 59000: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:12:57,384 - BacktestEngine - INFO - Mag7 alignment at candle 59100: 1 bullish (14.3%), 1 bearish (14.3%)
+2025-08-28 08:12:58,415 - BacktestEngine - INFO - Mag7 alignment at candle 59200: 0 bullish (0.0%), 4 bearish (57.1%)
+2025-08-28 08:12:59,491 - BacktestEngine - INFO - Mag7 alignment at candle 59300: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:13:00,634 - BacktestEngine - INFO - Mag7 alignment at candle 59400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:01,720 - BacktestEngine - INFO - Mag7 alignment at candle 59500: 5 bullish (71.4%), 0 bearish (0.0%)
+2025-08-28 08:13:02,738 - BacktestEngine - INFO - Mag7 alignment at candle 59600: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:13:03,722 - BacktestEngine - INFO - Mag7 alignment at candle 59700: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:13:04,602 - BacktestEngine - INFO - Mag7 alignment at candle 59800: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:13:05,650 - BacktestEngine - INFO - Mag7 alignment at candle 59900: 0 bullish (0.0%), 7 bearish (100.0%)
+2025-08-28 08:13:05,937 - BacktestEngine - INFO - TRADE ENTERED at candle 59921: BULLISH @ $232.18
+2025-08-28 08:13:05,939 - BacktestEngine - INFO - Option entry: Stock=$232.18, Strike=$234.50, Option=$2.57, Delta=0.60
+2025-08-28 08:13:06,018 - BacktestEngine - INFO - Option entry: Stock=$232.18, Strike=$234.50, Option=$2.57, Delta=0.60
+2025-08-28 08:13:06,112 - BacktestEngine - INFO - Option entry: Stock=$232.18, Strike=$234.50, Option=$2.57, Delta=0.60
+2025-08-28 08:13:06,186 - BacktestEngine - INFO - Option entry: Stock=$232.18, Strike=$234.50, Option=$2.57, Delta=0.60
+2025-08-28 08:13:06,215 - BacktestEngine - INFO - Option entry: Stock=$232.18, Strike=$234.50, Option=$2.57, Delta=0.60
+2025-08-28 08:13:07,298 - BacktestEngine - INFO - Mag7 alignment at candle 60000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:08,182 - BacktestEngine - INFO - Mag7 alignment at candle 60100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:13:09,136 - BacktestEngine - INFO - Mag7 alignment at candle 60200: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:13:10,051 - BacktestEngine - INFO - Mag7 alignment at candle 60300: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:13:11,015 - BacktestEngine - INFO - Mag7 alignment at candle 60400: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:13:12,020 - BacktestEngine - INFO - Mag7 alignment at candle 60500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:13,043 - BacktestEngine - INFO - Mag7 alignment at candle 60600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:14,036 - BacktestEngine - INFO - Mag7 alignment at candle 60700: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:13:15,154 - BacktestEngine - INFO - Mag7 alignment at candle 60800: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:13:16,264 - BacktestEngine - INFO - Mag7 alignment at candle 60900: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:13:17,186 - BacktestEngine - INFO - Mag7 alignment at candle 61000: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:18,139 - BacktestEngine - INFO - Mag7 alignment at candle 61100: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:13:19,110 - BacktestEngine - INFO - Mag7 alignment at candle 61200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:20,176 - BacktestEngine - INFO - Mag7 alignment at candle 61300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:21,260 - BacktestEngine - INFO - Mag7 alignment at candle 61400: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:13:22,207 - BacktestEngine - INFO - Mag7 alignment at candle 61500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:23,291 - BacktestEngine - INFO - Mag7 alignment at candle 61600: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:13:24,366 - BacktestEngine - INFO - Mag7 alignment at candle 61700: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:25,319 - BacktestEngine - INFO - Mag7 alignment at candle 61800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:26,608 - BacktestEngine - INFO - Mag7 alignment at candle 61900: 2 bullish (28.6%), 2 bearish (28.6%)
+2025-08-28 08:13:27,733 - BacktestEngine - INFO - Mag7 alignment at candle 62000: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:13:28,743 - BacktestEngine - INFO - Mag7 alignment at candle 62100: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:13:29,728 - BacktestEngine - INFO - Mag7 alignment at candle 62200: 0 bullish (0.0%), 2 bearish (28.6%)
+2025-08-28 08:13:30,709 - BacktestEngine - INFO - Mag7 alignment at candle 62300: 4 bullish (57.1%), 0 bearish (0.0%)
+2025-08-28 08:13:31,719 - BacktestEngine - INFO - Mag7 alignment at candle 62400: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:32,676 - BacktestEngine - INFO - Mag7 alignment at candle 62500: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:33,798 - BacktestEngine - INFO - Mag7 alignment at candle 62600: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:34,805 - BacktestEngine - INFO - TRADE ENTERED at candle 62686: BULLISH @ $226.89
+2025-08-28 08:13:34,806 - BacktestEngine - INFO - Option entry: Stock=$226.89, Strike=$229.16, Option=$2.51, Delta=0.60
+2025-08-28 08:13:34,831 - BacktestEngine - INFO - Option entry: Stock=$226.89, Strike=$229.16, Option=$2.51, Delta=0.60
+2025-08-28 08:13:34,858 - BacktestEngine - INFO - Option entry: Stock=$226.89, Strike=$229.16, Option=$2.51, Delta=0.60
+2025-08-28 08:13:34,881 - BacktestEngine - INFO - Option entry: Stock=$226.89, Strike=$229.16, Option=$2.51, Delta=0.60
+2025-08-28 08:13:34,897 - BacktestEngine - INFO - Option entry: Stock=$226.89, Strike=$229.16, Option=$2.51, Delta=0.60
+2025-08-28 08:13:35,076 - BacktestEngine - INFO - Mag7 alignment at candle 62700: 0 bullish (0.0%), 1 bearish (14.3%)
+2025-08-28 08:13:36,082 - BacktestEngine - INFO - Mag7 alignment at candle 62800: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:36,980 - BacktestEngine - INFO - Mag7 alignment at candle 62900: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:37,968 - BacktestEngine - INFO - Mag7 alignment at candle 63000: 2 bullish (28.6%), 0 bearish (0.0%)
+2025-08-28 08:13:38,960 - BacktestEngine - INFO - Mag7 alignment at candle 63100: 1 bullish (14.3%), 0 bearish (0.0%)
+2025-08-28 08:13:39,939 - BacktestEngine - INFO - Mag7 alignment at candle 63200: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:40,951 - BacktestEngine - INFO - Mag7 alignment at candle 63300: 0 bullish (0.0%), 0 bearish (0.0%)
+2025-08-28 08:13:42,091 - BacktestEngine_20250828_075431 - INFO - 
+Backtest Summary for AAPL:
+2025-08-28 08:13:42,093 - BacktestEngine_20250828_075431 - INFO -   Period: 1m
+2025-08-28 08:13:42,094 - BacktestEngine_20250828_075431 - INFO -   Date Range: 2025-01-01 to 2025-08-28
+2025-08-28 08:13:42,095 - BacktestEngine_20250828_075431 - INFO -   Total Candles: 63392
+2025-08-28 08:13:42,096 - BacktestEngine_20250828_075431 - INFO -   Strategy: Magnificent 7 (Mag7)
+2025-08-28 08:13:42,097 - BacktestEngine_20250828_075431 - INFO -   Alignment Count: 8532
+2025-08-28 08:13:42,098 - BacktestEngine_20250828_075431 - INFO -   Compression Count: 1243
+2025-08-28 08:13:42,098 - BacktestEngine_20250828_075431 - INFO -   Entry Signals: 120
+2025-08-28 08:13:42,099 - BacktestEngine_20250828_075431 - INFO -   Trades Entered: 118
+2025-08-28 08:13:52,579 - BacktestEngine - INFO - Saved mag7 analysis to C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Analysis\20250828_075431_AAPL_1min_mag7_analysis.csv
+2025-08-28 08:13:52,580 - BacktestEngine_20250828_075431 - INFO - Mag7 analysis saved: C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Analysis\20250828_075431_AAPL_1min_mag7_analysis.csv (63392 records)
+2025-08-28 08:13:52,588 - BacktestEngine - INFO - Saved 118 option trades to C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Results\Trades\20250828_075431_trades_AAPL_1min.csv
+2025-08-28 08:13:52,592 - BacktestEngine - INFO - Saved trades to C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Results\Trades\20250828_075431_trades_AAPL_1min.csv
+2025-08-28 08:13:52,592 - BacktestEngine_20250828_075431 - INFO - Trades saved: C:\Users\krishna gupta\Desktop\Project\T_bot\Backtest_Data\Results\Trades\20250828_075431_trades_AAPL_1min.csv (118 trades)
+2025-08-28 08:13:53,022 - CandleDataClient - INFO - Fetching 239 days of 1m data from 2025-01-01 to 2025-08-28
+2025-08-28 08:13:54,438 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 08:13:55,686 - Code.bot_core.tradestation_api - ERROR - Failed to exchange code for tokens: 403 {"error":"invalid_grant","error_description":"Invalid authorization code"}
+2025-08-28 08:13:55,697 - TradeStationDataFetcher - ERROR - TradeStation connection test failed
+2025-08-28 08:13:55,769 - CandleDataClient - ERROR - [!] Error initializing TradeStation: [!] TradeStation authentication failed
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\candle_data_client.py", line 469, in fetch_historical_data_for_backtesting
+    raise ConnectionError(error_msg)
+ConnectionError: [!] TradeStation authentication failed
+2025-08-28 08:13:55,790 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed

@@ -23,11 +23,10 @@ class CandleDataClient:
         Args:
             market_data_client (MarketDataClient): Initialized MarketDataClient instance
         """
-        self.market_data_client = market_data_client
+        self.market_data = market_data_client
         self.candle_data = {}  # Store received candle data
         self.active_subscriptions = {}
         self.db = get_mongodb_handler() if market_data_client.save_to_db else None
-        
         
         # Setup logging
         today = datetime.now().strftime("%Y-%m-%d")
@@ -42,7 +41,7 @@ class CandleDataClient:
             formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-        
+    
     def get_historical_data(self, symbol, period="1d", days_back=30, callback=None):
         """
         Fetch historical candle data for a symbol
@@ -263,12 +262,81 @@ class CandleDataClient:
         # Get candles from database
         return self.get_candles_from_db(symbol, period, start_time, end_time)
     
+    def _calculate_max_bars_for_timeframe(self, timeframe_str):
+        """
+        Calculate maximum bars allowed for a timeframe
+        
+        TradeStation limit: 57,600 bars per request
+        But we need to be much more conservative!
+        """
+        # Based on TradeStation's actual limits and including extended hours
+        # Extended hours: 4:00 AM - 8:00 PM = 16 hours = 960 minutes per day
+        
+        if timeframe_str == "1m":
+            # 1-minute bars: 960 per day with extended hours
+            # 57,600 / 960 = 60 days theoretical
+            # But let's be very conservative to avoid errors
+            return 30  # 30 days to be safe
+        elif timeframe_str == "5m":
+            # 5-minute bars: 192 per day with extended hours
+            # 57,600 / 192 = 300 days theoretical
+            return 120  # 4 months to be safe
+        elif timeframe_str == "15m":
+            # 15-minute bars: 64 per day with extended hours
+            # 57,600 / 64 = 900 days theoretical
+            return 300  # 10 months to be safe
+        elif timeframe_str == "30m":
+            # 30-minute bars: 32 per day with extended hours
+            # 57,600 / 32 = 1,800 days theoretical
+            return 600  # 20 months to be safe
+        elif timeframe_str == "1h" or timeframe_str == "60m":
+            # 60-minute bars: 16 per day with extended hours
+            # 57,600 / 16 = 3,600 days theoretical
+            return 900  # 30 months to be safe
+        else:
+            # Default to 5m calculation
+            return 120
     
+    def _chunk_date_range(self, start_date, end_date, timeframe_str):
+        """
+        Chunk a date range into smaller pieces that fit within TradeStation limits
+        
+        Returns:
+            List of (chunk_start, chunk_end) tuples
+        """
+        max_days = self._calculate_max_bars_for_timeframe(timeframe_str)
+        
+        # Convert to datetime if needed
+        if isinstance(start_date, str):
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+        else:
+            start_dt = datetime.combine(start_date, datetime.min.time())
+        
+        if isinstance(end_date, str):
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+        else:
+            end_dt = datetime.combine(end_date, datetime.min.time())
+        
+        chunks = []
+        current_start = start_dt
+        
+        while current_start < end_dt:
+            # Calculate chunk end, but don't exceed max_days
+            chunk_end = current_start + timedelta(days=max_days - 1)  # -1 to be inclusive
+            if chunk_end > end_dt:
+                chunk_end = end_dt
+            
+            chunks.append((current_start, chunk_end))
+            
+            # Start next chunk the day after this one ends
+            current_start = chunk_end + timedelta(days=1)
+        
+        return chunks
 
     def fetch_historical_data_for_backtesting(self, symbols, period, start_date, end_date=None, data_source="TradeStation", **kwargs):
         """
         Fetch historical data for backtesting from external sources and save to CSV files
-        Now stops on failure instead of falling back to other sources
+        Now handles TradeStation's 57,600 bar limit by chunking requests
         """
         # Import directory manager
         from Code.bot_core.backtest_directory_manager import BacktestDirectoryManager
@@ -285,6 +353,9 @@ class CandleDataClient:
         elif isinstance(end_date, str):
             end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
         
+        # Get system date (which might be wrong)
+        system_today = datetime.now().date()
+        
         # Determine period string
         period_str = f"{period}m" if isinstance(period, int) else period
         
@@ -299,13 +370,14 @@ class CandleDataClient:
             # Show data source limitations only once
             if data_source == "TradeStation":
                 print(f"\n[*] Using TradeStation API")
-                print(f"[*] TradeStation Data Capabilities:")
-                print(f"    - 1m data: Up to 40 days")
-                print(f"    - 5m data: Up to 6 months")
-                print(f"    - 15m data: Up to 1 year")
-                print(f"    - 30m data: Up to 2 years")
-                print(f"    - 1h data: Up to 3 years")
-                print(f"    - 1d data: Up to 10 years\n")
+                print(f"[*] System date: {system_today}")
+                print(f"[*] Requested range: {start_date} to {end_date} ({days_diff} days)")
+                print(f"[*] TradeStation Data Limitations:")
+                print(f"    - 1m data: Maximum 30 days per request")
+                print(f"    - 5m data: Maximum 120 days per request")
+                print(f"    - 15m data: Maximum 300 days per request")
+                print(f"    - Maximum 57,600 bars per request")
+                print(f"    - Data includes extended trading hours\n")
             elif data_source == "YFinance":
                 print(f"\n[*] Using Yahoo Finance API")
                 print(f"[*] YFinance Data Capabilities:")
@@ -394,7 +466,6 @@ class CandleDataClient:
                     print("    3. TradeStation account not active")
                     print("\n[!] Suggestion: You can try other data sources:")
                     print("    - YFinance: Free, no auth required (limited history)")
-                    print("    - TastyTrade: Requires account login (full history)")
                     raise ConnectionError(error_msg)
                 else:
                     data_fetcher = tradestation_fetcher
@@ -405,10 +476,7 @@ class CandleDataClient:
                 self.logger.error(error_msg, exc_info=True)
                 raise
         else:
-            print("[!] Possible reasons:")
-            print("    1. Selected Option is Yfinance")
-            print("    2. API key doesn't have market data permissions")
-            print("\n[!] Suggestion: You can try other data sources:")
+            print("[!] Using YFinance data source")
                 
         # If authentication failed or no fetcher, stop here
         if auth_failed or (data_source != "YFinance" and not data_fetcher):
@@ -449,7 +517,89 @@ class CandleDataClient:
                 
                 if data_source == "TradeStation":
                     print(f"[*] Fetching data for {symbol}...")
-                    df = data_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
+                    
+                    # Check if we need to chunk the request
+                    max_days = self._calculate_max_bars_for_timeframe(period_str)
+                    
+                    # Allow override from config
+                    if config and 'max_days_per_chunk' in config.get('trading_config', {}):
+                        override_days = config['trading_config']['max_days_per_chunk']
+                        print(f"[*] Using config override: {override_days} days per chunk")
+                        max_days = override_days
+                    
+                    if days_diff > max_days:
+                        print(f"[*] Date range ({days_diff} days) exceeds limit ({max_days} days), chunking requests...")
+                        
+                        # Get chunks
+                        chunks = self._chunk_date_range(start_date, end_date, period_str)
+                        print(f"[*] Split into {len(chunks)} chunks")
+                        
+                        # Fetch each chunk
+                        all_dfs = []
+                        for i, (chunk_start, chunk_end) in enumerate(chunks):
+                            chunk_days = (chunk_end - chunk_start).days + 1
+                            print(f"\n    Chunk {i+1}/{len(chunks)}: {chunk_start.date()} to {chunk_end.date()} ({chunk_days} days)")
+                            
+                            # Calculate approximate bars for this chunk
+                            if period_str == "1m":
+                                approx_bars = chunk_days * 960  # Extended hours
+                            elif period_str == "5m":
+                                approx_bars = chunk_days * 192
+                            elif period_str == "15m":
+                                approx_bars = chunk_days * 64
+                            else:
+                                approx_bars = chunk_days * 390 / int(period_str.replace('m', ''))
+                            
+                            print(f"      Estimated bars: {int(approx_bars):,}")
+                            
+                            if approx_bars > 57600:
+                                print(f"      ⚠️  WARNING: This chunk may still exceed 57,600 bar limit!")
+                            
+                            try:
+                                chunk_df = data_fetcher.fetch_bars(symbol, chunk_start, chunk_end, period_str)
+                                
+                                if not chunk_df.empty:
+                                    all_dfs.append(chunk_df)
+                                    print(f"      ✓ Received {len(chunk_df)} bars")
+                                else:
+                                    print(f"      ! No data received for this chunk")
+                            except Exception as e:
+                                error_str = str(e)
+                                print(f"      ✗ Error fetching chunk: {error_str}")
+                                
+                                if "Request exceeds history limit" in error_str:
+                                    print(f"      ! Chunk still too large. Try smaller chunks.")
+                                    print(f"      ! Suggestion: Set max_days_per_chunk in config to {max_days // 2}")
+                                elif "400" in error_str:
+                                    print(f"      ! Bad request. Check if dates are valid for this symbol.")
+                            
+                            # Small delay between requests
+                            if i < len(chunks) - 1:
+                                time.sleep(0.5)
+                        
+                        # Combine all chunks
+                        if all_dfs:
+                            df = pd.concat(all_dfs)
+                            df = df[~df.index.duplicated(keep='first')]  # Remove duplicates
+                            df.sort_index(inplace=True)
+                            print(f"\n    ✓ Combined {len(all_dfs)} chunks into {len(df)} total bars")
+                        else:
+                            print(f"\n    ✗ Failed to fetch any data for {symbol}")
+                    else:
+                        # Single request is fine
+                        print(f"    Date range fits in single request ({days_diff} days <= {max_days} days)")
+                        try:
+                            df = data_fetcher.fetch_bars(symbol, start_date, end_date, period_str)
+                            if not df.empty:
+                                print(f"    ✓ Received {len(df)} bars")
+                            else:
+                                print(f"    ! No data received")
+                        except Exception as e:
+                            error_str = str(e)
+                            print(f"    ✗ Error: {error_str}")
+                            if "Request exceeds history limit" in error_str:
+                                print(f"    ! Still exceeded limit. Try a shorter date range.")
+                                print(f"    ! Maximum for {period_str}: {max_days} days")
             
                 elif data_source == "YFinance":
                     print(f"[*] Fetching data for {symbol}...")
@@ -506,8 +656,6 @@ class CandleDataClient:
         
         return result
 
-    
-
     def _dataframe_to_candles(self, df, symbol, period_str):
         """Convert DataFrame to list of candle dictionaries"""
         candles = []
@@ -525,8 +673,6 @@ class CandleDataClient:
             }
             candles.append(candle)
         return candles
-
-            
 
     def get_candles_for_backtesting(self, symbols, period, start_date, end_date, data_source="YFinance"):
         """
@@ -569,7 +715,6 @@ class CandleDataClient:
         
         return result
 
-
     def _normalize_timezone(self, df, target_tz='UTC'):
         """
         Normalize DataFrame timezone to avoid comparison issues
@@ -587,7 +732,6 @@ class CandleDataClient:
             # Make timezone naive for easier comparison
             df.index = df.index.tz_localize(None)
         return df
-
 
     def _safe_date_filter(self, df, start_date, end_date):
         """

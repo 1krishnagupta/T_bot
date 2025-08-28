@@ -63,3 +63,81 @@ AttributeError: 'MarketDataClient' object has no attribute 'request_sector_updat
 2025-08-28 06:54:29,799 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
 2025-08-28 06:54:29,802 - TradeStationDataFetcher - ERROR - Error fetching bars: name 'requests' is not defined
 2025-08-28 06:54:29,810 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:06:16,590 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 07:06:44,908 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:46,052 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:47,182 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:48,307 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:49,440 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:50,571 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:51,719 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:51,733 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:06:52,876 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:53,968 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:55,088 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:56,187 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:57,341 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:58,491 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:59,639 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:06:59,661 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:25:39,322 - BacktestEngine - ERROR - Error in backtest for AAPL: 'int' object has no attribute 'strftime'
+2025-08-28 07:25:39,344 - BacktestEngine - ERROR - Error in backtest for NVDA: 'int' object has no attribute 'strftime'
+2025-08-28 07:27:55,829 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 07:28:17,524 - BacktestEngine - ERROR - Error in backtest for AAPL: __init__() got an unexpected keyword argument 'api_key'
+2025-08-28 07:28:17,560 - BacktestEngine - ERROR - Error in backtest for NVDA: __init__() got an unexpected keyword argument 'api_key'
+2025-08-28 07:37:54,908 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:56,137 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:57,366 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:58,594 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:37:59,926 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:01,359 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:02,565 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:02,606 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:38:04,022 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:05,252 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:06,581 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:08,221 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:09,571 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:10,984 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:12,213 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:38:12,265 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:45:18,918 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:20,761 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:21,991 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:23,812 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:25,044 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:26,803 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:28,033 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:29,772 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:31,104 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:32,844 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:34,074 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:35,814 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:37,043 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:38,763 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:38,803 - BacktestEngine - ERROR - Error in backtest for AAPL: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:45:40,217 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:41,958 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:43,187 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:44,927 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:46,156 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:47,897 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:49,125 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:51,408 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:52,710 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:54,451 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:55,680 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:57,398 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:45:58,649 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:46:00,493 - TradeStationDataFetcher - ERROR - Failed to fetch data: 400 - Request exceeds history limit: a maximum of 57600 intraday bars is allowed. Either update the barsback value or update the date range parameters.
+2025-08-28 07:46:00,537 - BacktestEngine - ERROR - Error in backtest for NVDA: Failed to fetch data for all symbols from TradeStation
+2025-08-28 07:54:12,221 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 08:13:54,438 - Code.bot_core.tradestation_api - ERROR - Failed to refresh access token: 401
+2025-08-28 08:13:55,686 - Code.bot_core.tradestation_api - ERROR - Failed to exchange code for tokens: 403 {"error":"invalid_grant","error_description":"Invalid authorization code"}
+2025-08-28 08:13:55,697 - TradeStationDataFetcher - ERROR - TradeStation connection test failed
+2025-08-28 08:13:55,769 - CandleDataClient - ERROR - [!] Error initializing TradeStation: [!] TradeStation authentication failed
+Traceback (most recent call last):
+  File "C:\Users\krishna gupta\Desktop\Project\T_bot\Code\bot_core\candle_data_client.py", line 469, in fetch_historical_data_for_backtesting
+    raise ConnectionError(error_msg)
+ConnectionError: [!] TradeStation authentication failed
+2025-08-28 08:13:55,790 - BacktestEngine - ERROR - Error in backtest for NVDA: [!] TradeStation authentication failed
